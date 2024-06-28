@@ -1,0 +1,13 @@
+.github
+.husky
+.next
+.vscode
+dist
+node_modules
+.gitignore
+.lintstagedrc.cjs
+.nvmrc
+example.env
+next-env.d.ts
+nodemon.json
+README.md
