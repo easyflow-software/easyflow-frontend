@@ -1,21 +1,8 @@
 import { serverSideRequest } from '@/src/services/api-services/server-side';
 import { AxiosError } from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createRouter } from 'next-connect';
 
-const router = createRouter<NextApiRequest, NextApiResponse>();
-
-const routerHandler = router.handler({
-  onError: (err, _: NextApiRequest, res: NextApiResponse) => {
-    console.error(err);
-    res.status(500).send({ statusCode: 500, message: 'Internal Server Error' });
-  },
-  onNoMatch: (_: NextApiRequest, res: NextApiResponse) => {
-    res.status(405).send({ statusCode: 405, message: 'Method not allowed' });
-  },
-});
-
-router.post(async (req: NextApiRequest, res: NextApiResponse) => {
+export const POST = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   try {
     const response = await serverSideRequest(req, req.body);
     res.setHeader('Set-Cookie', response.headers['set-cookie'] ? response.headers['set-cookie'] : []);
@@ -37,6 +24,4 @@ router.post(async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(statusCode).send(err.response?.data ?? { statusCode, message: 'Internal Server Error' });
   }
-});
-
-export default routerHandler;
+};

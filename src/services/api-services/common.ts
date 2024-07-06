@@ -5,11 +5,7 @@ enum APIOperation {
 }
 
 type APIContext = {
-  [APIOperation.TO_BE_REMOVED]: RequestContext<
-    APIOperation.TO_BE_REMOVED,
-    ToBeRemoved,
-    { email: string; name: string; password: string; publicKey: string; privateKey: string; iv: string }
-  >;
+  [APIOperation.TO_BE_REMOVED]: RequestContext<APIOperation.TO_BE_REMOVED, ToBeRemoved>;
 };
 
 type WithPayload<TBase, TPayload> = TPayload extends void

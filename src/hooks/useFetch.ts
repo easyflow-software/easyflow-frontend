@@ -1,3 +1,4 @@
+'use client';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ErrorCode } from '../enums/error-codes.enum';
 import { clientSideRequest } from '../services/api-services/client-side';
@@ -19,6 +20,7 @@ type useFetchType = {
   >;
 };
 
+// !IMPORTANT: This hook is for client-side only use the server-side request function for server-side requests
 const useFetch = (loadingTimeout = 100): useFetchType => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   let timeout: ReturnType<typeof setTimeout>;
