@@ -1,0 +1,35 @@
+{
+  "alreadyHaveAccount": "Bereits ein Konto? Melde dich <login>hier</login> an.",
+  "form": {
+    "name": { "label": "Name", "placeholder": "Name eingeben" },
+    "email": { "label": "E-Mail", "placeholder": "Email eingeben" },
+    "password": { "label": "Passwort", "placeholder": "Passwort eingeben" },
+    "confirmPassword": { "label": "Passwort bestätigen", "placeholder": "Passwort bestätigen" }
+  },
+  "here": "hier",
+  "passwordRequirements": {
+    "lowerCase": "Mindestens ein Kleinbuchstabe",
+    "upperCase": "Mindestens ein Grossbuchstaben",
+    "number": "Mindestens eine Zahl",
+    "special": "Mindestens ein Sonderzeichen",
+    "minLength": "Mindestens 12 Zeichen"
+  },
+  "title": "Registrieren",
+  "validation": {
+    "email": {
+      "invalid": "Ungültige E-Mail-Adresse",
+      "required": "E-Mail-Adresse ist erforderlich"
+    },
+    "name": {
+      "required": "Name ist erforderlich"
+    },
+    "password": {
+      "required": "Passwort ist erforderlich",
+      "invalid": "Passwort entspricht nicht den Anforderungen"
+    },
+    "confirmPassword": {
+      "required": "Passwort bestätigen ist erforderlich",
+      "match": "Passwörter stimmen nicht überein"
+    }
+  }
+}

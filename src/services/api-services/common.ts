@@ -1,11 +1,17 @@
-import { ToBeRemoved } from '@/src/types/response.types';
+import { SignupResponse } from '@/src/types/response.types';
 
 enum APIOperation {
-  TO_BE_REMOVED = 'get:to-be-removed',
+  SIGNUP = 'post:user/signup',
+  LOGIN = 'post:auth/login',
 }
 
 type APIContext = {
-  [APIOperation.TO_BE_REMOVED]: RequestContext<APIOperation.TO_BE_REMOVED, ToBeRemoved>;
+  [APIOperation.SIGNUP]: RequestContext<
+    APIOperation.SIGNUP,
+    SignupResponse,
+    { email: string; name: string; password: string; publicKey: string; privateKey: string }
+  >;
+  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, void, { email?: string; password?: string }>;
 };
 
 type WithPayload<TBase, TPayload> = TPayload extends void

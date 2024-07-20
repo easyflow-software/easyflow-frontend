@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import { IncomingMessage } from 'http';
 import AppConfiguration from '../../config/app.config';
 import { APIContext, APIOperation } from './common';
 
@@ -29,7 +28,6 @@ const replaceURLParams = (endpoint: string, params: Record<string, string | numb
 
 const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   endpointPrefix: string,
-  request: IncomingMessage,
   options: Omit<APIContext[T], 'responseType'>,
 ): Promise<AxiosResponse<R>> => {
   if (!Object.values(APIOperation).includes(options.op)) throw new Error(`Invalid operation: ${options.op}`);
@@ -49,14 +47,11 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
 
   const headers = options.headers;
 
-  const cookies = request.headers.cookie ?? '';
-
   switch (httpMethod) {
     case 'get': {
       return axios.get<R>(endpoint, {
         headers: {
           ...headers,
-          cookie: cookies,
         },
         withCredentials: true,
       });
@@ -65,7 +60,6 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
       return axios.post<R>(endpoint, (options as unknown as { payload: unknown }).payload, {
         headers: {
           ...headers,
-          cookie: cookies,
         },
         withCredentials: true,
       });
@@ -74,7 +68,6 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
       return axios.put<R>(endpoint, (options as unknown as { payload: unknown }).payload, {
         headers: {
           ...headers,
-          cookie: cookies,
         },
         withCredentials: true,
       });
@@ -83,7 +76,6 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
       return axios.patch<R>(endpoint, (options as unknown as { payload: unknown }).payload, {
         headers: {
           ...headers,
-          cookie: cookies,
         },
         withCredentials: true,
       });
@@ -92,7 +84,6 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
       return axios.delete<R>(endpoint, {
         headers: {
           ...headers,
-          cookie: cookies,
         },
         withCredentials: true,
       });
@@ -104,20 +95,18 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
 };
 
 const serverSideRequest = async <T extends APIOperation, R = APIContext[T]['responseType']>(
-  request: IncomingMessage,
   options: Omit<APIContext[T], 'responseType'>,
 ): Promise<AxiosResponse<R>> => {
-  const res = await rawServerSideRequest(request, options);
+  const res = await rawServerSideRequest(options);
   return res as AxiosResponse<R>;
 };
 
 const rawServerSideRequest = async <T extends APIOperation, R extends APIContext[T]['responseType']>(
-  request: IncomingMessage,
   options: Omit<APIContext[T], 'responseType'>,
 ): Promise<AxiosResponse<R>> => {
   if (typeof window !== 'undefined') throw new Error('Request can only be performed Serverside');
 
-  return req(AppConfiguration.get('REMOTE_URL'), request, options);
+  return req(AppConfiguration.get('REMOTE_URL'), options);
 };
 
 export { serverSideRequest };

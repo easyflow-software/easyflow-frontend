@@ -1,12 +1,18 @@
 import { serverSideRequest } from '@/src/services/api-services/server-side';
 import { AxiosError } from 'axios';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+export const POST = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    const response = await serverSideRequest(req, req.body);
-    res.setHeader('Set-Cookie', response.headers['set-cookie'] ? response.headers['set-cookie'] : []);
-    res.status(200).send(response.data);
+    const data = await req.json();
+    const response = await serverSideRequest(data);
+    const res = NextResponse.json(response.data, {
+      status: response.status,
+      statusText: response.statusText,
+      // eslint-disable-next-line
+      headers: Object.keys(response.headers).map(key => [key, response.headers[key].toString()]),
+    });
+    return res;
   } catch (err) {
     if (!(err instanceof AxiosError)) throw err;
     const msg = {
@@ -21,7 +27,13 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse): Promise<v
     console.error(msg);
 
     const statusCode = err.response?.status ?? 500;
+    const statusText = err.response?.statusText ?? 'Internal Server Error';
 
-    res.status(statusCode).send(err.response?.data ?? { statusCode, message: 'Internal Server Error' });
+    const res = NextResponse.json(err.response?.data ?? { statusCode, message: 'Internal Server Error' }, {
+      status: statusCode,
+      statusText: statusText,
+    });
+
+    return res;
   }
 };

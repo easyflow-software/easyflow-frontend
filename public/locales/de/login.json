@@ -1,3 +1,17 @@
 {
-  "login": "Anmelden"
+  "form": {
+    "email": { "label": "E-Mail", "placeholder": "Email eingeben" },
+    "password": { "label": "Passwort", "placeholder": "Passwort eingeben" }
+  },
+  "noAccount": "Noch kein Konto? Registriere dich <signup>hier</signup>.",
+  "title": "Anmelden",
+  "validation": {
+    "email": {
+      "required": "E-Mail ist erforderlich",
+      "invalid": "E-Mail ist ungültig"
+    },
+    "password": {
+      "required": "Passwort ist erforderlich"
+    }
+  }
 }

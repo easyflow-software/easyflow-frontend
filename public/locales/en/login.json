@@ -1,3 +1,17 @@
 {
-  "login": "Login"
+  "form": {
+    "email": { "label": "E-Mail", "placeholder": "Enter email" },
+    "password": { "label": "Password", "placeholder": "Enter password" }
+  },
+  "noAccount": "Don't have an account yet? Register <signup>here</signup>.",
+  "title": "Login",
+  "validation": {
+    "email": {
+      "required": "Email is required",
+      "invalid": "Email is invalid"
+    },
+    "password": {
+      "required": "Password is required"
+    }
+  }
 }
