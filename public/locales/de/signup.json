@@ -1,5 +1,6 @@
 {
   "alreadyHaveAccount": "Bereits ein Konto? Melde dich <login>hier</login> an.",
+  "back": "Zurück",
   "form": {
     "name": { "label": "Name", "placeholder": "Name eingeben" },
     "email": { "label": "E-Mail", "placeholder": "Email eingeben" },
@@ -7,6 +8,7 @@
     "confirmPassword": { "label": "Passwort bestätigen", "placeholder": "Passwort bestätigen" }
   },
   "here": "hier",
+  "next": "Weiter",
   "passwordRequirements": {
     "lowerCase": "Mindestens ein Kleinbuchstabe",
     "upperCase": "Mindestens ein Grossbuchstaben",

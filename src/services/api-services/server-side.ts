@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { cookies } from 'next/headers';
 import AppConfiguration from '../../config/app.config';
 import { APIContext, APIOperation } from './common';
 
@@ -47,11 +48,16 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
 
   const headers = options.headers;
 
+  const requestCookies = cookies().getAll();
+
   switch (httpMethod) {
     case 'get': {
       return axios.get<R>(endpoint, {
         headers: {
           ...headers,
+          cookie: Object.entries(requestCookies)
+            .map(cookie => `${cookie[1].name}=${cookie[1].value}`)
+            .join('; '),
         },
         withCredentials: true,
       });

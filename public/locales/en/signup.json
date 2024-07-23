@@ -1,11 +1,13 @@
 {
   "alreadyHaveAccount": "Already have an account? Login <login>here</login>.",
+  "back": "Back",
   "form": {
     "name": { "label": "Name", "placeholder": "Enter name" },
     "email": { "label": "E-Mail", "placeholder": "Enter email" },
     "password": { "label": "Password", "placeholder": "Enter password" },
     "confirmPassword": { "label": "Confirm Password", "placeholder": "Confirm password" }
   },
+  "next": "Next",
   "passwordRequirements": {
     "lowerCase": "At least one lowercase letter",
     "upperCase": "At least one uppercase letter",

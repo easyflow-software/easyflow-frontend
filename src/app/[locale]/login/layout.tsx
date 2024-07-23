@@ -11,7 +11,7 @@ const RootLayout = ({
   children: React.ReactNode;
   params: { locale: string };
 }>): JSX.Element => {
-  return <main className="flex h-screen w-screen items-center justify-center">{children}</main>;
+  return <main className="flex h-full w-screen items-center justify-center">{children}</main>;
 };
 
 export default RootLayout;

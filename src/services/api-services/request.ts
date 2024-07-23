@@ -1,26 +1,22 @@
 'use server';
-import AppConfiguration from '@/src/config/app.config';
 import { ErrorCode } from '@/src/enums/error-codes.enum';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { APIContext, APIOperation } from './common';
+import { serverSideRequest } from './server-side';
 
 const makeRequest = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
 ): Promise<{ success: true; data: R } | { success: false; errorCode: ErrorCode }> => {
   try {
-    const { data, headers } = await axios.post<R>(
-      AppConfiguration.get('BASE_URL') + 'api',
-      {
-        ...options,
-      },
-      { withCredentials: true },
-    );
-    headers['set-cookie']?.forEach(cookie => {
-      cookies().set(cookie.split('=')[0], cookie.split('=')[1]);
+    const response = await serverSideRequest<T, R>(options);
+
+    response.headers['set-cookie']?.map(cookie => {
+      const [key, value] = cookie.split('=');
+      cookies().set(key, value, { sameSite: 'lax' });
     });
 
-    return { success: true, data };
+    return { success: true, data: response.data };
   } catch (err) {
     if (!(err instanceof AxiosError)) return { success: false, errorCode: ErrorCode.API_ERROR };
 

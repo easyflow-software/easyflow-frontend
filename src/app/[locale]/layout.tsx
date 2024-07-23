@@ -1,3 +1,4 @@
+import Nav from '@/src/components/navbar/Navbar';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -22,7 +23,10 @@ const RootLayout = ({
   return (
     <html lang={locale} dir={dir(locale)}>
       <body className={'h-screen w-screen bg-background' + inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Nav />
+          <div className="h-[calc(100vh-64px)] overflow-y-auto">{children}</div>
+        </Providers>
       </body>
     </html>
   );

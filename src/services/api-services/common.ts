@@ -1,17 +1,19 @@
-import { SignupResponse } from '@/src/types/response.types';
+import { UserResponse } from '@/src/types/response.types';
 
 enum APIOperation {
   SIGNUP = 'post:user/signup',
   LOGIN = 'post:auth/login',
+  GET_USER = 'get:user',
 }
 
 type APIContext = {
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,
-    SignupResponse,
+    UserResponse,
     { email: string; name: string; password: string; publicKey: string; privateKey: string }
   >;
   [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, void, { email?: string; password?: string }>;
+  [APIOperation.GET_USER]: RequestContext<APIOperation.GET_USER, UserResponse>;
 };
 
 type WithPayload<TBase, TPayload> = TPayload extends void
