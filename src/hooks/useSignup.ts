@@ -7,11 +7,13 @@ const useSignup = (): {
   privateKey?: string;
   publicKey?: string;
   iv?: string;
+  hashedPassword?: string;
   isGeneratingKeys: boolean;
 } => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [iv, setIv] = useState<string>();
+  const [hashedPassword, setHashedPassword] = useState<string>();
 
   const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
 
@@ -50,19 +52,21 @@ const useSignup = (): {
       iv,
     });
 
-    // Stringify the keys so they can be send via JSON
+    // Stringify the keys and iv so they can be send via JSON
     const publicKeySPKI = await window.crypto.subtle.exportKey('spki', publicKey);
     const publicKeyString = Buffer.from(publicKeySPKI).toString('base64');
     const privateKeyString = Buffer.from(encryptedPrivateKey).toString('base64');
     const ivString = Buffer.from(iv).toString('base64');
+    const hashedPasswordString = Buffer.from(hashedPassword).toString('base64');
 
     setPrivateKey(privateKeyString);
     setPublicKey(publicKeyString);
     setIv(ivString);
+    setHashedPassword(hashedPasswordString);
     setIsGeneratingKeys(false);
   };
 
-  return { initialValues, generateKeys, privateKey, publicKey, iv, isGeneratingKeys };
+  return { initialValues, generateKeys, privateKey, publicKey, iv, isGeneratingKeys, hashedPassword };
 };
 
 export default useSignup;

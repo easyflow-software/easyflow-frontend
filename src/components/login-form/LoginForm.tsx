@@ -1,11 +1,10 @@
 'use client';
 import { login } from '@/src/app/[locale]/login/actions';
 import { LoginType } from '@/src/types/login.type';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Input, Link } from '@nextui-org/react';
 import { Form, Formik } from 'formik';
 import { FunctionComponent, ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Link from '../link/Link';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
 

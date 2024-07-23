@@ -6,9 +6,7 @@ import {
   ForwardRefExoticComponent,
   ReactNode,
   RefAttributes,
-  useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 
@@ -21,7 +19,6 @@ export interface StepperRef {
   nextStep: () => void;
   previousStep: () => void;
   goToStep: (step: number) => void;
-  currentStep: number;
 }
 
 const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef>> = forwardRef<
@@ -29,11 +26,6 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
   StepperProps
 >((props, ref) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const stepRef = useRef<number>(currentStep);
-
-  useEffect(() => {
-    stepRef.current = currentStep;
-  }, [currentStep]);
 
   useImperativeHandle(ref, () => ({
     nextStep: () => {
@@ -45,7 +37,6 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
     goToStep: (step: number) => {
       setCurrentStep(Math.max(0, Math.min(step, Children.count(props.children) - 1)));
     },
-    currentStep: stepRef.current,
   }));
 
   return (

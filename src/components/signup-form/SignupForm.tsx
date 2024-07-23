@@ -1,10 +1,10 @@
 'use client';
 import useSignup from '@/src/hooks/useSignup';
-import { Button, CircularProgress, Input } from '@nextui-org/react';
+import { Button, CircularProgress, Input, Link } from '@nextui-org/react';
+import { Copy, Download } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { FunctionComponent, ReactElement, useEffect, useRef } from 'react';
+import { FunctionComponent, ReactElement, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import Link from '../link/Link';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
 import Stepper, { StepperRef } from '../progress-stepper/Stepper';
@@ -13,16 +13,13 @@ import createValidationSchema from './validation-schema';
 
 const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { initialValues, generateKeys, privateKey, publicKey, iv, isGeneratingKeys } = useSignup();
+  const { initialValues, generateKeys, privateKey, publicKey, iv, hashedPassword, isGeneratingKeys } = useSignup();
 
   const stepperRef = useRef<StepperRef>(null);
 
-  const validationSchema = createValidationSchema(t);
+  const [values, setValues] = useState(initialValues);
 
-  useEffect(() => {
-    console.log(stepperRef.current?.currentStep);
-  }, [stepperRef.current?.currentStep]);
+  const validationSchema = createValidationSchema(t);
 
   return (
     // TODO: Wording and translations
@@ -31,8 +28,9 @@ const SignupForm: FunctionComponent = (): ReactElement => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={async () => {
+          onSubmit={async values => {
             stepperRef.current?.nextStep();
+            setValues(values);
           }}
         >
           {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
@@ -138,30 +136,81 @@ const SignupForm: FunctionComponent = (): ReactElement => {
           >
             {t('signup:back')}
           </Button>
-          <Button className="ml-2 w-full" color="primary" onClick={() => stepperRef.current?.nextStep()}>
+          <Button
+            type="submit"
+            className="ml-2 w-full"
+            color="primary"
+            onClick={async () => {
+              stepperRef.current?.nextStep();
+              await generateKeys(values.password);
+            }}
+          >
             {t('signup:next')}
           </Button>
         </div>
       </Step>
       <Step>
-        {isGeneratingKeys ? (
-          <>
-            <CircularProgress aria-label="Loading Keys" />
-            <p>Generating Keys</p>
-          </>
-        ) : (
-          <p>Keys generated</p>
-        )}
+        <div className="flex min-h-48 flex-col justify-center">
+          {isGeneratingKeys && (
+            <div className="flex flex-col items-center">
+              <CircularProgress aria-label="Loading Keys" className="mb-2" />
+              <p>Generating your private Keys</p>
+            </div>
+          )}
+          {!isGeneratingKeys && privateKey && publicKey && iv && hashedPassword && (
+            <>
+              <h4>Hurray!!</h4>
+              <p>
+                We successfully generated your privacy keys. For your own datasecurity we do <strong>not</strong> store
+                your recovery code and without that recovery code you cannot restore your account in case of a password
+                loss.{' '}
+                <Link
+                  className="hover:cursor-pointer"
+                  onClick={() => navigator.clipboard.writeText(hashedPassword)}
+                  showAnchorIcon
+                  anchorIcon={<Copy className="ml-1" />}
+                >
+                  Copy
+                </Link>{' '}
+                or{' '}
+                <Link
+                  className="hover:cursor-pointer"
+                  onClick={() => {
+                    const element = document.createElement('a');
+                    const file = new Blob([hashedPassword], { type: 'text/plain' });
+                    element.href = URL.createObjectURL(file);
+                    element.download = 'easyflow-recovery-code.txt';
+                    document.body.appendChild(element);
+                    element.click();
+                  }}
+                  showAnchorIcon
+                  anchorIcon={<Download className="ml-1" />}
+                >
+                  donwload
+                </Link>{' '}
+                your Recovery Code. But don&#39;t worry as long as you know your password you can easily change it and
+                always download your recovery code.
+              </p>
+            </>
+          )}
+        </div>
         <div className="flex">
           <Button
             className="mr-2 w-full"
             variant="bordered"
             color="default"
+            isDisabled={isGeneratingKeys}
             onClick={() => stepperRef.current?.previousStep()}
           >
             {t('signup:back')}
           </Button>
-          <Button className="ml-2 w-full" color="primary" onClick={() => stepperRef.current?.nextStep()}>
+          <Button
+            type="submit"
+            className="ml-2 w-full"
+            color="primary"
+            isDisabled={isGeneratingKeys}
+            onClick={() => stepperRef.current?.nextStep()}
+          >
             {t('signup:next')}
           </Button>
         </div>

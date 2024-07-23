@@ -27,7 +27,9 @@ const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
     <TranslationsProvider resources={resources} locale={locale} namespaces={i18nNamespaces}>
       <div>
         <Card className="w-[80vw] max-w-[500px] p-5">
-          <CardHeader>{t('signup:title')}</CardHeader>
+          <CardHeader>
+            <h3>{t('signup:title')}</h3>
+          </CardHeader>
           <SignupForm />
         </Card>
       </div>
