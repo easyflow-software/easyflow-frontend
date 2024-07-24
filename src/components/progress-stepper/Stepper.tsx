@@ -43,7 +43,7 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
     <div className="flex flex-col items-center">
       <div className="mb-4 flex w-full">
         {Children.map(props.children, (_, index) => (
-          <div className="flex w-full">
+          <div className={`flex ${index < Children.count(props.children) - 1 ? 'w-full' : ''}`}>
             <div className="flex flex-col items-center">
               <div
                 key={index}
@@ -56,16 +56,18 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
               </div>
               <p className="mt-1 max-w-12 text-center text-sm">{props.titles[index]}</p>
             </div>
-            <div className="relative mx-2 mt-6 flex h-0.5 w-full flex-grow">
-              {index < Children.count(props.children) - 1 && (
-                <>
-                  <span className="absolute h-0.5 w-full bg-content3" />
-                  <span
-                    className={`${index < currentStep ? 'w-full' : 'w-0'} absolute h-0.5 bg-primary duration-[5s] ease-in-out transition-width`}
-                  />
-                </>
-              )}
-            </div>
+            {index < Children.count(props.children) - 1 && (
+              <div className="relative mx-2 mt-6 flex h-0.5 w-full flex-grow">
+                {index < Children.count(props.children) - 1 && (
+                  <>
+                    <span className="absolute h-0.5 w-full bg-content3" />
+                    <span
+                      className={`${index < currentStep ? 'w-full' : 'w-0'} absolute h-0.5 bg-primary duration-[5s] ease-in-out transition-width`}
+                    />
+                  </>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
