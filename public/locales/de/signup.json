@@ -16,11 +16,14 @@
     "special": "Mindestens ein Sonderzeichen",
     "minLength": "Mindestens 12 Zeichen"
   },
-  "recoveryCodeInformation": "Dein Wiederherstellungscode wurde erfolgreich generiert. Um den Datenschutz zu gewährleisten, speichern wir deinen Wiederherstellungscode <strong>nicht</strong>. Ohne diesen Wiederherstellungscode kannst du dein Konto im Falle eines Passwortverlustes nicht wiederherstellen. Du kannst deinen WWIederherstellungscode hier <CopyLink>kopieren</CopyLink> oder <DownloadLink>herunterladen</DownloadLink>.",
+  "recoveryCode": {
+    "title": "Hurra! Dein Wiederherstellungscode wurde generiert.",
+    "information": "Dein Wiederherstellungscode wurde erfolgreich generiert. Um den Datenschutz zu gewährleisten, speichern wir deinen Wiederherstellungscode <strong>nicht</strong>. Ohne diesen Wiederherstellungscode kannst du dein Konto im Falle eines Passwortverlustes nicht wiederherstellen. Du kannst deinen WIederherstellungscode hier <CopyLink>kopieren</CopyLink> oder <DownloadLink>herunterladen</DownloadLink>."
+  },
   "stepperTitles": {
     "enterInformation": "Informationen eingeben",
     "confirmEmail": "E-Mail bestätigen",
-    "recoveryCode": "Wiederherstellungscode"
+    "recoveryCode": "Recovery Code"
   },
   "title": "Registrieren",
   "validation": {

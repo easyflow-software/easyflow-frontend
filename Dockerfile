@@ -1,33 +1,30 @@
-FROM node:20-alpine as builder
-
-# Variables
-ARG NODE_AUTH_TOKEN
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-#Copy everything
+# Copy everything
 COPY . .
 
-#Install packages as in package-lock
+# Install packages as in package-lock
 RUN npm ci
 
-#Linting
+# Linting
 RUN npm run lint
 
-#Build
+# Build
 RUN npm run build
 
-#Remove packages
+# Remove packages
 RUN rm -rf node_modules
 
-#Install prod packages
+# Install prod packages
 RUN npm ci --omit=dev --omit=optional
 
-FROM node:20-alpine as production
+FROM node:22-alpine AS production
 
-# Variables
-ARG CLOUDFLARE_ORIGIN_CERTIFICATE
-ARG CLOUDFLARE_ORIGIN_CA_KEY
+# Secrets
+RUN --mount=type=secret,id=CLOUDFLARE_ORIGIN_CERTIFICATE
+RUN --mount=type=secret,id=CLOUDFLARE_ORIGIN_CA_KEY
 
 # Uninstall yarn and npm not needed in prod
 RUN npm uninstall -g yarn
@@ -39,7 +36,7 @@ RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
 
 WORKDIR /app
 
-#Copy needed files
+# Copy needed files
 COPY --chown=appuser:appgroup --from=builder /app/.next /app/.next
 COPY --chown=appuser:appgroup --from=builder /app/node_modules /app/node_modules
 COPY --chown=appuser:appgroup --from=builder /app/public /app/public
@@ -50,9 +47,10 @@ COPY --chown=appuser:appgroup --from=builder /app/nginx.conf /etc/nginx/nginx.co
 # Set type module
 RUN echo '{"type": "module"}' > /app/package.json
 
-# Create certificates
-RUN echo "${CLOUDFLARE_ORIGIN_CERTIFICATE}" > /etc/ssl/easyflow.pem
-RUN echo "${CLOUDFLARE_ORIGIN_CA_KEY}" > /etc/ssl/easyflow.key
+# Cloudflare origin certificate
+RUN mkdir -p /etc/ssl/
+RUN cat /run/secrets/CLOUDFLARE_ORIGIN_CERTIFICATE
+RUN cat /run/secrets/CLOUDFLARE_ORIGIN_CA_KEY
 RUN chown -R appuser:appgroup /etc/ssl/
 
 # add nginx

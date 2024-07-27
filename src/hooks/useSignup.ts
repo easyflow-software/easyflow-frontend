@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { SignupType } from '../types/signup.type';
 
@@ -27,7 +28,7 @@ const useSignup = (): {
   const generateKeys = async (password?: string): Promise<void> => {
     if (!password) return;
     setIsGeneratingKeys(true);
-    const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
+    const { publicKey, privateKey } = await crypto.subtle.generateKey(
       {
         name: 'RSA-OAEP',
         modulusLength: 4096,
@@ -45,18 +46,18 @@ const useSignup = (): {
       'unwrapKey',
     ]);
 
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(12));
 
     const encryptedPrivateKey = await window.crypto.subtle.wrapKey('pkcs8', privateKey, wrapingKey, {
       name: 'AES-GCM',
-      iv,
+      iv: ivBuffer,
     });
 
     // Stringify the keys and iv so they can be send via JSON
     const publicKeySPKI = await window.crypto.subtle.exportKey('spki', publicKey);
     const publicKeyString = Buffer.from(publicKeySPKI).toString('base64');
     const privateKeyString = Buffer.from(encryptedPrivateKey).toString('base64');
-    const ivString = Buffer.from(iv).toString('base64');
+    const ivString = Buffer.from(ivBuffer).toString('base64');
     const hashedPasswordString = Buffer.from(hashedPassword).toString('base64');
 
     setPrivateKey(privateKeyString);

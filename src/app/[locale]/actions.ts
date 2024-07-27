@@ -9,3 +9,10 @@ export const getUser = async (): Promise<RequestResponse<UserResponse>> => {
   });
   return res;
 };
+
+export const getProfilePicture = async (): Promise<RequestResponse<string>> => {
+  const res = await makeRequest<APIOperation.GET_PROFILE_PICTURE, string>({
+    op: APIOperation.GET_PROFILE_PICTURE,
+  });
+  return res;
+};

@@ -17,9 +17,9 @@
   },
   "recoveryCodeInformation": "We successfully generated your recovery code. To ensure proper data protection we do <strong>not</strong> store your recovery code and without that recovery code you cannot restore your account in case of a password loss. <CopyLink>Copy</CopyLink> or <DownloadLink>donwload</DownloadLink> your Recovery Code.",
   "stepperTitles": {
-    "enterInformation": "Enter Information",
-    "confirmEmail": "Confirm Email",
-    "recoveryCode": "Recovery Code"
+    "enterInformation": "Enter information",
+    "confirmEmail": "Confirm email",
+    "recoveryCode": "Recovery code"
   },
   "title": "Sign Up",
   "validation": {

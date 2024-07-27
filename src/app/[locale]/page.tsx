@@ -1,5 +1,4 @@
-import { ThemeSwitcher } from '@/src/components/theme-switcher/ThemeSwitcher';
-import TranslationsProvider from '@/src/components/translation-provider/TranslationsProvider';
+import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
 import { Button } from '@nextui-org/react';
 import { FunctionComponent } from 'react';
 import initTranslations from '../i18n';
@@ -17,7 +16,6 @@ const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
 
   return (
     <TranslationsProvider resources={resources} namespaces={i18nNamespaces} locale={locale}>
-      <ThemeSwitcher />
       <div className="m-2">
         <Button className="m-1" color="primary">
           {t('home:button')}

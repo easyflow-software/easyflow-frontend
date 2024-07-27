@@ -1,5 +1,5 @@
 import SignupForm from '@/src/components/signup-form/SignupForm';
-import TranslationsProvider from '@/src/components/translation-provider/TranslationsProvider';
+import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
 import initTranslations from '@i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { redirect } from 'next/navigation';
@@ -12,7 +12,7 @@ interface HomeProps {
   };
 }
 
-const i18nNamespaces = ['signup'];
+const i18nNamespaces = ['signup', 'errors'];
 
 const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
@@ -30,9 +30,7 @@ const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
           <CardHeader>
             <h3>{t('signup:title')}</h3>
           </CardHeader>
-          <div className="p-3">
-            <SignupForm />
-          </div>
+          <SignupForm />
         </Card>
       </div>
     </TranslationsProvider>

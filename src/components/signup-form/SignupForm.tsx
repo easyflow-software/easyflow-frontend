@@ -1,9 +1,11 @@
 'use client';
+import { checkIfUserExists, signup } from '@/src/app/[locale]/signup/actions';
 import useSignup from '@/src/hooks/useSignup';
-import { Button, CircularProgress, Input, Link } from '@nextui-org/react';
-import { Copy, Download } from '@phosphor-icons/react';
+import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
+import { Copy, Download, WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { FunctionComponent, ReactElement, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
@@ -13,16 +15,23 @@ import createValidationSchema from './validation-schema';
 
 const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { initialValues, generateKeys, privateKey, publicKey, iv, hashedPassword, isGeneratingKeys } = useSignup();
 
   const stepperRef = useRef<StepperRef>(null);
 
   const [values, setValues] = useState(initialValues);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
 
+  useEffect(() => {
+    setError(undefined);
+  }, [values]);
+
   return (
-    <>
+    <div className="p-3p">
       <Stepper
         titles={[
           t('signup:stepperTitles.enterInformation'),
@@ -36,14 +45,22 @@ const SignupForm: FunctionComponent = (): ReactElement => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={async values => {
-              stepperRef.current?.nextStep();
+              const res = await checkIfUserExists(values.email || '');
+              if (!res.success) {
+                setError(t(`errors:${res.errorCode}`));
+                return;
+              } else if (res.data === true) {
+                setError(t('errors:ALREADY_EXISTS'));
+                return;
+              }
               setValues(values);
+              stepperRef.current?.nextStep();
             }}
           >
             {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
               <Form>
                 <Input
-                  className="mb-3"
+                  classNames={{ base: 'mb-0.5', description: 'select-none' }}
                   type="text"
                   label={t('signup:form.email.label')}
                   placeholder={t('signup:form.email.placeholder')}
@@ -52,10 +69,12 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('email', true)}
                   isInvalid={touched.email && !!errors.email}
                   errorMessage={errors.email ? errors.email : undefined}
+                  // random invisible character so that the input dosn't move when the erromessage gets displayed
+                  description={'\u2800'}
                   isRequired
                 />
                 <Input
-                  className="mb-3"
+                  classNames={{ base: 'mb-0.5', description: 'select-none' }}
                   type="text"
                   label={t('signup:form.name.label')}
                   placeholder={t('signup:form.name.placeholder')}
@@ -64,6 +83,8 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('name', true)}
                   isInvalid={touched.name && !!errors.name}
                   errorMessage={errors.name ? errors.name : undefined}
+                  // random invisible character so that the input dosn't move when the erromessage gets displayed
+                  description={'\u2800'}
                   isRequired
                 />
                 <PasswordInput
@@ -136,7 +157,6 @@ const SignupForm: FunctionComponent = (): ReactElement => {
               {t('signup:back')}
             </Button>
             <Button
-              type="submit"
               className="ml-2 w-full"
               color="primary"
               onClick={async () => {
@@ -158,7 +178,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
             )}
             {!isGeneratingKeys && privateKey && publicKey && iv && hashedPassword && (
               <>
-                <h3>Hurray!!</h3>
+                <h3>{t('signup:recoveryCode.title')}</h3>
                 <Trans
                   components={{
                     strong: <strong />,
@@ -187,7 +207,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                     ),
                   }}
                 >
-                  <p>{t('signup:recoveryCodeInformation')}</p>
+                  <p>{t('signup:recoveryCode.information')}</p>
                 </Trans>
               </>
             )}
@@ -203,17 +223,35 @@ const SignupForm: FunctionComponent = (): ReactElement => {
               {t('signup:back')}
             </Button>
             <Button
-              type="submit"
               className="ml-2 w-full"
               color="primary"
               isDisabled={isGeneratingKeys}
-              onClick={() => stepperRef.current?.nextStep()}
+              isLoading={isLoading}
+              onClick={async () => {
+                setIsLoading(true);
+                const res = await signup(values.email, values.name, values.password, privateKey, publicKey, iv);
+                if (res.success) {
+                  router.push('/login');
+                } else {
+                  setError(t(`errors:${res.errorCode}`));
+                }
+                setIsLoading(false);
+              }}
             >
-              {t('signup:next')}
+              {t('signup:title')}
             </Button>
           </div>
         </Step>
       </Stepper>
+      {error ? (
+        <div className="mt-2 flex items-center text-danger">
+          <WarningCircle size={20} className="mr-1" />
+          <p>{error}</p>
+        </div>
+      ) : (
+        <p className="mt-3"> </p>
+      )}
+      <Divider className="mt-2" />
       <p className="mt-5 text-center text-content4-foreground">
         <Trans
           i18nKey="signup:alreadyHaveAccount"
@@ -222,7 +260,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
           }}
         />
       </p>
-    </>
+    </div>
   );
 };
 

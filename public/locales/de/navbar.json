@@ -1,0 +1,13 @@
+{
+  "lang": {
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "menuLabels": {
+    "chat": "Chat",
+    "signup": "Registrieren",
+    "profile": "Profil",
+    "pricing": "Preise",
+    "login": "Anmelden"
+  }
+}

@@ -39,11 +39,15 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
     },
   }));
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const stepChildren = Children.toArray(props.children).filter(child => child.type.name === 'Step');
+
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-4 flex w-full">
-        {Children.map(props.children, (_, index) => (
-          <div className={`flex ${index < Children.count(props.children) - 1 ? 'w-full' : ''}`}>
+      <div className="mb-8 flex w-full">
+        {Children.map(stepChildren, (_, index) => (
+          <div className={`flex ${index < Children.count(stepChildren) - 1 ? 'w-full' : ''}`}>
             <div className="flex flex-col items-center">
               <div
                 key={index}
@@ -56,9 +60,9 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
               </div>
               <p className="mt-1 max-w-12 text-center text-sm">{props.titles[index]}</p>
             </div>
-            {index < Children.count(props.children) - 1 && (
+            {index < Children.count(stepChildren) - 1 && (
               <div className="relative mx-2 mt-6 flex h-0.5 w-full flex-grow">
-                {index < Children.count(props.children) - 1 && (
+                {index < Children.count(stepChildren) - 1 && (
                   <>
                     <span className="absolute h-0.5 w-full bg-content3" />
                     <span
@@ -72,7 +76,7 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
         ))}
       </div>
       <>
-        {Children.map(props.children, (child, i) => (
+        {Children.map(stepChildren, (child, i) => (
           <div className={`w-full ${i === currentStep ? 'block' : 'hidden'}`}>{child}</div>
         ))}
       </>
