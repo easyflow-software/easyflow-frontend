@@ -4,6 +4,11 @@ import { ParamsType } from '@/src/types/params.type';
 import {
   Avatar,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
   Link,
   Navbar,
   NavbarBrand,
@@ -13,20 +18,26 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/react';
+import { SignOut, User } from '@phosphor-icons/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
 
-const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { t } = useTranslation('navbar');
-  const pathname = usePathname();
-  const { user, profilePicture } = useContext(UserContext);
+interface NavProps extends ParamsType {
+  serverLogout: () => Promise<void>;
+}
 
-  const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean }[]>([]);
+const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElement => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useTranslation();
+  const pathname = usePathname();
+  const { user, profilePicture, setUser, setProfilePicture } = useContext(UserContext);
+  const router = useRouter();
+
+  const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean; hidden: boolean }[]>([]);
 
   useEffect(() => {
     setMenuItems([
@@ -34,18 +45,33 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         label: t('navbar:menuLabels.chat'),
         href: '/chat',
         active: pathname.endsWith('chat'),
+        hidden: !user,
       },
       {
         label: t('navbar:menuLabels.pricing'),
         href: '/pricing',
         active: pathname.endsWith('pricing'),
+        hidden: false,
+      },
+      {
+        label: t('navbar:menuLabels.about'),
+        href: '/about',
+        active: pathname.endsWith('about'),
+        hidden: false,
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  const logout = async (): Promise<void> => {
+    await serverLogout();
+    setUser(undefined);
+    setProfilePicture(undefined);
+    router.push('/');
+  };
+
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen}>
+    <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen} isBordered>
       <NavbarContent>
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
         <NavbarBrand>
@@ -53,14 +79,16 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        {menuItems.map((item, index) => (
-          <NavbarItem key={`${item.label}-${index}`}>
-            <Link color={item.active ? 'primary' : 'foreground'} href={item.href}>
-              {item.label}
-            </Link>
-          </NavbarItem>
-        ))}
+      <NavbarContent className="hidden gap-4 sm:flex" justify="start">
+        {menuItems
+          .filter(item => !item.hidden)
+          .map((item, index) => (
+            <NavbarItem key={`${item.label}-${index}`} className="px-1">
+              <Link color={item.active ? 'primary' : 'foreground'} href={item.href}>
+                {item.label}
+              </Link>
+            </NavbarItem>
+          ))}
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
@@ -72,12 +100,34 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         {user || profilePicture ? (
           <NavbarItem>
             {/* TODO: add s3 integration for profilepictures in backend and past url */}
-            <Avatar src="" name={user?.name} />
+            <Dropdown>
+              <DropdownTrigger>
+                <Avatar src={profilePicture} name={user?.name} isBordered />
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownSection showDivider>
+                  <DropdownItem key={'profile'} startContent={<User />} href="/profile">
+                    {t('navbar:userMenuLabels.profile')}
+                  </DropdownItem>
+                </DropdownSection>
+                <DropdownSection title={t('navbar:userMenuLabels.dangerZone')}>
+                  <DropdownItem
+                    key={'logout'}
+                    className="text-danger"
+                    color="danger"
+                    startContent={<SignOut />}
+                    onClick={() => logout()}
+                  >
+                    {t('navbar:userMenuLabels.logout')}
+                  </DropdownItem>
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
           </NavbarItem>
         ) : (
           <>
             <NavbarItem className="max-sm:hidden">
-              <Button as={Link} href="/login" variant="flat">
+              <Button as={Link} href="/login" color="secondary" variant="flat">
                 {t('navbar:menuLabels.login')}
               </Button>
             </NavbarItem>

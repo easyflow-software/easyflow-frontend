@@ -4,10 +4,15 @@
     "de": "Deutsch"
   },
   "menuLabels": {
+    "about": "Über uns",
     "chat": "Chat",
     "signup": "Registrieren",
-    "profile": "Profil",
     "pricing": "Preise",
     "login": "Anmelden"
+  },
+  "userMenuLabels": {
+    "dangerZone": "Gefahrenzone",
+    "profile": "Profil",
+    "logout": "Abmelden"
   }
 }

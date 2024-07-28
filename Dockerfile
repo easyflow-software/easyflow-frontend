@@ -23,8 +23,8 @@ RUN npm ci --omit=dev --omit=optional
 FROM node:22-alpine AS production
 
 # Secrets
-RUN --mount=type=secret,id=CLOUDFLARE_ORIGIN_CERTIFICATE
-RUN --mount=type=secret,id=CLOUDFLARE_ORIGIN_CA_KEY
+ARG CLOUDFLARE_ORIGIN_CERTIFICATE
+ARG CLOUDFLARE_ORIGIN_CA_KEY
 
 # Uninstall yarn and npm not needed in prod
 RUN npm uninstall -g yarn
@@ -48,9 +48,8 @@ COPY --chown=appuser:appgroup --from=builder /app/nginx.conf /etc/nginx/nginx.co
 RUN echo '{"type": "module"}' > /app/package.json
 
 # Cloudflare origin certificate
-RUN mkdir -p /etc/ssl/
-RUN cat /run/secrets/CLOUDFLARE_ORIGIN_CERTIFICATE
-RUN cat /run/secrets/CLOUDFLARE_ORIGIN_CA_KEY
+RUN echo "$CLOUDFLARE_ORIGIN_CERTIFICATE" > /etc/ssl/easyflow.pem
+RUN echo "$CLOUDFLARE_ORIGIN_CA_KEY" > /etc/ssl/easyflow.key
 RUN chown -R appuser:appgroup /etc/ssl/
 
 # add nginx

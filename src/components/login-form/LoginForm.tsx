@@ -37,7 +37,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             setUser(res.data);
             const profilePictureRes = await getProfilePicture();
             if (!profilePictureRes.success) {
-              console.error('Failed to get profile picture');
+              console.log('Failed to get profile picture');
             } else {
               setProfilePicture(profilePictureRes.data);
             }

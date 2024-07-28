@@ -15,6 +15,14 @@ const config: Config = {
   plugins: [
     nextui({
       prefix: 'nextui', // prefix for themes variables
+      themes: {
+        light: {
+          colors: {},
+        },
+        dark: {
+          colors: {},
+        },
+      },
     }),
   ],
 };

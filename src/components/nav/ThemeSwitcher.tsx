@@ -6,7 +6,13 @@ import { FunctionComponent, ReactElement } from 'react';
 const ThemeSwitcher: FunctionComponent = (): ReactElement => {
   const { theme, setTheme } = useTheme();
   return (
-    <>{theme === 'light' ? <Moon onClick={() => setTheme('dark')} /> : <Sun onClick={() => setTheme('light')} />}</>
+    <>
+      {theme === 'light' ? (
+        <Moon size={20} onClick={() => setTheme('dark')} />
+      ) : (
+        <Sun size={20} onClick={() => setTheme('light')} />
+      )}
+    </>
   );
 };
 

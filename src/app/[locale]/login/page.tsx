@@ -19,7 +19,6 @@ const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
 
   // Check if user is already logged in
   const res = await getUser();
-  console.log(res);
   if (res.success) {
     redirect('/chat');
   }

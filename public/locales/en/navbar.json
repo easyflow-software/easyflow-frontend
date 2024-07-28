@@ -4,10 +4,16 @@
     "de": "Deutsch"
   },
   "menuLabels": {
+    "about": "About",
     "chat": "Chat",
-    "profile": "Profile",
-    "pricing": "Pricing",
     "login": "Login",
+    "pricing": "Pricing",
+    "profile": "Profile",
     "signup": "Signup"
+  },
+  "userMenuLabels": {
+    "dangerZone": "Danger Zone",
+    "profile": "Profile",
+    "logout": "Logout"
   }
 }
