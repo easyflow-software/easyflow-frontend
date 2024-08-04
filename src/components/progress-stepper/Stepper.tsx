@@ -1,5 +1,6 @@
 'use client';
 import { Check } from '@phosphor-icons/react';
+import cx from 'classnames';
 import {
   Children,
   forwardRef,
@@ -47,11 +48,15 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
     <div className="flex flex-col items-center">
       <div className="mb-8 flex w-full">
         {Children.map(stepChildren, (_, index) => (
-          <div className={`flex ${index < Children.count(stepChildren) - 1 ? 'w-full' : ''}`}>
+          <div className={cx('flex', { 'w-full': index < Children.count(stepChildren) - 1 })}>
             <div className="flex flex-col items-center">
               <div
                 key={index}
-                className={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-solid ${index <= currentStep ? 'cursor-pointer border-primary bg-primary text-primary-foreground' : 'border-content3 bg-transparent text-content3-foreground'}`}
+                className={cx(
+                  'flex h-12 w-12 items-center justify-center rounded-full border-2 border-solid',
+                  { 'border-primary bg-primary text-primary-foreground hover:cursor-pointer': index <= currentStep },
+                  { 'border-content3 bg-transparent text-content3-foreground': index > currentStep },
+                )}
                 onClick={() => {
                   if (index <= currentStep) setCurrentStep(index);
                 }}
@@ -66,7 +71,9 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
                   <>
                     <span className="absolute h-0.5 w-full bg-content3" />
                     <span
-                      className={`${index < currentStep ? 'w-full' : 'w-0'} absolute h-0.5 bg-primary duration-[5s] ease-in-out transition-width`}
+                      className={cx('absolute h-0.5 w-0 bg-primary duration-[5s] ease-in-out transition-width', {
+                        'w-full': index < currentStep,
+                      })}
                     />
                   </>
                 )}
@@ -77,7 +84,7 @@ const Stepper: ForwardRefExoticComponent<StepperProps & RefAttributes<StepperRef
       </div>
       <>
         {Children.map(stepChildren, (child, i) => (
-          <div className={`w-full ${i === currentStep ? 'block' : 'hidden'}`}>{child}</div>
+          <div className={cx('w-full', { block: i === currentStep, hidden: i !== currentStep })}>{child}</div>
         ))}
       </>
     </div>

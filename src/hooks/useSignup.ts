@@ -19,10 +19,10 @@ const useSignup = (): {
   const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
 
   const initialValues: SignupType = {
-    email: undefined,
-    name: undefined,
-    password: undefined,
-    confirmPassword: undefined,
+    email: '',
+    name: '',
+    password: '',
+    confirmPassword: '',
   };
 
   const generateKeys = async (password?: string): Promise<void> => {

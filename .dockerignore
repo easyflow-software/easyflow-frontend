@@ -9,5 +9,4 @@ node_modules
 example.env
 .env
 next-env.d.ts
-nodemon.json
 README.md

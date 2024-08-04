@@ -1,20 +1,26 @@
 import { SignupResponse, UserResponse } from '@/src/types/response.types';
 
 enum APIOperation {
+  REFRESH_TOKEN = 'get:auth/refresh',
+  CHECK_LOGIN = 'get:auth/check',
   SIGNUP = 'post:user/signup',
   LOGIN = 'post:auth/login',
-  CHECK_IF_USER_EXISTS = 'get:user/exists/:email',
+  LOGOUT = 'get:auth/logout',
+  CHECK_IF_USER_EXISTS = 'get:user/exists/{email}',
   GET_USER = 'get:user',
   GET_PROFILE_PICTURE = 'get:user/profile-picture',
 }
 
 type APIContext = {
+  [APIOperation.REFRESH_TOKEN]: RequestContext<APIOperation.REFRESH_TOKEN, void>;
+  [APIOperation.CHECK_LOGIN]: RequestContext<APIOperation.CHECK_LOGIN, true>;
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,
     SignupResponse,
-    { email?: string; name?: string; password?: string; publicKey?: string; privateKey?: string; iv?: string }
+    { email: string; name: string; password: string; publicKey: string; privateKey: string; iv: string }
   >;
-  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, void, { email?: string; password?: string }>;
+  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, { email: string; password: string }>;
+  [APIOperation.LOGOUT]: RequestContext<APIOperation.LOGOUT>;
   [APIOperation.CHECK_IF_USER_EXISTS]: RequestContext<
     APIOperation.CHECK_IF_USER_EXISTS,
     boolean,

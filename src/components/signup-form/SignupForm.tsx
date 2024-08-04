@@ -1,11 +1,12 @@
 'use client';
 import { checkIfUserExists, signup } from '@/src/app/[locale]/signup/actions';
 import useSignup from '@/src/hooks/useSignup';
+import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
 import { Copy, Download, WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, ReactElement, useContext, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
@@ -17,6 +18,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
   const { initialValues, generateKeys, privateKey, publicKey, iv, hashedPassword, isGeneratingKeys } = useSignup();
+  const { setUser, setProfilePicture } = useContext(UserContext);
 
   const stepperRef = useRef<StepperRef>(null);
 
@@ -25,6 +27,14 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
+
+  useEffect(() => {
+    // set the user to undefined when the component loads so the avatar is not displayed
+    // It isn't possible anways to get on the page when you are logged in
+    setUser(undefined);
+    setProfilePicture(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setError(undefined);
@@ -45,7 +55,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={async values => {
-              const res = await checkIfUserExists(values.email || '');
+              const res = await checkIfUserExists(values.email);
               if (!res.success) {
                 setError(t(`errors:${res.errorCode}`));
                 return;
@@ -209,37 +219,37 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                 >
                   <p>{t('signup:recoveryCode.information')}</p>
                 </Trans>
+                <div className="mt-4 flex">
+                  <Button
+                    className="mr-2 w-full"
+                    variant="bordered"
+                    color="default"
+                    isDisabled={isGeneratingKeys}
+                    onClick={() => stepperRef.current?.previousStep()}
+                  >
+                    {t('signup:back')}
+                  </Button>
+                  <Button
+                    className="ml-2 w-full"
+                    color="primary"
+                    isDisabled={isGeneratingKeys}
+                    isLoading={isLoading}
+                    onClick={async () => {
+                      setIsLoading(true);
+                      const res = await signup(values.email, values.name, values.password, privateKey, publicKey, iv);
+                      if (res.success) {
+                        router.push('/login');
+                      } else {
+                        setError(t(`errors:${res.errorCode}`));
+                      }
+                      setIsLoading(false);
+                    }}
+                  >
+                    {t('signup:title')}
+                  </Button>
+                </div>
               </>
             )}
-          </div>
-          <div className="mt-4 flex">
-            <Button
-              className="mr-2 w-full"
-              variant="bordered"
-              color="default"
-              isDisabled={isGeneratingKeys}
-              onClick={() => stepperRef.current?.previousStep()}
-            >
-              {t('signup:back')}
-            </Button>
-            <Button
-              className="ml-2 w-full"
-              color="primary"
-              isDisabled={isGeneratingKeys}
-              isLoading={isLoading}
-              onClick={async () => {
-                setIsLoading(true);
-                const res = await signup(values.email, values.name, values.password, privateKey, publicKey, iv);
-                if (res.success) {
-                  router.push('/login');
-                } else {
-                  setError(t(`errors:${res.errorCode}`));
-                }
-                setIsLoading(false);
-              }}
-            >
-              {t('signup:title')}
-            </Button>
           </div>
         </Step>
       </Stepper>

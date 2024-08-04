@@ -6,14 +6,14 @@ import { RequestResponse } from '@/src/types/request-response.type';
 import { SignupResponse } from '@/src/types/response.types';
 
 export const signup = async (
-  email?: string,
-  name?: string,
-  password?: string,
-  privateKey?: string,
-  publicKey?: string,
-  iv?: string,
+  email: string,
+  name: string,
+  password: string,
+  privateKey: string,
+  publicKey: string,
+  iv: string,
 ): Promise<RequestResponse<SignupResponse>> => {
-  const res = await makeRequest<APIOperation.SIGNUP, SignupResponse>({
+  const res = await makeRequest<APIOperation.SIGNUP>({
     op: APIOperation.SIGNUP,
     payload: { email, password, name, privateKey, publicKey, iv },
   });
@@ -21,7 +21,7 @@ export const signup = async (
 };
 
 export const checkIfUserExists = async (email: string): Promise<RequestResponse<boolean>> => {
-  const res = await makeRequest<APIOperation.CHECK_IF_USER_EXISTS, boolean>({
+  const res = await makeRequest<APIOperation.CHECK_IF_USER_EXISTS>({
     op: APIOperation.CHECK_IF_USER_EXISTS,
     params: { email },
   });

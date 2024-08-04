@@ -1,3 +1,4 @@
+'use server';
 import initTranslations from '@/src/app/i18n';
 import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import TranslationsProvider from '../../providers/translation-provider/TranslationsProvider';

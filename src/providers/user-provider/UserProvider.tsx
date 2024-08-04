@@ -1,5 +1,5 @@
 'use client';
-import { getProfilePicture, getUser } from '@/src/app/[locale]/actions';
+import { checkLogin, getProfilePicture, getUser } from '@/src/app/[locale]/actions';
 import { UserType } from '@/src/types/user.type';
 import { Dispatch, FunctionComponent, PropsWithChildren, SetStateAction, createContext, useEffect } from 'react';
 import { emitUnboundError } from '../provider-utils';
@@ -26,19 +26,26 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderType>> = ({
 }) => {
   useEffect(() => {
     const fetchUser = async (): Promise<void> => {
-      const res = await getUser();
-      if (res.success) {
-        setUser(res.data);
+      if (user) {
+        return;
+      }
+      const isLoggedIn = await checkLogin();
+      if (!isLoggedIn) {
+        return;
+      }
+      const userRes = await getUser();
+      if (userRes.success) {
+        setUser(userRes.data);
+      }
+      if (profilePicture) {
+        return;
+      }
+      const profilePictureRes = await getProfilePicture();
+      if (profilePictureRes.success) {
+        setProfilePicture(profilePictureRes.data);
       }
     };
     void fetchUser();
-    const fetchProfilePicture = async (): Promise<void> => {
-      const res = await getProfilePicture();
-      if (res.success) {
-        setProfilePicture(res.data);
-      }
-    };
-    void fetchProfilePicture();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

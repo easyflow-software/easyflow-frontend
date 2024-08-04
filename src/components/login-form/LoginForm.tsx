@@ -6,7 +6,8 @@ import { LoginType } from '@/src/types/login.type';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { FunctionComponent, ReactElement, useContext, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
@@ -14,15 +15,24 @@ import createValidationSchema from './validation-schema';
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const { setUser, setProfilePicture } = useContext(UserContext);
+  const router = useRouter();
 
   const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
 
   const initialValues: LoginType = {
-    email: undefined,
-    password: undefined,
+    email: '',
+    password: '',
   };
+
+  useEffect(() => {
+    // set the user to undefined when the component loads so the avatar is not displayed
+    // It isn't possible anways to get on the page when you are logged in
+    setUser(undefined);
+    setProfilePicture(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -41,6 +51,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             } else {
               setProfilePicture(profilePictureRes.data);
             }
+            router.push('/chat');
           }
         }}
       >

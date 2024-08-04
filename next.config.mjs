@@ -63,6 +63,11 @@ const nextConfig = {
       },
     ];
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['https://easyflow.chat', 'http://localhost:3000'],
+    },
+  },
 };
 
 export default nextConfig;

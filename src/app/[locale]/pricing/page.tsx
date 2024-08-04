@@ -1,6 +1,7 @@
+'use server';
 import { FunctionComponent, ReactElement } from 'react';
 
-const Pricing: FunctionComponent = (): ReactElement => {
+const Pricing: FunctionComponent = async (): Promise<ReactElement> => {
   return <div>Pricing</div>;
 };
 

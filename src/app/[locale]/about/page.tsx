@@ -1,6 +1,7 @@
+'use server';
 import { FunctionComponent, ReactElement } from 'react';
 
-const Chat: FunctionComponent = (): ReactElement => {
+const Chat: FunctionComponent = async (): Promise<ReactElement> => {
   return <div>About</div>;
 };
 

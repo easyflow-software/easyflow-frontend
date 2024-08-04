@@ -1,4 +1,5 @@
 'use client';
+import { serverLogout } from '@/src/app/[locale]/actions';
 import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { ParamsType } from '@/src/types/params.type';
 import {
@@ -26,11 +27,7 @@ import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
 
-interface NavProps extends ParamsType {
-  serverLogout: () => Promise<void>;
-}
-
-const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElement => {
+const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useTranslation();
   const pathname = usePathname();
@@ -61,10 +58,14 @@ const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElemen
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, user]);
 
   const logout = async (): Promise<void> => {
-    await serverLogout();
+    const res = await serverLogout();
+    if (!res.success) {
+      console.error('Failed to logout', res.errorCode);
+      return;
+    }
     setUser(undefined);
     setProfilePicture(undefined);
     router.push('/');
@@ -75,7 +76,9 @@ const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElemen
       <NavbarContent>
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
         <NavbarBrand>
-          <Image src="/logo.svg" alt="Easyflow" width={40} height={40} />
+          <Link href="/">
+            <Image className="dark:invert" src="/assets/logo.svg" alt="Easyflow" width={40} height={40} />
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
@@ -102,7 +105,13 @@ const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElemen
             {/* TODO: add s3 integration for profilepictures in backend and past url */}
             <Dropdown>
               <DropdownTrigger>
-                <Avatar src={profilePicture} name={user?.name} isBordered />
+                <Avatar
+                  className="hover:cursor-pointer"
+                  src={profilePicture}
+                  alt={user?.name}
+                  name={user?.name}
+                  isBordered
+                />
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection showDivider>
@@ -140,19 +149,28 @@ const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElemen
         )}
       </NavbarContent>
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item.label}-${index}`}>
-            <Link color={item.active ? 'primary' : 'foreground'} className="w-full" href={item.href} size="lg">
-              {item.label}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+        {menuItems
+          .filter(item => !item.hidden)
+          .map((item, index) => (
+            <NavbarMenuItem key={`${item.label}-${index}`}>
+              <Link
+                color={item.active ? 'primary' : 'foreground'}
+                className="w-full"
+                href={item.href}
+                size="lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          ))}
         <NavbarMenuItem>
           <Link
             color={pathname.endsWith('/login') ? 'primary' : 'foreground'}
             className="w-full"
             href="/login"
             size="lg"
+            onClick={() => setIsMenuOpen(false)}
           >
             {t('navbar:menuLabels.login')}
           </Link>
@@ -163,6 +181,7 @@ const Nav: FunctionComponent<NavProps> = ({ params, serverLogout }): ReactElemen
             className="w-full"
             href="/signup"
             size="lg"
+            onClick={() => setIsMenuOpen(false)}
           >
             {t('navbar:menuLabels.signup')}
           </Link>

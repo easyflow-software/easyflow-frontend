@@ -1,10 +1,11 @@
+'use server';
 import SignupForm from '@/src/components/signup-form/SignupForm';
 import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
 import initTranslations from '@i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
-import { getUser } from '../actions';
+import { checkLogin } from '../actions';
 
 interface HomeProps {
   params: {
@@ -18,15 +19,15 @@ const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   // Check if user is already logged in
-  const res = await getUser();
-  if (res.success) {
+  const isLoggedIn = await checkLogin();
+  if (isLoggedIn) {
     redirect('/chat');
   }
 
   return (
     <TranslationsProvider resources={resources} locale={locale} namespaces={i18nNamespaces}>
       <div>
-        <Card className="w-[80vw] max-w-[500px] p-5">
+        <Card className="m-5 w-[80vw] max-w-[500px] p-5">
           <CardHeader>
             <h3>{t('signup:title')}</h3>
           </CardHeader>
