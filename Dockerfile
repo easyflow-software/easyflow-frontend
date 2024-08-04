@@ -26,9 +26,8 @@ FROM node:22-alpine AS production
 ARG CLOUDFLARE_ORIGIN_CERTIFICATE
 ARG CLOUDFLARE_ORIGIN_CA_KEY
 
-# Uninstall yarn and npm not needed in prod
+# Uninstall yarn not needed in prod (npm is needed for npx next start in the entrypoint)
 RUN npm uninstall -g yarn
-RUN npm uninstall -g npm
 
 RUN addgroup -g 2000 -S appgroup
 RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
