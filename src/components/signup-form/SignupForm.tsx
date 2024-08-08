@@ -41,7 +41,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   }, [values]);
 
   return (
-    <div className="p-3p">
+    <div className="p-3">
       <Stepper
         titles={[
           t('signup:stepperTitles.enterInformation'),
