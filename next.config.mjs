@@ -2,7 +2,7 @@
 
 // https://securityheaders.com
 const ContentSecurityPolicy = `
-    default-src 'self';
+    default-src 'self' static.cloudflareinsights.com;
     script-src 'self' 'unsafe-inline' static.cloudflareinsights.com;
     style-src 'self' 'unsafe-inline';
     img-src * blob: data:;
