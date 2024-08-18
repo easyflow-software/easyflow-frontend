@@ -17,7 +17,7 @@ type APIContext = {
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,
     SignupResponse,
-    { email: string; name: string; password: string; publicKey: string; privateKey: string; iv: string }
+    { email: string; name: string; password: string; publicKey?: string; privateKey?: string; iv?: string }
   >;
   [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, { email: string; password: string }>;
   [APIOperation.LOGOUT]: RequestContext<APIOperation.LOGOUT>;

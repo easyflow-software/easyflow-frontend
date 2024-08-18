@@ -1,8 +1,7 @@
 'use client';
 import { getProfilePicture } from '@/src/app/[locale]/actions';
-import { login } from '@/src/app/[locale]/login/actions';
+import useLogin from '@/src/hooks/useLogin';
 import { UserContext } from '@/src/providers/user-provider/UserProvider';
-import { LoginType } from '@/src/types/login.type';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
@@ -15,24 +14,19 @@ import createValidationSchema from './validation-schema';
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const { setUser, setProfilePicture } = useContext(UserContext);
+  const { initialValues, login } = useLogin();
   const router = useRouter();
 
   const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
 
-  const initialValues: LoginType = {
-    email: '',
-    password: '',
-  };
-
   useEffect(() => {
     // set the user to undefined when the component loads so the avatar is not displayed
     // It isn't possible anways to get on the page when you are logged in
     setUser(undefined);
     setProfilePicture(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setUser, setProfilePicture]);
 
   return (
     <>
@@ -49,7 +43,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             if (!profilePictureRes.success) {
               console.log('Failed to get profile picture');
             } else {
-              setProfilePicture(profilePictureRes.data);
+              setProfilePicture(profilePictureRes.data || undefined);
             }
             router.push('/chat');
           }

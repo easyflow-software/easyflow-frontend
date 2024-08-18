@@ -2,8 +2,8 @@
 
 // https://securityheaders.com
 const ContentSecurityPolicy = `
-    default-src 'self' static.cloudflareinsights.com;
-    script-src 'self' 'unsafe-inline' static.cloudflareinsights.com;
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
     style-src 'self' 'unsafe-inline';
     img-src * blob: data:;
     media-src 'self';
@@ -67,6 +67,9 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['https://easyflow.chat', 'http://localhost:3000'],
     },
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

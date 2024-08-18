@@ -8,9 +8,9 @@ const ThemeSwitcher: FunctionComponent = (): ReactElement => {
   return (
     <>
       {theme === 'light' ? (
-        <Moon size={20} onClick={() => setTheme('dark')} />
+        <Moon size={20} className="hover:cursor-pointer" onClick={() => setTheme('dark')} />
       ) : (
-        <Sun size={20} onClick={() => setTheme('light')} />
+        <Sun size={20} className="hover:cursor-pointer" onClick={() => setTheme('light')} />
       )}
     </>
   );

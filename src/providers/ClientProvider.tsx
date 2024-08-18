@@ -3,16 +3,25 @@ import { NextUIProvider } from '@nextui-org/react';
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, PropsWithChildren, useState } from 'react';
-import UserProvider from '../providers/user-provider/UserProvider';
 import { UserType } from '../types/user.type';
+import UserProvider from './user-provider/UserProvider';
 
-const Providers: FunctionComponent<PropsWithChildren> = ({ children }) => {
+interface ClientProviderProps {
+  initialUser?: UserType;
+  initialProfilePicture?: string;
+}
+
+const ClientProvider: FunctionComponent<PropsWithChildren<ClientProviderProps>> = ({
+  children,
+  initialUser,
+  initialProfilePicture,
+}) => {
   // using the useRouter hook to get the router object for next ui link to navigate with the proper router and not just anchors
   // https://nextui.org/docs/guide/routing
   const router = useRouter();
 
-  const [user, setUser] = useState<UserType>();
-  const [profilePicture, setProfilePicture] = useState<string>();
+  const [user, setUser] = useState<UserType | undefined>(initialUser);
+  const [profilePicture, setProfilePicture] = useState<string | undefined>(initialProfilePicture);
 
   return (
     <NextUIProvider navigate={router.push}>
@@ -30,4 +39,4 @@ const Providers: FunctionComponent<PropsWithChildren> = ({ children }) => {
   );
 };
 
-export default Providers;
+export default ClientProvider;

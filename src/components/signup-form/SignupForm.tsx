@@ -1,5 +1,4 @@
 'use client';
-import { checkIfUserExists, signup } from '@/src/app/[locale]/signup/actions';
 import useSignup from '@/src/hooks/useSignup';
 import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
@@ -17,7 +16,7 @@ import createValidationSchema from './validation-schema';
 const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { initialValues, generateKeys, privateKey, publicKey, iv, hashedPassword, isGeneratingKeys } = useSignup();
+  const { initialValues, generateKeys, signup, checkIfUserExists, hashedPassword, isGeneratingKeys } = useSignup();
   const { setUser, setProfilePicture } = useContext(UserContext);
 
   const stepperRef = useRef<StepperRef>(null);
@@ -33,8 +32,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
     // It isn't possible anways to get on the page when you are logged in
     setUser(undefined);
     setProfilePicture(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setUser, setProfilePicture]);
 
   useEffect(() => {
     setError(undefined);
@@ -186,7 +184,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                 <p>Generating your private Keys</p>
               </div>
             )}
-            {!isGeneratingKeys && privateKey && publicKey && iv && hashedPassword && (
+            {!isGeneratingKeys && hashedPassword && (
               <>
                 <h3>{t('signup:recoveryCode.title')}</h3>
                 <Trans
@@ -236,7 +234,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                     isLoading={isLoading}
                     onClick={async () => {
                       setIsLoading(true);
-                      const res = await signup(values.email, values.name, values.password, privateKey, publicKey, iv);
+                      const res = await signup(values.email, values.name, values.password);
                       if (res.success) {
                         router.push('/login');
                       } else {

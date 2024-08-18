@@ -1,5 +1,6 @@
 import Nav from '@/src/components/nav/Nav';
 import NavWrapper from '@/src/components/nav/NavBarWrapper';
+import ServerProvider from '@/src/providers/ServerProider';
 import cx from 'classnames';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
@@ -7,7 +8,6 @@ import { Inter } from 'next/font/google';
 import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import '../globals.css';
 import '../i18n';
-import Providers from '../providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,12 +29,12 @@ const RootLayout: FunctionComponent<PropsWithChildren<RootLayoutProps>> = ({
   return (
     <html lang={locale} dir={dir(locale)} className="h-full w-full">
       <body className={cx('h-full w-full bg-background', inter.className)}>
-        <Providers>
+        <ServerProvider>
           <NavWrapper params={{ locale }}>
             <Nav params={{ locale }} />
           </NavWrapper>
           <div className="h-full overflow-y-auto">{children}</div>
-        </Providers>
+        </ServerProvider>
       </body>
     </html>
   );

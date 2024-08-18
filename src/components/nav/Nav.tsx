@@ -45,20 +45,13 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         hidden: !user,
       },
       {
-        label: t('navbar:menuLabels.pricing'),
-        href: '/pricing',
-        active: pathname.endsWith('pricing'),
-        hidden: false,
-      },
-      {
         label: t('navbar:menuLabels.about'),
         href: '/about',
         active: pathname.endsWith('about'),
         hidden: false,
       },
     ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, user]);
+  }, [pathname, user, t]);
 
   const logout = async (): Promise<void> => {
     const res = await serverLogout();

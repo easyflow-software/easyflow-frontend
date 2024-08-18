@@ -1,28 +1,21 @@
-'use server';
-import AppConfiguration from '@/src/config/app.config';
+'use client';
+import { variables } from '@/src/config/variables';
 import { ErrorCode } from '@/src/enums/error-codes.enum';
+import { RequestResponse } from '@/src/types/request-response.type';
 import { AxiosError } from 'axios';
-import { cookies } from 'next/headers';
 import { APIContext, APIOperation } from './common';
-import { serverSideRequest } from './server-side';
+import { req } from './utils';
 
-const makeRequest = async <T extends APIOperation>(
+const makeClientSideRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
-): Promise<{ success: true; data: APIContext[T]['responseType'] } | { success: false; errorCode: ErrorCode }> => {
-  try {
-    const response = await serverSideRequest<T>(options);
+): Promise<RequestResponse<APIContext[T]['responseType']>> => {
+  if (window === undefined) {
+    console.error('makeClientSideRequest should only be called client-side');
+    return { success: false, errorCode: ErrorCode.API_ERROR };
+  }
 
-    response.headers['set-cookie']?.map(cookie => {
-      const [pair, path, maxAge, httpOnly] = cookie.split(';');
-      const [key, value] = pair.split('=');
-      cookies().set(key, value, {
-        sameSite: 'lax',
-        path: path.split('=')[1],
-        maxAge: parseInt(maxAge.split('=')[1]),
-        httpOnly: httpOnly ? true : false,
-        secure: AppConfiguration.get('NODE_ENV') !== 'development',
-      });
-    });
+  try {
+    const response = await req<T>(variables.REMOTE_URL, options);
 
     return { success: true, data: response.data };
   } catch (err) {
@@ -37,15 +30,15 @@ const makeRequest = async <T extends APIOperation>(
     if (!Object.values(ErrorCode).includes(errorCode)) return { success: false, errorCode: ErrorCode.API_ERROR };
 
     if (errorCode === ErrorCode.EXPIRED_TOKEN) {
-      console.log('Token expired, refreshing');
+      console.log('Expired token');
       try {
-        const response = await makeRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
+        const response = await makeClientSideRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
         if (!response.success) {
           return { success: false, errorCode: ErrorCode.EXPIRED_TOKEN };
         }
 
-        return makeRequest(options);
-      } catch (err) {
+        return makeClientSideRequest(options);
+      } catch {
         return { success: false, errorCode: ErrorCode.API_ERROR };
       }
     }
@@ -54,4 +47,4 @@ const makeRequest = async <T extends APIOperation>(
   }
 };
 
-export { makeRequest };
+export { makeClientSideRequest };
