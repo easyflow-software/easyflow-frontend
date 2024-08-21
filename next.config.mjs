@@ -2,8 +2,8 @@
 
 // https://securityheaders.com
 const ContentSecurityPolicy = `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    default-src 'self' *.easyflow.chat;
+    script-src 'self';
     style-src 'self' 'unsafe-inline';
     img-src * blob: data:;
     media-src 'self';
