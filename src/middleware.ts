@@ -6,7 +6,7 @@ const middleware = async (req: NextRequest): Promise<NextResponse> => {
   // Security headers
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const cspHeader = `
-      default-src 'self' *.easyflow.chat;
+      default-src 'self' '*.easyflow.chat';
       script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: http: 'unsafe-inline' ${
         process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
       };
