@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "(export INLINE_RUNTIME_CHUNK=false) && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "precommit": "npm run prettify && lint-staged --no-stash",
