@@ -17,7 +17,7 @@
     "axios": "1.7.4",
     "classnames": "2.5.1",
     "formik": "2.4.6",
-    "framer-motion": "11.3.28",
+    "framer-motion": "11.3.31",
     "i18next": "23.13.0",
     "i18next-resources-to-backend": "1.2.1",
     "next": "14.2.5",
