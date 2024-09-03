@@ -16,6 +16,14 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
+      - name: Build Cache
+        uses: actions/cache@v3
+        with:
+          path: .next
+          key: ${{ runner.os }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-
         
       - name: Install Packages
         run: npm ci
