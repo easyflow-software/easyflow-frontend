@@ -1,6 +1,25 @@
 /** @type {import('next').NextConfig} */
 
+const cspHeader = `
+default-src 'self' backend.easyflow.chat;
+script-src 'self' 'strict-dynamic' https: http: 'unsafe-inline' ${
+  process.env.NODE_ENV === 'production' ? '' : `'unsafe-eval'`
+};
+style-src 'self';
+img-src 'self' blob: data:;
+font-src 'self';
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+frame-ancestors 'none';
+upgrade-insecure-requests;
+`;
+
 const securityHeaders = [
+  {
+    key: "Content-Security-Policy",
+    value: cspHeader.replace(/\s{2,}/g, ' ').trim()
+  },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
@@ -50,7 +69,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['https://easyflow.chat', 'http://localhost:3000'],
+      allowedOrigins: process.env.NODE_ENV === 'production' ? ['https://easyflow.chat'] : ['*'],
     },
   },
   eslint: {
