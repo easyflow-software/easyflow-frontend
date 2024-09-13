@@ -13,12 +13,12 @@ RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
 WORKDIR /app
 
 # Copy needed files
-COPY --chown=appuser:appgroup --from=builder /app/.next /app/.next
-COPY --chown=appuser:appgroup --from=builder /app/node_modules /app/node_modules
-COPY --chown=appuser:appgroup --from=builder /app/public /app/public
-COPY --chown=appuser:appgroup --from=builder /app/entrypoint.sh /app/entrypoint.sh
-COPY --chown=appuser:appgroup --from=builder /app/next.config.mjs /app/next.config.mjs
-COPY --chown=appuser:appgroup --from=builder /app/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=appuser:appgroup --from=builder ./.next /app/.next
+COPY --chown=appuser:appgroup --from=builder ./node_modules /app/node_modules
+COPY --chown=appuser:appgroup --from=builder ./public /app/public
+COPY --chown=appuser:appgroup --from=builder ./entrypoint.sh /app/entrypoint.sh
+COPY --chown=appuser:appgroup --from=builder ./next.config.mjs /app/next.config.mjs
+COPY --chown=appuser:appgroup --from=builder ./nginx.conf /etc/nginx/nginx.conf
 
 # add nginx
 RUN apk add nginx
