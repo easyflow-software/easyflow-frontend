@@ -68,7 +68,7 @@ jobs:
           push: true
             
       - name: setup railway cli
-        run: bun add --global @railway/cli
+        run: npm i -g @railway/cli
       
       - name: trigger redeploy on railway
         run: RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
