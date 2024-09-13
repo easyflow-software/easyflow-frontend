@@ -43,7 +43,7 @@ jobs:
       - name: remove packages and install prod dependencies
         run: |
           rm -rf node_modules
-          bun install --frozen-lock-file --omit=dev --omit=optional
+          bun install --production --frozen-lock-file
 
       - name: login to docker hub
         uses: docker/login-action@v3
