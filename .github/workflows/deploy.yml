@@ -44,6 +44,9 @@ jobs:
         run: |
           rm -rf node_modules
           bun install --production --frozen-lock-file
+          
+      - name: debug
+        run: ls -la
   
       - name: login to docker hub
         uses: docker/login-action@v3
