@@ -12,7 +12,6 @@ bunfig.toml
 Dockerfile
 eslint.config.js
 example.env
-package.json
 postcss.config.js
 README.md
 tailwind.config.js
