@@ -18,7 +18,7 @@ COPY --chown=appuser:appgroup . /app/
 # add nginx
 RUN apk add nginx
 
-# Create the necessary directories with correct permissions
+# Create the necessary directories with correct permissions for nginx
 RUN mkdir -p /var/ /run/ /logs/ && \
     chown -R appuser:appgroup /var/ /run/ /logs/
 
