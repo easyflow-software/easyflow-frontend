@@ -1,5 +1,4 @@
 'use client';
-import { getProfilePicture } from '@/src/app/[locale]/actions';
 import useLogin from '@/src/hooks/useLogin';
 import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
@@ -10,6 +9,7 @@ import { FunctionComponent, ReactElement, useContext, useEffect, useState } from
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
+import { getProfilePicture } from '@/src/services/api-services/server-operations/operations';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
@@ -64,6 +64,8 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               onBlur={() => setFieldTouched('email', true)}
               isInvalid={touched.email && !!errors.email}
               errorMessage={errors.email ? errors.email : undefined}
+              // random invisible character so that the input dosn't move when the erromessage gets displayed
+              description={'\u2800'}
               isRequired
             />
             <PasswordInput

@@ -19,7 +19,10 @@ const makeClientSideRequest = async <T extends APIOperation>(
 
     return { success: true, data: response.data };
   } catch (err) {
-    if (!(err instanceof AxiosError)) return { success: false, errorCode: ErrorCode.API_ERROR };
+    if (!(err instanceof AxiosError)) {
+      console.error(err);
+      return { success: false, errorCode: ErrorCode.API_ERROR };
+    }
 
     if (typeof err.response?.data !== 'object') return { success: false, errorCode: ErrorCode.API_ERROR };
 

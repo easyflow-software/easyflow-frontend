@@ -8,10 +8,7 @@ export const checkLogin = async (): Promise<boolean> => {
   const res = await makeServerSideRequest<APIOperation.CHECK_LOGIN>({
     op: APIOperation.CHECK_LOGIN,
   });
-  if (!res.success) {
-    return false;
-  }
-  return res.data;
+  return res.success;
 };
 
 export const getUser = async (): Promise<RequestResponse<UserResponse>> => {
@@ -24,13 +21,6 @@ export const getUser = async (): Promise<RequestResponse<UserResponse>> => {
 export const getProfilePicture = async (): Promise<RequestResponse<string>> => {
   const res = await makeServerSideRequest<APIOperation.GET_PROFILE_PICTURE>({
     op: APIOperation.GET_PROFILE_PICTURE,
-  });
-  return res;
-};
-
-export const serverLogout = async (): Promise<RequestResponse<void>> => {
-  const res = await makeServerSideRequest<APIOperation.LOGOUT>({
-    op: APIOperation.LOGOUT,
   });
   return res;
 };

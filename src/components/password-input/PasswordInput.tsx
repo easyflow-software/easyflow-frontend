@@ -36,6 +36,8 @@ const PasswordInput: FunctionComponent<PasswordInputProps> = ({
       onCopy={e => e.preventDefault()}
       isInvalid={touched && !!error}
       errorMessage={error}
+      // random invisible character so that the input dosn't move when the erromessage gets displayed
+      description={'\u2800'}
       endContent={
         shown ? (
           <Eye className="hover:cursor-pointer" onClick={() => setShown(false)} />

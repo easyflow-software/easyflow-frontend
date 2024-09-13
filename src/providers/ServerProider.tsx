@@ -1,8 +1,8 @@
 'use server';
 import { FunctionComponent, PropsWithChildren } from 'react';
-import { checkLogin, getProfilePicture, getUser } from '../app/[locale]/actions';
 import { UserType } from '../types/user.type';
 import ClientProvider from './ClientProvider';
+import { checkLogin, getUser, getProfilePicture } from '../services/api-services/server-operations/operations';
 
 const ServerProvider: FunctionComponent<PropsWithChildren> = async ({ children }) => {
   let user: UserType | undefined;

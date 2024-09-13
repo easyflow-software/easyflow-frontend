@@ -1,11 +1,11 @@
 'use server';
 import SignupForm from '@/src/components/signup-form/SignupForm';
 import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
+import { checkLogin } from '@/src/services/api-services/server-operations/operations';
 import initTranslations from '@i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
-import { checkLogin } from '../actions';
 
 interface HomeProps {
   params: {

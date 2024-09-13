@@ -1,7 +1,7 @@
 'use sever';
+import { checkLogin } from '@/src/services/api-services/server-operations/operations';
 import { redirect } from 'next/navigation';
 import { FunctionComponent, ReactElement } from 'react';
-import { checkLogin } from '../actions';
 
 const Chat: FunctionComponent = async (): Promise<ReactElement> => {
   const isLoggedIn = await checkLogin();

@@ -77,6 +77,8 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('email', true)}
                   isInvalid={touched.email && !!errors.email}
                   errorMessage={errors.email ? errors.email : undefined}
+                  // random invisible character so that the input dosn't move when the erromessage gets displayed
+                  description={'\u2800'}
                   isRequired
                 />
                 <Input
@@ -89,6 +91,8 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('name', true)}
                   isInvalid={touched.name && !!errors.name}
                   errorMessage={errors.name ? errors.name : undefined}
+                  // random invisible character so that the input dosn't move when the erromessage gets displayed
+                  description={'\u2800'}
                   isRequired
                 />
                 <PasswordInput
@@ -232,7 +236,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                       setIsLoading(true);
                       const res = await signup(values.email, values.name, values.password);
                       if (res.success) {
-                        router.push('/login');
+                        void router.push('/login');
                       } else {
                         setError(t(`errors:${res.errorCode}`));
                       }

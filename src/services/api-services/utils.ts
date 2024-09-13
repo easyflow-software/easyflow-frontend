@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders, AxiosResponse } from 'axios';
-import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { APIContext, APIOperation } from './common';
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
 const stringifyQueryValues = (endpoint: string, query: Record<string, string | string[]>): string => {
   const urlSearchParams = new URLSearchParams();
@@ -55,7 +55,9 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   }
 
   if (requestCookies) {
-    headers.set('cookie', requestCookies.map(cookie => `${cookie.name}=${cookie.value}`).join(';'));
+    requestCookies.map(cookie => {
+      headers.set('cookie', `${cookie.name}=${cookie.value}`);
+    });
   }
 
   switch (httpMethod) {
