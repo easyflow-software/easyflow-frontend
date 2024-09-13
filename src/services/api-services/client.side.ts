@@ -20,7 +20,6 @@ const makeClientSideRequest = async <T extends APIOperation>(
     return { success: true, data: response.data };
   } catch (err) {
     if (!(err instanceof AxiosError)) {
-      console.error(err);
       return { success: false, errorCode: ErrorCode.API_ERROR };
     }
 
@@ -33,7 +32,6 @@ const makeClientSideRequest = async <T extends APIOperation>(
     if (!Object.values(ErrorCode).includes(errorCode)) return { success: false, errorCode: ErrorCode.API_ERROR };
 
     if (errorCode === ErrorCode.EXPIRED_TOKEN) {
-      console.log('Expired token');
       try {
         const response = await makeClientSideRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
         if (!response.success) {

@@ -56,7 +56,7 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
 
   if (requestCookies) {
     requestCookies.map(cookie => {
-      headers.set('cookie', `${cookie.name}=${cookie.value}`);
+      headers.set(cookie.name, cookie.value);
     });
   }
 

@@ -5,8 +5,7 @@ import { AxiosError } from 'axios';
 import AppConfiguration from '../../config/app.config';
 import { APIContext, APIOperation } from './common';
 import { req } from './utils';
-import { redirect } from 'next/navigation';
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 const makeServerSideRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
@@ -25,7 +24,6 @@ const makeServerSideRequest = async <T extends APIOperation>(
     };
   } catch (err) {
     if (!(err instanceof AxiosError)) {
-      console.error(err);
       return { success: false, errorCode: ErrorCode.API_ERROR };
     }
 
@@ -36,14 +34,6 @@ const makeServerSideRequest = async <T extends APIOperation>(
     const errorCode = err.response.data.error;
 
     if (!Object.values(ErrorCode).includes(errorCode)) return { success: false, errorCode: ErrorCode.API_ERROR };
-
-    if (errorCode === ErrorCode.EXPIRED_TOKEN) {
-      try {
-        redirect('/login?callback=' + encodeURIComponent(headers().get('next-url') ?? '/'));
-      } catch {
-        return { success: false, errorCode: ErrorCode.API_ERROR };
-      }
-    }
 
     return { success: false, errorCode };
   }
