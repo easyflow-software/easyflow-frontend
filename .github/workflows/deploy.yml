@@ -62,7 +62,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE_NAME }}:latest
+          tags: ${{ vars.DOCKER_IMAGE_NAME }}:latest
           secrets: |
             "origin_certificate=${{ secrets.ORIGIN_CERTIFICATE }}"
             "origin_key=${{ secrets.ORIGIN_KEY }}"
