@@ -1,6 +1,13 @@
-name: Builder
+name: Build
 
-on: [push, pull_request]
+on: 
+  push:
+      branches:
+        - "*"
+        - "!main"
+  pull_request:
+    branches:
+      - "*"
 
 jobs:
   build:
@@ -8,13 +15,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Bun
+
+      - name: setup bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      
-      - name: Cache node_modules
+
+      - name: cache node_modules
         uses: actions/cache@v4
         with:
           path: node_modules
@@ -22,7 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Build Cache
+      - name: build cache
         uses: actions/cache@v4
         with:
           path: |
@@ -30,9 +37,9 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-
-        
-      - name: Install Packages
+
+      - name: install packages
         run: bun install --frozen-lock-file
 
-      - name: Build Project
-        run: bun --bun run build
+      - name: build project
+        run: bun run build

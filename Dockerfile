@@ -1,27 +1,9 @@
-FROM oven/bun:alpine AS builder
-
-WORKDIR /app
-
-# Copy everything
-COPY . .
-
-# Install packages as in package-lock
-RUN bun install --frozen-lock-file
-
-# Build
-RUN bun run build
-
-# Remove packages
-RUN rm -rf node_modules
-
-# Install prod packages
-RUN bun install --frozen-lock-file --omit=dev --omit=optional
-
 FROM oven/bun:alpine AS production
 
-# Arguments (should be done with real secrets but not supported by railway)
-ARG CLOUDFLARE_ORIGIN_CERTIFICATE
-ARG CLOUDFLARE_ORIGIN_CA_KEY
+# Secrets
+RUN --mount=type=secret,id=origin_certificate,target=/etc/ssl/easyflow.pem \
+    --mount=type=secret,id=origin_key,target=/etc/ssl/easyflow.key \
+    echo "Secrets loaded"
 
 # Add user and group
 RUN addgroup -g 2000 -S appgroup
@@ -29,10 +11,6 @@ RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
 
 # Set workdir
 WORKDIR /app
-
-# Secrets
-RUN echo "$CLOUDFLARE_ORIGIN_CERTIFICATE" > /etc/ssl/easyflow.pem \
-    && echo "$CLOUDFLARE_ORIGIN_CA_KEY" > /etc/ssl/easyflow.key
 
 # Copy needed files
 COPY --chown=appuser:appgroup --from=builder /app/.next /app/.next
