@@ -21,7 +21,7 @@ const securityHeaders = [
   },
   {
     key: "Access-Control-Allow-Origin",
-    value: process.env.NODE_ENV === 'production' ? 'https://*.easyflow.chat' : 'http://localhost:4000',
+    value: process.env.NODE_ENV === 'production' ? 'https://backend.easyflow.chat' : 'http://localhost:4000',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
