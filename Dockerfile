@@ -1,10 +1,5 @@
 FROM oven/bun:alpine AS production
 
-# Secrets
-RUN --mount=type=secret,id=origin_certificate,target=/etc/ssl/easyflow.pem \
-    --mount=type=secret,id=origin_key,target=/etc/ssl/easyflow.key \
-    echo "Secrets loaded"
-
 # Add user and group
 RUN addgroup -g 2000 -S appgroup
 RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
