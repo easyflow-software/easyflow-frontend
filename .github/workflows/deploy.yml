@@ -54,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DOCKER_REGISTERY }}/${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_IMAGE_NAME }}
+          images: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_IMAGE_NAME }}
             
       - name: build and push docker image
         uses: docker/build-push-action@v6
