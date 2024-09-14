@@ -1,0 +1,25 @@
+name: Cleanup Cache
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  cleanup_cache:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      - name: install gh extention
+        run: gh extension install actions/gh-actions-cache
+
+      - name: cleanup cache
+        run: |
+          caches=$(gh actions-cache list -R $REPO | grep days | cut -f 1)
+
+          for cache in $caches; do
+            gh actions-cache delete $cache -R $REPO --confirm
+          done

@@ -5,6 +5,7 @@ on:
       branches:
         - "*"
         - "!main"
+        - "!production"
   pull_request:
     branches:
       - "*"
@@ -21,14 +22,6 @@ jobs:
         with:
           bun-version: latest
 
-      - name: cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: build cache
         uses: actions/cache@v4
         with:
@@ -40,23 +33,33 @@ jobs:
 
       - name: install packages
         run: bun install --frozen-lock-file
+        
+      - name: linting
+        run: bun --npm run lint
 
       - name: build project
         run: bun run build
-        
+
       - name: remove packages and install prod dependencies
         run: |
           rm -rf node_modules
           bun install --production --frozen-lock-file
-        
+
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v3
-            
+        
+      - name: create image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_IMAGE_NAME }}
+      
       - name: build docker image
         uses: docker/build-push-action@v6
         with:
+          context: .
           platforms: linux/amd64,linux/arm64
-          tags: dragon4343/easyflow-frontend:latest
-          secrets: |
-            "origin_certificate=${{ secrets.ORIGIN_CERTIFICATE }}"
-            "origin_key=${{ secrets.ORIGIN_KEY }}"
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outpust.annotations }}
+          push: false
