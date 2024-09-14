@@ -17,11 +17,6 @@ RUN apk add nginx
 RUN mkdir -p /var/ /run/ /logs/ && \
     chown -R appuser:appgroup /var/ /run/ /logs/
 
-LABEL org.opencontainers.image.authors="nico.benninger43@gmail.com"
-LABEL org.opencontainers.image.source="https://github.com/easyflow-chat/easyflow-frontend"
-LABEL org.opencontainers.image.title="Easyflow Frontend"
-LABEL org.opencontainers.image.description="Frontend for Easyflow chat application"
-
 ENV APPLICATION_ROOT="/app"
 ENV NODE_ENV="production"
 
