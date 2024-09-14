@@ -74,7 +74,7 @@ jobs:
           push: true
             
       - name: setup railway cli
-        run: bun add --global @railway/cli
+        run: npm i -g @railway/cli
       
       - name: trigger redeploy on railway development
         if: github.ref == 'refs/heads/main'
