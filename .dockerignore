@@ -1,7 +1,6 @@
 .github
 .husky
 .vscode
-.dockerignore
 .env
 .gitignore
 .lintstagedrc.cjs
