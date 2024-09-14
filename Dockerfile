@@ -8,13 +8,13 @@ RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
 WORKDIR /app
 
 # Copy needed files (not needed files in .dockerignore)
-COPY --chown=appuser:appgroup .next /app/.next
-COPY --chown=appuser:appgroup node_modules /app/node_modules
-COPY --chown=appuser:appgroup public /app/public
-COPY --chown=appuser:appgroup entrypoint.sh /app/entrypoint.sh
-COPY --chown=appuser:appgroup next.config.mjs /app/next.config.mjs
-COPY --chown=appuser:appgroup nginx.conf /app/nginx.conf
-COPY --chown=appuser:appgroup package.json /app/package.json
+COPY --chown=appuser:appgroup ./.next /app/.next
+COPY --chown=appuser:appgroup ./node_modules /app/node_modules
+COPY --chown=appuser:appgroup ./public /app/public
+COPY --chown=appuser:appgroup ./entrypoint.sh /app/entrypoint.sh
+COPY --chown=appuser:appgroup ./next.config.mjs /app/next.config.mjs
+COPY --chown=appuser:appgroup ./nginx.conf /app/nginx.conf
+COPY --chown=appuser:appgroup ./package.json /app/package.json
 
 # add nginx
 RUN apk add nginx

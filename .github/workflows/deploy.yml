@@ -34,18 +34,18 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-
 
       - name: install packages
-        run: bun install --frozen-lock-file
+        run: bun --bun install --frozen-lock-file
         
       - name: linting
         run: bun --npm run lint
 
       - name: build project
-        run: bun run build
+        run: bun --bun run build
 
       - name: remove packages and install prod dependencies
         run: |
           rm -rf node_modules
-          bun install --production --frozen-lock-file
+          bun --bun install --production --frozen-lock-file
   
       - name: login to docker
         uses: docker/login-action@v3
