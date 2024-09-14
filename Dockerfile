@@ -12,7 +12,7 @@ COPY --chown=appuser:appgroup .next /app/.next
 COPY --chown=appuser:appgroup node_modules /app/node_modules
 COPY --chown=appuser:appgroup public /app/public
 COPY --chown=appuser:appgroup entrypoint.sh /app/entrypoint.sh
-COPY --chown=appuser:appgroup next.config.js /app/next.config.js
+COPY --chown=appuser:appgroup next.config.mjs /app/next.config.mjs
 COPY --chown=appuser:appgroup nginx.conf /app/nginx.conf
 COPY --chown=appuser:appgroup package.json /app/package.json
 
