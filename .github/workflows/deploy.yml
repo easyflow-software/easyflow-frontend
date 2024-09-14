@@ -39,7 +39,7 @@ jobs:
         run: bun --npm run lint
 
       - name: build project
-        run: bun --npm run build
+        run: bun run build
 
       - name: remove packages and install prod dependencies
         run: |
