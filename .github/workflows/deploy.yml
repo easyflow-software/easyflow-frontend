@@ -78,12 +78,8 @@ jobs:
       
       - name: trigger redeploy on railway development
         if: github.ref == 'refs/heads/development'
-        run: |
-          RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway environment development && 
-          RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
+        run: RAILWAY_TOKEN=${{ secrets.RAILWAY_DEV_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
         
       - name: trigger redeploy on railway production
         if: github.ref == 'refs/heads/production'
-        run: |
-          RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway environment production && 
-          RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
+        run: RAILWAY_TOKEN=${{ secrets.RAILWAY_PROD_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
