@@ -3,8 +3,8 @@ name: Deploy
 on: 
   push:
     branches:
-      - main
-      - prod
+      - development
+      - production
 
 jobs:
   build_and_push:
@@ -77,13 +77,21 @@ jobs:
         run: npm i -g @railway/cli
       
       - name: trigger redeploy on railway development
+<<<<<<< HEAD
+        if: github.ref == 'refs/heads/develoment'
+=======
         if: github.ref == 'refs/heads/main'
+>>>>>>> c29805da60edde1870c7a0776bae6989545fa27d
         run: |
           RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway environment development && 
           RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
         
       - name: trigger redeploy on railway production
+<<<<<<< HEAD
+        if: github.ref == 'refs/heads/production'
+=======
         if: github.ref == 'refs/heads/prod'
+>>>>>>> c29805da60edde1870c7a0776bae6989545fa27d
         run: |
           RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway environment production && 
           RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} railway redeploy -s ${{ vars.RAILWAY_SERVICE_NAME }} -y
