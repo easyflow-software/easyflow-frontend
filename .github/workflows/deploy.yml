@@ -56,8 +56,10 @@ jobs:
         with:
           images: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_IMAGE_NAME }}
             
-      - name: build and push docker image
+      - name: debug
         run: echo ${{ steps.meta.outputs.tags }}
+      
+      - name: build and push docker image
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
