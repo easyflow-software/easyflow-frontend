@@ -5,7 +5,7 @@ on:
       branches:
         - "*"
         - "!main"
-        - "!production"
+        - "!prod"
   pull_request:
     branches:
       - "*"
