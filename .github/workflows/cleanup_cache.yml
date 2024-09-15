@@ -21,7 +21,8 @@ jobs:
           caches=$(gh actions-cache list -R $REPO | grep days | cut -f 1)
 
           echo $caches
-
+          
+          set +e
           for cache in $caches; do
             gh actions-cache delete $cache -R $REPO --confirm
           done
