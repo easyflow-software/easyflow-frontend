@@ -1,8 +1,11 @@
-FROM oven/bun:alpine AS production
+FROM node:22-alpine AS production
 
 # Add user and group
 RUN addgroup -g 2000 -S appgroup
 RUN adduser -DH -s /sbin/nologin -u 2000 -G appgroup -S appuser
+
+# remove yarn
+RUN npm uninstall -g yarn
 
 # Set workdir
 WORKDIR /app
