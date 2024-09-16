@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "precommit": "npm run prettify && lint-staged --no-stash",
+    "precommit": "bun run prettify && lint-staged --no-stash",
     "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "dependencies": {
