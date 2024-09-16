@@ -12,7 +12,7 @@
     "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "dependencies": {
-    "@nextui-org/react": "2.4.6",
+    "@nextui-org/react": "2.4.8",
     "@phosphor-icons/react": "2.1.7",
     "axios": "1.7.7",
     "classnames": "2.5.1",
