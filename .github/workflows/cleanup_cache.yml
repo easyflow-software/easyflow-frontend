@@ -23,6 +23,7 @@ jobs:
           echo $caches
           
           set +e
-          for cache in $caches; do
+          for cache in $caches; 
+          do
             gh actions-cache delete $cache -R $REPO --confirm
           done
