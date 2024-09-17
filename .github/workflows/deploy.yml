@@ -63,18 +63,6 @@ jobs:
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: determin enviroment and version number
-        id: version
-        env:
-          REF: ${{ github.ref_name }}
-        run: |
-          if ["$REF" = "main"]
-          then
-            echo "tag=dev" >> $GITHUB_OUTPUT
-          else
-            echo "tag=latest" >> $GITHUB_OUTPUT
-          fi
-
         
       - name: create image metadata
         id: meta
@@ -82,7 +70,7 @@ jobs:
         with:
           images: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_NAMESPACE }}/${{ vars.DOCKER_IMAGE_NAME }}
           tags: |
-            type=schedule,pattern=${{ steps.version.outputs.tag }}
+            type=raw,value=dev,enable=${{ github.ref_name == 'main' }}
       
       - name: build and push docker image
         uses: docker/build-push-action@v6
