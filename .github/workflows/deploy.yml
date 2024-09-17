@@ -81,6 +81,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
             
       - name: setup railway cli
         run: npm i -g @railway/cli
