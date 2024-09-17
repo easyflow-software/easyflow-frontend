@@ -25,5 +25,5 @@ jobs:
           set +e
           for cache in $caches; 
           do
-            gh actions-cache delete $cache -R $REPO --confirm
+            gh actions-cache delete -R $REPO $cache --confirm
           done
