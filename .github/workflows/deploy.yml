@@ -73,7 +73,7 @@ jobs:
             echo "tag=dev" >> $GITHUB_OUTPUT
           else
             echo "tag=latest" >> $GITHUB_OUTPUT
-            version = ${$REF#releases/}
+          fi
 
         
       - name: create image metadata
