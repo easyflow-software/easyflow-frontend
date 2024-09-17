@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - "*"
-      - "!development"
-      - "!production"
+      - "!main"
   pull_request:
     branches:
       - "*"
