@@ -1,7 +1,7 @@
 import { object, string } from 'yup';
 
 type EnviromentConfiguration = {
-  NODE_ENV: 'development' | 'production';
+  NODE_ENV: 'development' | 'test' | 'production';
   REMOTE_URL: string;
   BASE_URL: string;
 };
@@ -21,7 +21,7 @@ class AppConfiguration {
   private static validateEnv(): EnviromentConfiguration {
     const envConfiguration = object()
       .shape({
-        NODE_ENV: string().oneOf(['development', 'production']).required(),
+        NODE_ENV: string().oneOf(['development', 'test', 'production']).required(),
         REMOTE_URL: string().required(),
         BASE_URL: string().required(),
       })

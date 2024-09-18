@@ -1,13 +1,24 @@
-/** @type {import('next').NextConfig} */
+/** @type {import(import("next").NextConfig)}*/
 
-import AppConfiguration from './src/config/app.config';
+let remote;
+let base;
+if (process.env.NODE_ENV === 'production') {
+  remote = 'https://backend.easyflow.chat';
+  base = 'https://easyflow.chat';
+} else if (process.env.NODE_ENV === 'test') {
+  remote = 'https://dev.backend.easyflow.chat';
+  base = 'https://dev.easyflow.chat';
+} else {
+  remote = '*';
+  base = '*';
+}
 
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://easyflow-profile-pictures.d8ba15d176a1147e8cb7be257f6b18fb.eu.r2.cloudflarestorage.com;
-    connect-src 'self' ${AppConfiguration.get('REMOTE_URL')};
+    connect-src 'self' ${remote};
     font-src 'self';
     object-src 'none';
     base-uri 'self';
@@ -25,7 +36,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-allow-origin
   {
     key: 'Access-Control-Allow-Origin',
-    value: AppConfiguration.get('REMOTE_URL'),
+    value: remote,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
@@ -76,7 +87,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: [AppConfiguration.get("BASE_URL")],
+      allowedOrigins: [base],
     },
   },
   eslint: {
