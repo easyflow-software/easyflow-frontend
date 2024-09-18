@@ -1,4 +1,17 @@
-/** @type {import('next').NextConfig} */
+/** @type {import(import("next").NextConfig)}*/
+
+let remote;
+let base;
+if (process.env.NODE_ENV === 'production') {
+  remote = 'https://backend.easyflow.chat';
+  base = 'https://easyflow.chat';
+} else if (process.env.NODE_ENV === 'test') {
+  remote = 'https://dev.backend.easyflow.chat';
+  base = 'https://dev.easyflow.chat';
+} else {
+  remote = '*';
+  base = '*';
+}
 
 console.log('remote:', remote);
 console.log('base:', base);
@@ -8,23 +21,25 @@ const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://easyflow-profile-pictures.d8ba15d176a1147e8cb7be257f6b18fb.eu.r2.cloudflarestorage.com;
-    connect-src 'self' ${process.env.NODE_ENV === 'production' ? 'https://backend.easyflow.chat' : 'http://localhost:4000'};
+    connect-src 'self' ${remote};
     font-src 'self';
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
-`
+`;
 
 const securityHeaders = [
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
   {
     key: 'Content-Security-Policy',
     value: cspHeader.replace(/\n/g, ''),
   },
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-allow-origin
   {
-    key: "Access-Control-Allow-Origin",
-    value: process.env.NODE_ENV === 'production' ? 'https://backend.easyflow.chat' : 'http://localhost:4000',
+    key: 'Access-Control-Allow-Origin',
+    value: remote,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
@@ -75,7 +90,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: process.env.NODE_ENV === 'production' ? ['https://easyflow.chat'] : ['*'],
+      allowedOrigins: [base],
     },
   },
   eslint: {
