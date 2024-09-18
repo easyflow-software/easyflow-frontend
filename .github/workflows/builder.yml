@@ -41,6 +41,8 @@ jobs:
         run: bun --npm run lint
 
       - name: build project
+        env:
+          NEXT_PUBLIC_STAGE: development
         run: bun --bun run build
 
       - name: remove packages and install prod dependencies

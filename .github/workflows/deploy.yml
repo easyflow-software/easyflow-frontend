@@ -46,6 +46,8 @@ jobs:
         run: bun --npm run lint
 
       - name: build project
+        env:
+          NEXT_PUBLIC_STAGE: ${{ github.event_name == 'release' && 'production' || 'development' }}
         run: bun --bun run build
 
       - name: remove packages and install prod dependencies
