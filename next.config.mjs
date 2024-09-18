@@ -1,5 +1,6 @@
 /** @type {import(import("next").NextConfig)}*/
 
+console.log("enviroment", process.env.NODE_ENV)
 let remote;
 let base;
 if (process.env.NODE_ENV === 'production') {
@@ -12,6 +13,9 @@ if (process.env.NODE_ENV === 'production') {
   remote = '*';
   base = '*';
 }
+
+console.log("remote", remote)
+console.log("base", base)
 
 const cspHeader = `
     default-src 'self';
