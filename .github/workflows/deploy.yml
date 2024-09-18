@@ -47,7 +47,7 @@ jobs:
 
       - name: build project
         env:
-          NEXT_PUBLIC_STAGE: ${{ github.event_name == 'release' && 'production' || 'development' }}
+          NEXT_PUBLIC_STAGE: ${{ github.event_name == 'release' && 'production' || 'test' }}
         run: bun --bun run build
 
       - name: remove packages and install prod dependencies

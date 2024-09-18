@@ -2,10 +2,10 @@
 
 let remoteUrl;
 let baseUrl;
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NEXT_PUBLIC_STAGE === 'production') {
   remoteUrl = 'https://backend.easyflow.chat';
   baseUrl = 'https://easyflow.chat';
-} else if (process.env.NODE_ENV === 'test') {
+} else if (process.env.NEXT_PUBLIC_STAGE === 'test') {
   remoteUrl = 'https://dev.backend.easyflow.chat';
   baseUrl = 'https://dev.easyflow.chat';
 } else {
