@@ -1,16 +1,15 @@
 import { VariablesType } from '../types/variables.type';
 
 let variables: VariablesType;
-
-if (process.env.NODE_ENV === 'test') {
-  variables = {
-    BASE_URL: 'https://dev.easyflow.chat/',
-    REMOTE_URL: 'https://dev.backend.easyflow.chat/',
-  };
-} else if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || window.location.href.includes('easyflow.chat')) {
   variables = {
     BASE_URL: 'https://easyflow.chat/',
     REMOTE_URL: 'https://backend.easyflow.chat/',
+  };
+} else if (process.env.NODE_ENV === 'test' || window.location.href.includes('dev.easyflow.chat')) {
+  variables = {
+    BASE_URL: 'https://dev.easyflow.chat/',
+    REMOTE_URL: 'https://dev.backend.easyflow.chat/',
   };
 } else {
   variables = {
@@ -18,7 +17,5 @@ if (process.env.NODE_ENV === 'test') {
     REMOTE_URL: 'http://localhost:4000/',
   };
 }
-
-console.log('variables', variables);
 
 export { variables };
