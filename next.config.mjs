@@ -1,7 +1,17 @@
 /** @type {import(import("next").NextConfig)}*/
 
-const remoteUrl = process.env.REMOTE_URL;
-const baseUrl = process.env.BASE_URL;
+let remoteUrl;
+let baseUrl;
+if (process.env.NODE_ENV === 'production') {
+  remoteUrl = 'https://backend.easyflow.chat';
+  baseUrl = 'https://easyflow.chat';
+} else if (process.env.NODE_ENV === 'test') {
+  remoteUrl = 'https://dev.backend.easyflow.chat';
+  baseUrl = 'https://dev.easyflow.chat';
+} else {
+  remoteUrl = '*';
+  baseUrl = '*';
+}
 
 const cspHeader = `
     default-src 'self';
