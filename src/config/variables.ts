@@ -1,20 +1,26 @@
 import { VariablesType } from '../types/variables.type';
-import { developmentVariables } from './development.variables';
-import { productionVariables } from './production.variables';
-import { testVariables } from './test.variables';
 
 let variables: VariablesType;
 
 if (process.env.NODE_ENV === 'development') {
-  variables = developmentVariables;
+  variables = {
+    BASE_URL: 'http://localhost:3000',
+    REMOTE_URL: 'http://localhost:3001',
+  };
 }
 
 if (process.env.NODE_ENV === 'test') {
-  variables = testVariables;
+  variables = {
+    BASE_URL: 'https://dev.easyflow.chat',
+    REMOTE_URL: 'https://dev.backend.easyflow.chat',
+  };
 }
 
 if (process.env.NODE_ENV === 'production') {
-  variables = productionVariables;
+  variables = {
+    BASE_URL: 'https://easyflow.chat',
+    REMOTE_URL: 'https://backend.easyflow.chat',
+  };
 }
 
 export { variables };

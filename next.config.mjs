@@ -1,13 +1,14 @@
 /** @type {import(import("next").NextConfig)}*/
 
-import { variables } from './src/config/variables';
+const remoteUrl = process.env.REMOTE_URL;
+const baseUrl = process.env.BASE_URL;
 
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://easyflow-profile-pictures.d8ba15d176a1147e8cb7be257f6b18fb.eu.r2.cloudflarestorage.com;
-    connect-src 'self' ${variables.REMOTE_URL};
+    connect-src 'self' ${remoteUrl};
     font-src 'self';
     object-src 'none';
     base-uri 'self';
@@ -25,7 +26,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-allow-origin
   {
     key: 'Access-Control-Allow-Origin',
-    value: variables.REMOTE_URL,
+    value: remoteUrl,
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
@@ -76,7 +77,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: [variables.BASE_URL],
+      allowedOrigins: [baseUrl],
     },
   },
   eslint: {
