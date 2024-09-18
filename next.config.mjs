@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 
+console.log('remote:', remote);
+console.log('base:', base);
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
