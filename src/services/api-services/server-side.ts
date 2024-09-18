@@ -2,10 +2,10 @@
 import { ErrorCode } from '@/src/enums/error-codes.enum';
 import { RequestResponse } from '@/src/types/request-response.type';
 import { AxiosError } from 'axios';
-import AppConfiguration from '../../config/app.config';
 import { APIContext, APIOperation } from './common';
 import { req } from './utils';
 import { cookies } from 'next/headers';
+import { variables } from '@/src/config/variables';
 
 const makeServerSideRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
@@ -16,7 +16,7 @@ const makeServerSideRequest = async <T extends APIOperation>(
       return { success: false, errorCode: ErrorCode.API_ERROR };
     }
 
-    const response = await req<T>(AppConfiguration.get('REMOTE_URL'), options, cookies().getAll());
+    const response = await req<T>(variables.REMOTE_URL, options, cookies().getAll());
 
     return {
       success: true,
