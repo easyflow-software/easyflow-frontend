@@ -13,6 +13,9 @@ if (process.env.NODE_ENV === 'production') {
   baseUrl = '*';
 }
 
+console.log('remoteUrl:', remoteUrl);
+console.log('baseUrl:', baseUrl);
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
