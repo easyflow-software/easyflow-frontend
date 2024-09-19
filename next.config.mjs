@@ -33,6 +33,24 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: cspHeader.replace(/\n/g, ''),
   },
+  // Cors
+  {
+    key: 'Access-Control-Allow-Credentials',
+    value: 'true',
+  },
+  {
+    key: 'Access-Control-Allow-Origin',
+    value: remoteUrl,
+  },
+  {
+    key: 'Access-Control-Allow-Methods',
+    value: 'GET,DELETE,PATCH,POST,PUT',
+  },
+  {
+    key: 'Access-Control-Allow-Headers',
+    value:
+      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+  },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
@@ -66,7 +84,6 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
-  crossOrigin: 'use-credentials',
   reactStrictMode: true,
   outputFileTracing: true,
   headers: async () => {
