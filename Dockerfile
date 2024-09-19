@@ -27,7 +27,6 @@ RUN mkdir -p /var/ /run/ /logs/ && \
     chown -R appuser:appgroup /var/ /run/ /logs/
 
 ENV APPLICATION_ROOT="/app"
-ENV NODE_ENV="production"
 
 RUN chmod +x ./entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
