@@ -40,7 +40,7 @@ const securityHeaders = [
   },
   {
     key: 'Access-Control-Allow-Origin',
-    value: remoteUrl,
+    value: [remoteUrl],
   },
   {
     key: 'Access-Control-Allow-Methods',
