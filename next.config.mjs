@@ -33,11 +33,6 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: cspHeader.replace(/\n/g, ''),
   },
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-allow-origin
-  {
-    key: 'Access-Control-Allow-Origin',
-    value: remoteUrl,
-  },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
