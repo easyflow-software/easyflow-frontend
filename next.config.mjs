@@ -3,11 +3,11 @@
 let remoteUrl;
 let baseUrl;
 if (process.env.NEXT_PUBLIC_STAGE === 'production') {
-  remoteUrl = 'https://backend.easyflow.chat';
-  baseUrl = 'https://easyflow.chat';
+  remoteUrl = 'https://backend.easyflow.chat/';
+  baseUrl = 'https://easyflow.chat/';
 } else if (process.env.NEXT_PUBLIC_STAGE === 'test') {
-  remoteUrl = 'https://dev.backend.easyflow.chat';
-  baseUrl = 'https://dev.easyflow.chat';
+  remoteUrl = 'https://dev.backend.easyflow.chat/';
+  baseUrl = 'https://dev.easyflow.chat/';
 } else {
   remoteUrl = '*';
   baseUrl = '*';
@@ -54,7 +54,7 @@ const securityHeaders = [
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
-    value: 'origin-when-cross-origin',
+    value: 'strict-origin-when-cross-origin',
   },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   {
