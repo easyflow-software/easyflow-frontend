@@ -66,6 +66,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  crossOrigin: 'use-credentials',
   reactStrictMode: true,
   outputFileTracing: true,
   headers: async () => {
