@@ -3,11 +3,11 @@
 let remoteUrl;
 let baseUrl;
 if (process.env.NEXT_PUBLIC_STAGE === 'production') {
-  remoteUrl = 'https://backend.easyflow.chat/';
-  baseUrl = 'https://easyflow.chat/';
+  remoteUrl = 'https://backend.easyflow.chat';
+  baseUrl = 'https://easyflow.chat';
 } else if (process.env.NEXT_PUBLIC_STAGE === 'test') {
-  remoteUrl = 'https://dev.backend.easyflow.chat/';
-  baseUrl = 'https://dev.easyflow.chat/';
+  remoteUrl = 'https://dev.backend.easyflow.chat';
+  baseUrl = 'https://dev.easyflow.chat';
 } else {
   remoteUrl = '*';
   baseUrl = '*';
@@ -40,7 +40,7 @@ const securityHeaders = [
   },
   {
     key: 'Access-Control-Allow-Origin',
-    value: [remoteUrl],
+    value: remoteUrl,
   },
   {
     key: 'Access-Control-Allow-Methods',
