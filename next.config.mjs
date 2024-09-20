@@ -5,7 +5,7 @@ const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://easyflow-profile-pictures.d8ba15d176a1147e8cb7be257f6b18fb.eu.r2.cloudflarestorage.com;
-    connect-src 'self' https://backend.easyflow.chat https://dev.backend.easyflow.chat;
+    connect-src 'self' ${process.env.REMOTE_URL};
     font-src 'self';
     object-src 'none';
     base-uri 'self';
@@ -69,7 +69,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: [baseUrl],
+      allowedOrigins: [process.env.BASE_URL],
     },
   },
   eslint: {
