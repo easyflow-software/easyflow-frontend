@@ -20,10 +20,6 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: cspHeader.replace(/\n/g, ''),
   },
-  {
-    key: 'Access-Control-Allow-Origin',
-    value: process.env.REMOTE_URL,
-  },
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
   {
     key: 'Referrer-Policy',
