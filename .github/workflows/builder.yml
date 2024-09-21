@@ -44,6 +44,7 @@ jobs:
         env:
           BASE_URL: 'https://dev.easyflow.chat'
           REMOTE_URL: 'https://dev.backend.easyflow.chat'
+          NEXT_PUBLIC_STAGE: 'test'
         run: bun --bun run build
 
       - name: remove packages and install prod dependencies

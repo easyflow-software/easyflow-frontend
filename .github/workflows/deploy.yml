@@ -49,6 +49,7 @@ jobs:
         env:
           BASE_URL: ${{ github.event_name == 'release' && 'https://easyflow.chat/' || 'https://dev.easyflow.chat'}}
           REMOTE_URL: ${{ github.event_name == 'release' && 'https://backend.easyflow.chat/' || 'https://dev.backend.easyflow.chat'}}
+          NEXT_PUBLIC_STAGE: ${{ github.event_name == 'production' || 'test'}}
         run: bun --bun run build
 
       - name: remove packages and install prod dependencies
