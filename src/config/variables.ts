@@ -12,7 +12,7 @@ if (process.env.NEXT_PUBLIC_STAGE === 'production') {
 if (process.env.NEXT_PUBLIC_STAGE === 'test') {
   variables = {
     BASE_URL: 'https://dev.easyflow.chat/',
-    REMOTE_URL: 'https://dev.backend.easyflow.chat/',
+    REMOTE_URL: 'https://dev-backend.easyflow.chat/',
   };
 }
 
