@@ -2,8 +2,8 @@ import { object, string } from 'yup';
 
 type EnviromentConfiguration = {
   NODE_ENV: 'development' | 'test' | 'production';
-  REMOTE_URL: string;
-  BASE_URL: string;
+  NEXT_PUBLIC_REMOTE_URL: string;
+  NEXT_PUBLIC_BASE_URL: string;
 };
 
 class AppConfiguration {
@@ -22,8 +22,8 @@ class AppConfiguration {
     const envConfiguration = object()
       .shape({
         NODE_ENV: string().oneOf(['development', 'test', 'production']).required(),
-        REMOTE_URL: string().required(),
-        BASE_URL: string().required(),
+        NEXT_PUBLIC_REMOTE_URL: string().required(),
+        NEXT_PUBLIC_BASE_URL: string().required(),
       })
       .validateSync(process.env, {
         stripUnknown: true,

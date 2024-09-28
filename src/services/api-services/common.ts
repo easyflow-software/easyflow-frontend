@@ -1,7 +1,7 @@
 import { SignupResponse, UserResponse } from '@/src/types/response.types';
 
 enum APIOperation {
-  REFRESH_TOKEN = 'get:auth/refresh',
+  REFRESH_TOKEN = 'post:auth/refresh',
   CHECK_LOGIN = 'get:auth/check',
   SIGNUP = 'post:user/signup',
   LOGIN = 'post:auth/login',
@@ -12,7 +12,11 @@ enum APIOperation {
 }
 
 type APIContext = {
-  [APIOperation.REFRESH_TOKEN]: RequestContext<APIOperation.REFRESH_TOKEN, void>;
+  [APIOperation.REFRESH_TOKEN]: RequestContext<
+    APIOperation.REFRESH_TOKEN,
+    { accessToken: string; refreshToken: string },
+    { refreshToken: string }
+  >;
   [APIOperation.CHECK_LOGIN]: RequestContext<APIOperation.CHECK_LOGIN, true>;
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,

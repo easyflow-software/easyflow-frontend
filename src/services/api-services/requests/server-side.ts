@@ -1,28 +1,23 @@
-'use server';
 import { ErrorCode } from '@/src/enums/error-codes.enum';
 import { RequestResponse } from '@/src/types/request-response.type';
 import { AxiosError } from 'axios';
-import { APIContext, APIOperation } from './common';
-import { req } from './utils';
-import { cookies } from 'next/headers';
-import { variables } from '@/src/config/variables';
+import { APIOperation, APIContext } from '../common';
+import { req } from '../utils';
+import { auth } from '@/src/auth';
+import AppConfiguration from '@/src/config/app.config';
 
-const makeServerSideRequest = async <T extends APIOperation>(
+const serverRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
 ): Promise<RequestResponse<APIContext[T]['responseType']>> => {
   try {
-    if (typeof window !== 'undefined') {
-      console.error('makeServerSideRequest should only be called server-side');
-      return { success: false, errorCode: ErrorCode.API_ERROR };
-    }
+    const session = await auth();
+    console.log(session);
+    const response = await req<T>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), options, session);
 
-    const response = await req<T>(variables.REMOTE_URL, options, cookies().getAll());
-
-    return {
-      success: true,
-      data: response.data,
-    };
+    console.log(response.data);
+    return { success: true, data: response.data };
   } catch (err) {
+    console.log(err);
     if (!(err instanceof AxiosError)) {
       return { success: false, errorCode: ErrorCode.API_ERROR };
     }
@@ -39,4 +34,4 @@ const makeServerSideRequest = async <T extends APIOperation>(
   }
 };
 
-export { makeServerSideRequest };
+export { serverRequest };

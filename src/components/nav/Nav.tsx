@@ -1,7 +1,6 @@
 'use client';
 import logo from '@/public/assets/logo.svg';
 import { UserContext } from '@/src/providers/user-provider/UserProvider';
-import { makeClientSideRequest } from '@/src/services/api-services/client.side';
 import { APIOperation } from '@/src/services/api-services/common';
 import { ParamsType } from '@/src/types/params.type';
 import {
@@ -28,6 +27,7 @@ import { FunctionComponent, ReactElement, useContext, useEffect, useState } from
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
+import { clientRequest } from '@/src/services/api-services/requests/client-side';
 
 const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,7 +56,7 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
   }, [pathname, user, t]);
 
   const logout = async (): Promise<void> => {
-    const res = await makeClientSideRequest({ op: APIOperation.LOGOUT });
+    const res = await clientRequest({ op: APIOperation.LOGOUT });
     if (!res.success) {
       console.error('Failed to logout', res.errorCode);
       return;

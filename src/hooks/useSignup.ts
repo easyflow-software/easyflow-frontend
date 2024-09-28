@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { makeClientSideRequest } from '../services/api-services/client.side';
 import { APIOperation } from '../services/api-services/common';
 import { RequestResponse } from '../types/request-response.type';
 import { SignupResponse } from '../types/response.types';
 import { SignupType } from '../types/signup.type';
+import { clientRequest } from '../services/api-services/requests/client-side';
 
 const useSignup = (): {
   initialValues: SignupType;
@@ -74,7 +74,7 @@ const useSignup = (): {
   };
 
   const signup = async (email: string, name: string, password: string): Promise<RequestResponse<SignupResponse>> => {
-    const res = await makeClientSideRequest<APIOperation.SIGNUP>({
+    const res = await clientRequest<APIOperation.SIGNUP>({
       op: APIOperation.SIGNUP,
       payload: { email, password, name, privateKey, publicKey, iv },
     });
@@ -82,7 +82,7 @@ const useSignup = (): {
   };
 
   const checkIfUserExists = async (email: string): Promise<RequestResponse<boolean>> => {
-    const res = await makeClientSideRequest<APIOperation.CHECK_IF_USER_EXISTS>({
+    const res = await clientRequest<APIOperation.CHECK_IF_USER_EXISTS>({
       op: APIOperation.CHECK_IF_USER_EXISTS,
       params: { email },
     });

@@ -4,18 +4,16 @@ import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
-import { getProfilePicture } from '@/src/services/api-services/server-operations/operations';
+import { signIn } from 'next-auth/react';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const { setUser, setProfilePicture } = useContext(UserContext);
-  const { initialValues, login } = useLogin();
-  const router = useRouter();
+  const { initialValues } = useLogin();
 
   const [error, setError] = useState<string>();
 
@@ -34,19 +32,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          const res = await login(values.email, values.password);
-          if (!res.success) {
-            setError(t(`errors:${res.errorCode}`));
-          } else {
-            setUser(res.data);
-            const profilePictureRes = await getProfilePicture();
-            if (!profilePictureRes.success) {
-              console.log('Failed to get profile picture');
-            } else {
-              setProfilePicture(profilePictureRes.data || undefined);
-            }
-            router.push('/chat');
-          }
+          await signIn('credentials', { redirectTo: '/chat', redirect: true, ...values });
         }}
       >
         {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
