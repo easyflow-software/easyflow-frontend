@@ -6,6 +6,8 @@ import { UserType } from './types/user.type';
 // eslint-disable-next-line
 import { JWT } from 'next-auth/jwt';
 import { serverRequest } from './services/api-services/requests/server-side';
+import { req } from './services/api-services/utils';
+import AppConfiguration from './config/app.config';
 
 declare module 'next-auth' {
   interface Session {
@@ -65,23 +67,23 @@ const callbacks: NextAuthConfig['callbacks'] = {
     if (Date.now() < token.accessTokenExpires - 30 * 1000) {
       return token;
     } else {
-      const res = await serverRequest<APIOperation.REFRESH_TOKEN>({
-        op: APIOperation.REFRESH_TOKEN,
-        payload: {
-          refreshToken: token.refreshToken,
-        },
-      });
+      try {
+        const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
+          op: APIOperation.REFRESH_TOKEN,
+          payload: {
+            refreshToken: token.refreshToken,
+          },
+        });
 
-      if (!res.success) {
+        return {
+          ...token,
+          accessToken: res.data.accessToken,
+          refreshToken: res.data.refreshToken,
+          accessTokenExpires: Date.now() + 60 * 10, // 10 minutes
+        };
+      } catch {
         return null;
       }
-
-      return {
-        ...token,
-        accessToken: res.data.accessToken,
-        refreshToken: res.data.refreshToken,
-        accessTokenExpires: Date.now() + 60 * 10, // 10 minutes
-      };
     }
   },
   async session({ session, token }) {
