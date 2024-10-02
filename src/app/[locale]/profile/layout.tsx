@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ReactElement, ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'Profile - EasyFlow',
@@ -8,9 +9,9 @@ export const metadata: Metadata = {
 const RootLayout = ({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
   params: { locale: string };
-}>): JSX.Element => {
+}>): ReactElement => {
   return <main className="h-full w-screen">{children}</main>;
 };
 

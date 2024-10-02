@@ -9,4 +9,5 @@ export type UserType = {
   iv: string;
   accessToken: string;
   refreshToken: string;
+  accessTokenExpires: number;
 };

@@ -16,7 +16,7 @@ declare module 'next-auth' {
     accessTokenExpires: number;
   }
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface User extends UserType {}
 }
 
@@ -60,11 +60,11 @@ const callbacks: NextAuthConfig['callbacks'] = {
         ...token,
         accessToken: user.accessToken,
         refreshToken: user.refreshToken,
-        accessTokenExpires: Date.now() + 60 * 10 * 1000, // 10 minutes (in milliseconds)
+        accessTokenExpires: user.accessTokenExpires,
       };
     }
 
-    if (Date.now() < token.accessTokenExpires - 30 * 1000) {
+    if (Date.now() < token.accessTokenExpires) {
       return token;
     } else {
       try {
@@ -79,7 +79,7 @@ const callbacks: NextAuthConfig['callbacks'] = {
           ...token,
           accessToken: res.data.accessToken,
           refreshToken: res.data.refreshToken,
-          accessTokenExpires: Date.now() + 60 * 10, // 10 minutes
+          accessTokenExpires: res.data.accessTokenExpires,
         };
       } catch {
         return null;

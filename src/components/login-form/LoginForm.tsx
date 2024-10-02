@@ -12,6 +12,7 @@ import { signIn } from 'next-auth/react';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
+
   const { setUser, setProfilePicture } = useContext(UserContext);
   const { initialValues } = useLogin();
 
@@ -32,7 +33,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          await signIn('credentials', { redirectTo: '/chat', redirect: true, ...values });
+          await signIn('credentials', { callbackUrl: '/chat', redirect: true, ...values });
         }}
       >
         {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
