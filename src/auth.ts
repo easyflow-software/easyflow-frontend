@@ -1,19 +1,18 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
 import type { Provider } from 'next-auth/providers';
+import Credentials from 'next-auth/providers/credentials';
 import { APIOperation } from './services/api-services/common';
 import { UserType } from './types/user.type';
 // eslint-disable-next-line
 import { JWT } from 'next-auth/jwt';
+import AppConfiguration from './config/app.config';
 import { serverRequest } from './services/api-services/requests/server-side';
 import { req } from './services/api-services/utils';
-import AppConfiguration from './config/app.config';
+import { InvalidSignin } from './types/next-auth.types';
 
 declare module 'next-auth' {
   interface Session {
-    accessToken: string;
-    refreshToken: string;
-    accessTokenExpires: number;
+    user: UserType;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -22,9 +21,7 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    accessToken: string;
-    refreshToken: string;
-    accessTokenExpires: number;
+    user: UserType;
   }
 }
 
@@ -45,7 +42,7 @@ const providers: Provider[] = [
       });
 
       if (!res.success) {
-        return null;
+        throw new InvalidSignin(res.errorCode);
       }
 
       return res.data;
@@ -58,41 +55,47 @@ const callbacks: NextAuthConfig['callbacks'] = {
     if (user) {
       return {
         ...token,
-        accessToken: user.accessToken,
-        refreshToken: user.refreshToken,
-        accessTokenExpires: user.accessTokenExpires,
+        user: {
+          ...token.user,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          accessTokenExpires: user.accessTokenExpires,
+        },
       };
     }
 
-    if (Date.now() < token.accessTokenExpires) {
+    if (Date.now() < token.user.accessTokenExpires) {
       return token;
-    } else {
+    } else if (token.refreshToken !== null) {
       try {
         const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
           op: APIOperation.REFRESH_TOKEN,
           payload: {
-            refreshToken: token.refreshToken,
+            refreshToken: token.user.refreshToken,
           },
         });
 
         return {
           ...token,
-          accessToken: res.data.accessToken,
-          refreshToken: res.data.refreshToken,
-          accessTokenExpires: res.data.accessTokenExpires,
+          user: {
+            ...token.user,
+            accessToken: res.data.accessToken,
+            refreshToken: res.data.refreshToken,
+            accessTokenExpires: res.data.accessTokenExpires,
+          },
         };
       } catch {
         return null;
       }
+    } else {
+      return null;
     }
   },
   async session({ session, token }) {
     if (token) {
       return {
         ...session,
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken,
-        accessTokenExpires: token.accessTokenExpires,
+        user: token.user,
       };
     }
     return session;
