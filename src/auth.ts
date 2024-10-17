@@ -64,14 +64,16 @@ const callbacks: NextAuthConfig['callbacks'] = {
       };
     }
 
-    if (Date.now() < token.accessTokenExpires) {
+    const expires = new Date(token.accessTokenExpires * 1000);
+
+    if (Date.now() < expires.getMilliseconds()) {
       return token;
     } else {
       try {
         const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
           op: APIOperation.REFRESH_TOKEN,
-          payload: {
-            refreshToken: token.refreshToken,
+          headers: {
+            Authorization: token.refreshToken,
           },
         });
 
@@ -81,13 +83,16 @@ const callbacks: NextAuthConfig['callbacks'] = {
           refreshToken: res.data.refreshToken,
           accessTokenExpires: res.data.accessTokenExpires,
         };
-      } catch {
+      } catch (e) {
+        // @ts-expect-error Error message for development purposes
+        console.log('Some error happened while refreshing token.', e.response.data);
         return null;
       }
     }
   },
   async session({ session, token }) {
     if (token) {
+      console.log('token: ', token);
       return {
         ...session,
         accessToken: token.accessToken,

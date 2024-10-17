@@ -14,8 +14,7 @@ enum APIOperation {
 type APIContext = {
   [APIOperation.REFRESH_TOKEN]: RequestContext<
     APIOperation.REFRESH_TOKEN,
-    { accessToken: string; refreshToken: string; accessTokenExpires: number },
-    { refreshToken: string }
+    { accessToken: string; refreshToken: string; accessTokenExpires: number }
   >;
   [APIOperation.CHECK_LOGIN]: RequestContext<APIOperation.CHECK_LOGIN, true>;
   [APIOperation.SIGNUP]: RequestContext<
