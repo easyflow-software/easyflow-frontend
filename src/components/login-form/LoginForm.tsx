@@ -1,31 +1,26 @@
 'use client';
 import useLogin from '@/src/hooks/useLogin';
-import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FunctionComponent, ReactElement, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { login } from '../../app/actions';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
-import { signIn } from 'next-auth/react';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
+  const router = useRouter();
 
-  const { setUser, setProfilePicture } = useContext(UserContext);
   const { initialValues } = useLogin();
 
   const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
 
-  useEffect(() => {
-    // set the user to undefined when the component loads so the avatar is not displayed
-    // It isn't possible anways to get on the page when you are logged in
-    setUser(undefined);
-    setProfilePicture(undefined);
-  }, [setUser, setProfilePicture]);
+  router.prefetch('/signup');
 
   return (
     <>
@@ -33,7 +28,12 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          await signIn('credentials', { callbackUrl: '/chat', redirect: true, ...values });
+          const res = await login(values);
+          if (!res.success) {
+            setError(res.errorCode);
+          } else {
+            router.push('/chat');
+          }
         }}
       >
         {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
@@ -51,7 +51,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               onBlur={() => setFieldTouched('email', true)}
               isInvalid={touched.email && !!errors.email}
               errorMessage={errors.email ? errors.email : undefined}
-              // random invisible character so that the input dosn't move when the erromessage gets displayed
+              // random invisible character so that the input doesn't move when the erromessage gets displayed
               description={'\u2800'}
               isRequired
             />
@@ -79,7 +79,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             {error ? (
               <div className="mt-2 flex items-center text-danger">
                 <WarningCircle size={20} className="mr-1" />
-                <p>{error}</p>
+                <p>{t(`errors:${error}`)}</p>
               </div>
             ) : (
               <p className="mt-2"> </p>

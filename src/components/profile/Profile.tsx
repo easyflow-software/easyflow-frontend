@@ -1,10 +1,10 @@
 'use client';
-import { UserContext } from '@/src/providers/user-provider/UserProvider';
-import { FunctionComponent, useContext } from 'react';
+import { useSession } from 'next-auth/react';
+import { FunctionComponent } from 'react';
 
 const Profile: FunctionComponent = () => {
-  const { user } = useContext(UserContext);
-  return <div>{user?.name}</div>;
+  const { data: session } = useSession();
+  return <div>{session?.user.name}</div>;
 };
 
 export default Profile;

@@ -10,4 +10,5 @@ export type UserType = {
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;
+  profilePicture: string;
 };

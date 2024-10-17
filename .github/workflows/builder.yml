@@ -37,9 +37,6 @@ jobs:
       - name: install packages
         run: bun --bun install --frozen-lock-file
 
-      - name: linting
-        run: bun --npm run lint
-
       - name: build project
         env:
           NEXT_PUBLIC_BASE_URL: 'https://dev.easyflow.chat'

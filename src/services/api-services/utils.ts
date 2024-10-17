@@ -55,7 +55,7 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   }
 
   if (session) {
-    headers.set('Authorization', `Bearer ${session.accessToken}`);
+    headers.set('Authorization', `Bearer ${session.user.accessToken}`);
   }
 
   switch (httpMethod) {
