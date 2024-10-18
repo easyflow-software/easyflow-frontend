@@ -5,7 +5,6 @@ import { FunctionComponent, ReactElement } from 'react';
 
 const Chat: FunctionComponent = async (): Promise<ReactElement> => {
   const session = await auth();
-  console.log('Session in chat: ', session);
   if (!session) {
     redirect('/login');
   }

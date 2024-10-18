@@ -4,7 +4,7 @@ import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useState } from 'react';
+import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { login } from '../../app/actions';
 import PasswordInput from '../password-input/PasswordInput';
@@ -20,7 +20,9 @@ const LoginForm: FunctionComponent = (): ReactElement => {
 
   const validationSchema = createValidationSchema(t);
 
-  router.prefetch('/signup');
+  useEffect(() => {
+    router.prefetch('/signup');
+  }, []);
 
   return (
     <>

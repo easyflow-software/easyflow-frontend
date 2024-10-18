@@ -36,8 +36,6 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
 
   const { data: session } = useSession();
 
-  console.log('Nav Session: ', session);
-
   const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean; hidden: boolean }[]>([]);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
       console.error('Failed to logout', res.errorCode);
       return;
     }
-    await signOut({ redirectTo: '/' });
+    await signOut();
   };
 
   return (

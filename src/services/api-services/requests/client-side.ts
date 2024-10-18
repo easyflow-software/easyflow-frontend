@@ -12,7 +12,6 @@ const clientRequest = async <T extends APIOperation>(
 ): Promise<RequestResponse<APIContext[T]['responseType']>> => {
   try {
     const session = await getSession();
-    console.log('Client side request session', session);
     const response = await req<T>(
       AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL') ?? 'http://localhost:4000/',
       options,
