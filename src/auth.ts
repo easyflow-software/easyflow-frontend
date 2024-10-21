@@ -59,12 +59,15 @@ const callbacks: NextAuthConfig['callbacks'] = {
       return token;
     } else if (token.user.refreshToken) {
       try {
+        console.log('refreshing token');
         const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
           op: APIOperation.REFRESH_TOKEN,
           headers: {
             Authorization: token.user.refreshToken,
           },
         });
+
+        console.log('refresh token response', res.data);
 
         return {
           ...token,
@@ -75,7 +78,8 @@ const callbacks: NextAuthConfig['callbacks'] = {
             accessTokenExpires: res.data.accessTokenExpires,
           },
         };
-      } catch {
+      } catch (e) {
+        console.log('error refreshing token', e);
         return null;
       }
     } else {
