@@ -1,16 +1,16 @@
+'use server';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Profile - EasyFlow',
-  description: 'Your profile on EasyFlow',
+import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  return {
+    title: 'Profile - EasyFlow',
+    description: 'Your profile on EasyFlow',
+  };
 };
 
-const RootLayout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>): JSX.Element => {
+const RootLayout: FunctionComponent<PropsWithChildren> = async ({ children }): Promise<ReactElement> => {
   return <main className="h-full w-screen">{children}</main>;
 };
 

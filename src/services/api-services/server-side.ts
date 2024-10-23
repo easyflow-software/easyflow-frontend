@@ -16,7 +16,7 @@ const makeServerSideRequest = async <T extends APIOperation>(
       return { success: false, errorCode: ErrorCode.API_ERROR };
     }
 
-    const response = await req<T>(variables.REMOTE_URL, options, cookies().getAll());
+    const response = await req<T>(variables.REMOTE_URL, options, (await cookies()).getAll());
 
     return {
       success: true,

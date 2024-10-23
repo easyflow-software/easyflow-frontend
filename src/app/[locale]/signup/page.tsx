@@ -6,16 +6,15 @@ import initTranslations from '@i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
-
-interface HomeProps {
-  params: {
-    locale: string;
-  };
-}
+import { HomeProps } from '../page';
 
 const i18nNamespaces = ['signup', 'errors'];
 
-const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
+const Home: FunctionComponent<HomeProps> = async props => {
+  const params = await props.params;
+
+  const { locale } = params;
+
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   // Check if user is already logged in

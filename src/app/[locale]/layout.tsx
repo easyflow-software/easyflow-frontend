@@ -11,21 +11,24 @@ import '../i18n';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'EasyFlow Chat',
-  description: 'The private chat app',
+export const generateMetadata = async (): Promise<Metadata> => {
+  return {
+    title: 'EasyFlow Chat',
+    description: 'The private chat app',
+  };
 };
 
-interface RootLayoutProps {
-  params: {
+export interface RootLayoutProps {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
-const RootLayout: FunctionComponent<PropsWithChildren<RootLayoutProps>> = ({
-  children,
-  params: { locale },
-}): ReactElement => {
+const RootLayout: FunctionComponent<PropsWithChildren<RootLayoutProps>> = async (props): Promise<ReactElement> => {
+  const { locale } = await props.params;
+
+  const { children } = props;
+
   return (
     <html lang={locale} dir={dir(locale)} className="h-full w-full">
       <body className={cx('h-full w-full bg-background', inter.className)}>

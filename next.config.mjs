@@ -54,7 +54,7 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  outputFileTracing: true,
+  transpilePackages: [],
   headers: async () => {
     return [
       {
@@ -71,9 +71,6 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: [process.env.BASE_URL],
     },
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
 };
 

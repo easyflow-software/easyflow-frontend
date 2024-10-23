@@ -40,6 +40,7 @@ export default [
   ...compat
     .extends(
       'eslint:recommended',
+      'plugin:@next/next/recommended',
       'plugin:@typescript-eslint/recommended',
       'plugin:react/recommended',
       'plugin:jsx-a11y/recommended',
@@ -99,6 +100,7 @@ export default [
 
       '@typescript-eslint/no-explicit-any': ['error'],
       '@typescript-eslint/no-floating-promises': ['error'],
+      '@next/next/no-duplicate-head': 'off',
       'jsx-a11y/anchor-is-valid': 'off',
       'jsx-a11y/no-static-element-interactions': 'off',
       'jsx-a11y/label-has-associated-control': 'off',

@@ -3,15 +3,17 @@ import TranslationsProvider from '@/src/providers/translation-provider/Translati
 import { FunctionComponent } from 'react';
 import initTranslations from '../i18n';
 
-interface HomeProps {
-  params: {
+export interface HomeProps {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
 const i18nNamespaces = ['home'];
 
-const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
+const Home: FunctionComponent<HomeProps> = async props => {
+  const { locale } = await props.params;
+
   const { resources } = await initTranslations(locale, i18nNamespaces);
 
   return (
