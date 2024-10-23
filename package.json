@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -21,20 +21,34 @@
     "i18next": "23.16.2",
     "i18next-resources-to-backend": "1.2.1",
     "next": "15.0.1",
+<<<<<<< HEAD
     "next-auth": "5.0.0-beta.22",
     "next-i18n-router": "5.5.1",
     "next-themes": "0.3.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+=======
+    "next-i18n-router": "5.5.1",
+    "next-themes": "0.3.0",
+    "react": "19.0.0-rc-69d4b800-20241021",
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
+>>>>>>> origin
     "react-i18next": "15.1.0",
     "yup": "1.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.1.0",
     "@eslint/js": "9.13.0",
+<<<<<<< HEAD
     "@types/bun": "1.1.12",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
+=======
+    "@next/eslint-plugin-next": "^14.2.16",
+    "@types/bun": "1.1.12",
+    "@types/react": "npm:types-react@19.0.0-alpha.3",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-alpha.3",
+>>>>>>> origin
     "@typescript-eslint/eslint-plugin": "8.11.0",
     "eslint": "9.13.0",
     "eslint-config-prettier": "9.1.0",
@@ -52,9 +66,21 @@
     "prettier-plugin-sort-json": "4.0.0",
     "prettier-plugin-tailwindcss": "0.6.8",
     "tailwindcss": "3.4.14",
+<<<<<<< HEAD
     "typescript": "5.6.3"
   },
   "overrides": {
     "eslint": "9.13.0"
+=======
+    "terser-webpack-plugin": "5.3.10",
+    "typescript": "5.6.3"
+  },
+  "overrides": {
+    "eslint": "9.13.0",
+    "react": "19.0.0-rc-69d4b800-20241021",
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
+    "@types/react": "npm:types-react@19.0.0-alpha.3",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-alpha.3"
+>>>>>>> origin
   }
 }

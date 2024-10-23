@@ -8,14 +8,18 @@ import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 
 interface HomeProps {
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
 const i18nNamespaces = ['login', 'errors'];
 
-const Home: FunctionComponent<HomeProps> = async ({ params: { locale } }) => {
+const Home: FunctionComponent<HomeProps> = async props => {
+  const params = await props.params;
+
+  const { locale } = params;
+
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
   const session = await auth();

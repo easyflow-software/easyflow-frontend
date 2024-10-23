@@ -1,5 +1,4 @@
 'use client';
-import logo from '@/public/assets/logo.svg';
 import { APIOperation } from '@/src/services/api-services/common';
 import { clientRequest } from '@/src/services/api-services/requests/client-side';
 import { ParamsType } from '@/src/types/params.type';
@@ -70,7 +69,7 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
         <NavbarBrand>
           <Link href="/">
-            <Image className="dark:invert" src={logo} alt="Easyflow" width={40} height={40} />
+            <Image className="dark:invert" src="@/public/assets/logo.svg" alt="Easyflow" width={40} height={40} />
           </Link>
         </NavbarBrand>
       </NavbarContent>

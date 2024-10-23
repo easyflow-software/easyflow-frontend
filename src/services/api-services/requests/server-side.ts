@@ -13,7 +13,16 @@ const serverRequest = async <T extends APIOperation>(
     const session = await auth();
     const response = await req<T>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), options, session);
 
+<<<<<<< HEAD:src/services/api-services/requests/server-side.ts
     return { success: true, data: response.data };
+=======
+    const response = await req<T>(variables.REMOTE_URL, options, (await cookies()).getAll());
+
+    return {
+      success: true,
+      data: response.data,
+    };
+>>>>>>> origin:src/services/api-services/server-side.ts
   } catch (err) {
     if (!(err instanceof AxiosError)) {
       return { success: false, errorCode: ErrorCode.API_ERROR };

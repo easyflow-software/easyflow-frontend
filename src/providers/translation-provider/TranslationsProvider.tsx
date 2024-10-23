@@ -2,7 +2,7 @@
 
 import initTranslations from '@/src/app/i18n';
 import { Resource, createInstance } from 'i18next';
-import { FunctionComponent, PropsWithChildren } from 'react';
+import { FunctionComponent, PropsWithChildren, type JSX } from 'react';
 import { I18nextProvider } from 'react-i18next';
 
 interface TranslationsProviderProps {
