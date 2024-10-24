@@ -1,5 +1,3 @@
-import Nav from '@/src/components/nav/Nav';
-import NavWrapper from '@/src/components/nav/NavBarWrapper';
 import cx from 'classnames';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
@@ -9,23 +7,30 @@ import ClientProvider from '../../providers/ClientProvider';
 import ServerProvider from '../../providers/ServerProider';
 import '../globals.css';
 import '../i18n';
+import Nav from '../../components/nav/Nav';
+import NavWrapper from '../../components/nav/NavBarWrapper';
+import initTranslations from '../i18n';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const generateMetadata = async (): Promise<Metadata> => {
-  return {
-    title: 'EasyFlow Chat',
-    description: 'The private chat app',
-  };
-};
+const i18nNamespaces = ['metadata'];
 
-export interface RootLayoutProps {
+export interface Props {
   params: Promise<{
     locale: string;
   }>;
 }
 
-const RootLayout: FunctionComponent<PropsWithChildren<RootLayoutProps>> = async (props): Promise<ReactElement> => {
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { locale } = await params;
+  const i18n = await initTranslations(locale, i18nNamespaces);
+  return {
+    title: i18n.t('metadata:home.title'),
+    description: i18n.t('metadata:home.description'),
+  };
+};
+
+const RootLayout: FunctionComponent<PropsWithChildren<Props>> = async (props): Promise<ReactElement> => {
   const { locale } = await props.params;
 
   const { children } = props;

@@ -6,9 +6,10 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { login } from '../../app/actions';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
+import { signIn } from 'next-auth/react';
+import { ErrorCode } from '@/enums/error-codes.enum';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
@@ -30,11 +31,15 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          const res = await login(values);
-          if (!res.success) {
-            setError(res.errorCode);
+          const res = await signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+          });
+          if (res?.ok && res.url) {
+            router.push(res.url === window.location.href ? '/chat' : res.url);
           } else {
-            router.push('/chat');
+            setError(res?.code ?? ErrorCode.API_ERROR);
           }
         }}
       >
@@ -48,8 +53,8 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               value={values.email}
               onChange={e => {
                 void setFieldValue('email', e.target.value);
-                setError(undefined);
               }}
+              onInput={() => setError(undefined)}
               onBlur={() => setFieldTouched('email', true)}
               isInvalid={touched.email && !!errors.email}
               errorMessage={errors.email ? errors.email : undefined}
@@ -65,9 +70,11 @@ const LoginForm: FunctionComponent = (): ReactElement => {
                 void setFieldValue('password', e.target.value);
                 setError(undefined);
               }}
+              onInput={() => setError(undefined)}
               onBlur={() => setFieldTouched('password', true)}
               touched={!!touched.password}
               error={errors.password ? errors.password : undefined}
+              isRequired
             />
             <Button
               color="primary"

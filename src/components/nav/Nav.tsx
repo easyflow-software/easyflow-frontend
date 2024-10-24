@@ -1,7 +1,6 @@
 'use client';
-import { APIOperation } from '@/src/services/api-services/common';
-import { clientRequest } from '@/src/services/api-services/requests/client-side';
-import { ParamsType } from '@/src/types/params.type';
+import { APIOperation } from '@/services/api-services/common';
+import { clientRequest } from '@/services/api-services/requests/client-side';
 import {
   Avatar,
   Button,
@@ -27,6 +26,8 @@ import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
+import { ParamsType } from '@/types/params.type';
+import logo from '@/public/assets/logo.svg';
 
 const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,7 +70,7 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="sm:hidden" />
         <NavbarBrand>
           <Link href="/">
-            <Image className="dark:invert" src="@/public/assets/logo.svg" alt="Easyflow" width={40} height={40} />
+            <Image className="dark:invert" src={logo} alt="Easyflow" width={40} height={40} />
           </Link>
         </NavbarBrand>
       </NavbarContent>

@@ -1,11 +1,11 @@
 'use client';
-import { ErrorCode } from '@/src/enums/error-codes.enum';
-import { RequestResponse } from '@/src/types/request-response.type';
 import { AxiosError } from 'axios';
 import { getSession } from 'next-auth/react';
 import AppConfiguration from '../../../config/app.config';
 import { APIContext, APIOperation } from '../common';
 import { req } from '../utils';
+import { RequestResponse } from '@/types/request-response.type';
+import { ErrorCode } from '@/enums/error-codes.enum';
 
 const clientRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },

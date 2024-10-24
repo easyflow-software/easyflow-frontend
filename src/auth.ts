@@ -5,9 +5,9 @@ import { APIOperation } from './services/api-services/common';
 import { UserType } from './types/user.type';
 import 'next-auth/jwt';
 import AppConfiguration from './config/app.config';
-import { serverRequest } from './services/api-services/requests/server-side';
 import { req } from './services/api-services/utils';
 import { InvalidSignin } from './types/next-auth.types';
+import serverRequest from './services/api-services/requests/server-side';
 
 declare module 'next-auth' {
   interface Session {
@@ -59,15 +59,14 @@ const callbacks: NextAuthConfig['callbacks'] = {
       return token;
     } else if (token.user.refreshToken) {
       try {
-        console.log('refreshing token');
         const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
           op: APIOperation.REFRESH_TOKEN,
           headers: {
+            // Add Origin header to the request to comply with CORS policy
+            Origin: AppConfiguration.get('NEXT_PUBLIC_BASE_URL'),
             Authorization: token.user.refreshToken,
           },
         });
-
-        console.log('refresh token response', res.data);
 
         return {
           ...token,
@@ -78,17 +77,16 @@ const callbacks: NextAuthConfig['callbacks'] = {
             accessTokenExpires: res.data.accessTokenExpires,
           },
         };
-      } catch (e) {
-        console.log('error refreshing token', e);
+      } catch {
         return null;
       }
     } else {
+      console.log('no refresh token');
       return null;
     }
   },
 
   async session({ session, token }) {
-    console.log('session token', token);
     if (token) {
       return {
         ...session,

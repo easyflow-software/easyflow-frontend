@@ -1,0 +1,26 @@
+{
+  "about": {
+    "title": "EasyFlow – About us",
+    "description": "Everything you need to know about EasyFlow"
+  },
+  "chat": {
+    "title": "EasyFlow – Chat",
+    "description": "Chat privatly with friends and family."
+  },
+  "home": {
+    "title": "EasyFlow – Home",
+    "description": "Welcome to the EasyFlow landingpage"
+  },
+  "login": {
+    "title": "EasyFlow – Login",
+    "description": "Login to EasyFlow and start chatting."
+  },
+  "profile": {
+    "title": "EasyFlow – Profile",
+    "description": "Your profile and settings on Easyflow."
+  },
+  "signup": {
+    "title": "EasyFlow – Signup",
+    "description": "Signup for EasyFlow and start chatting."
+  }
+}

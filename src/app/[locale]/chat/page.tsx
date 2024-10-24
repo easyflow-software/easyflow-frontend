@@ -4,7 +4,9 @@ import { redirect } from 'next/navigation';
 import { FunctionComponent, ReactElement } from 'react';
 
 const Chat: FunctionComponent = async (): Promise<ReactElement> => {
+  console.log('Chat');
   const session = await auth();
+  console.log('Chat auth done');
   if (!session) {
     redirect('/login');
   }

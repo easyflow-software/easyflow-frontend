@@ -96,6 +96,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('password', true)}
                   touched={touched.password}
                   error={errors.password}
+                  isRequired
                 />
                 <PasswordInput
                   label={t('signup:form.confirmPassword.label')}
@@ -105,6 +106,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('confirmPassword', true)}
                   touched={touched.confirmPassword}
                   error={errors.confirmPassword}
+                  isRequired
                 />
                 <div className="mb-3">
                   <PasswordRequirement

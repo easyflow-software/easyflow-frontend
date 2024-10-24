@@ -40,11 +40,8 @@ export default [
   ...compat
     .extends(
       'eslint:recommended',
-<<<<<<< HEAD
-=======
       'plugin:@next/next/recommended',
       'plugin:@typescript-eslint/recommended',
->>>>>>> origin
       'plugin:react/recommended',
       'plugin:jsx-a11y/recommended',
       'plugin:prettier/recommended',

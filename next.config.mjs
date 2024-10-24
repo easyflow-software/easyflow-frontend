@@ -54,7 +54,6 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: [],
   headers: async () => {
     return [
       {

@@ -1,8 +1,8 @@
 'use server';
-import { auth } from '@/src/auth';
-import LoginForm from '@/src/components/login-form/LoginForm';
-import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
-import initTranslations from '@i18n';
+import { auth } from '@/auth';
+import LoginForm from '@components/login-form/LoginForm';
+import TranslationsProvider from '@providers/translation-provider/TranslationsProvider';
+import initTranslations from '@app/i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
