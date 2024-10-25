@@ -29,6 +29,7 @@
       "@services/*": ["./src/services/*"],
       "@types/*": ["./src/types/*"]
     }
+
   },
   "exclude": ["node_modules"],
   "include": [
