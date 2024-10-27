@@ -1,32 +1,29 @@
 'use client';
 import useLogin from '@/src/hooks/useLogin';
-import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
-import { getProfilePicture } from '@/src/services/api-services/server-operations/operations';
+import { signIn } from 'next-auth/react';
+import { ErrorCode } from '@/enums/error-codes.enum';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
-  const { setUser, setProfilePicture } = useContext(UserContext);
-  const { initialValues, login } = useLogin();
   const router = useRouter();
+
+  const { initialValues } = useLogin();
 
   const [error, setError] = useState<string>();
 
   const validationSchema = createValidationSchema(t);
 
   useEffect(() => {
-    // set the user to undefined when the component loads so the avatar is not displayed
-    // It isn't possible anways to get on the page when you are logged in
-    setUser(undefined);
-    setProfilePicture(undefined);
-  }, [setUser, setProfilePicture]);
+    router.prefetch('/signup');
+  }, []);
 
   return (
     <>
@@ -34,18 +31,15 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          const res = await login(values.email, values.password);
-          if (!res.success) {
-            setError(t(`errors:${res.errorCode}`));
+          const res = await signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+          });
+          if (res?.ok && res.url) {
+            router.push(res.url === window.location.href ? '/chat' : res.url);
           } else {
-            setUser(res.data);
-            const profilePictureRes = await getProfilePicture();
-            if (!profilePictureRes.success) {
-              console.log('Failed to get profile picture');
-            } else {
-              setProfilePicture(profilePictureRes.data || undefined);
-            }
-            router.push('/chat');
+            setError(res?.code ?? ErrorCode.API_ERROR);
           }
         }}
       >
@@ -59,12 +53,12 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               value={values.email}
               onChange={e => {
                 void setFieldValue('email', e.target.value);
-                setError(undefined);
               }}
+              onInput={() => setError(undefined)}
               onBlur={() => setFieldTouched('email', true)}
               isInvalid={touched.email && !!errors.email}
               errorMessage={errors.email ? errors.email : undefined}
-              // random invisible character so that the input dosn't move when the erromessage gets displayed
+              // random invisible character so that the input doesn't move when the erromessage gets displayed
               description={'\u2800'}
               isRequired
             />
@@ -76,9 +70,11 @@ const LoginForm: FunctionComponent = (): ReactElement => {
                 void setFieldValue('password', e.target.value);
                 setError(undefined);
               }}
+              onInput={() => setError(undefined)}
               onBlur={() => setFieldTouched('password', true)}
               touched={!!touched.password}
               error={errors.password ? errors.password : undefined}
+              isRequired
             />
             <Button
               color="primary"
@@ -92,7 +88,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             {error ? (
               <div className="mt-2 flex items-center text-danger">
                 <WarningCircle size={20} className="mr-1" />
-                <p>{error}</p>
+                <p>{t(`errors:${error}`)}</p>
               </div>
             ) : (
               <p className="mt-2"> </p>

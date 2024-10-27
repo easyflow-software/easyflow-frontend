@@ -2,11 +2,17 @@
 import type { Metadata } from 'next';
 
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
+import { Props } from '../layout';
+import initTranslations from '@/app/i18n';
 
-export const generateMetadata = async (): Promise<Metadata> => {
+const i18nNamespaces = ['metadata'];
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { locale } = await params;
+  const i18n = await initTranslations(locale, i18nNamespaces);
   return {
-    title: 'Profile - EasyFlow',
-    description: 'Your profile on EasyFlow',
+    title: i18n.t('metadata:profile.title'),
+    description: i18n.t('metadata:profile.description'),
   };
 };
 

@@ -1,6 +1,6 @@
 'use client';
-import { makeClientSideRequest } from '../services/api-services/client.side';
 import { APIOperation } from '../services/api-services/common';
+import { clientRequest } from '../services/api-services/requests/client-side';
 import { LoginType } from '../types/login.type';
 import { RequestResponse } from '../types/request-response.type';
 import { UserResponse } from '../types/response.types';
@@ -16,7 +16,7 @@ const useLogin = (): {
   };
 
   const login = async (email: string, password: string): Promise<RequestResponse<UserType>> => {
-    const res = await makeClientSideRequest<APIOperation.LOGIN>({
+    const res = await clientRequest<APIOperation.LOGIN>({
       op: APIOperation.LOGIN,
       payload: { email, password },
     });

@@ -7,4 +7,8 @@ export type UserType = {
   publicKey: string;
   privateKey: string;
   iv: string;
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpires: number;
+  profilePicture: string;
 };

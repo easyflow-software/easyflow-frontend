@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ES2023",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,11 +19,16 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*", "./*"],
       "@components/*": ["./src/components/*"],
-      "@i18n": ["./src/app/i18n"]
-    },
-    "target": "ES2023"
+      "@app/*": ["./src/app/*"],
+      "@config/": ["./src/config/*"],
+      "@enums/*": ["./src/enums/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@providers/*": ["./src/providers/*"],
+      "@services/*": ["./src/services/*"],
+      "@types/*": ["./src/types/*"]
+    }
   },
   "exclude": ["node_modules"],
   "include": [

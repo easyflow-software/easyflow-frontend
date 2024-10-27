@@ -1,30 +1,15 @@
 'use server';
+import { SessionProvider } from 'next-auth/react';
 import { FunctionComponent, PropsWithChildren } from 'react';
-import { UserType } from '../types/user.type';
-import ClientProvider from './ClientProvider';
-import { checkLogin, getUser, getProfilePicture } from '../services/api-services/server-operations/operations';
+import { auth } from '../auth';
 
 const ServerProvider: FunctionComponent<PropsWithChildren> = async ({ children }) => {
-  let user: UserType | undefined;
-  let profilePicture: string | undefined;
-
-  const isLoggedIn = await checkLogin();
-  if (isLoggedIn) {
-    const userRes = await getUser();
-    if (userRes.success) {
-      user = userRes.data;
-    }
-
-    const profilePictureRes = await getProfilePicture();
-    if (profilePictureRes.success) {
-      profilePicture = profilePictureRes.data;
-    }
-  }
+  const session = await auth();
 
   return (
-    <ClientProvider initialUser={user} initialProfilePicture={profilePicture}>
+    <SessionProvider session={session} refetchOnWindowFocus={true}>
       {children}
-    </ClientProvider>
+    </SessionProvider>
   );
 };
 

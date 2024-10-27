@@ -1,12 +1,18 @@
 'use server';
+import initTranslations from '@/app/i18n';
 import type { Metadata } from 'next';
 
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
+import { Props } from '../layout';
 
-export const generateMetadata = async (): Promise<Metadata> => {
+const i18nNamespaces = ['metadata'];
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { locale } = await params;
+  const i18n = await initTranslations(locale, i18nNamespaces);
   return {
-    title: 'Login - EasyFlow',
-    description: 'Login to EasyFlow',
+    title: i18n.t('metadata:login.title'),
+    description: i18n.t('metadata:login.description'),
   };
 };
 

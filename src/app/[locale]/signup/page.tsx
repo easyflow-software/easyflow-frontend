@@ -1,27 +1,19 @@
 'use server';
-import SignupForm from '@/src/components/signup-form/SignupForm';
-import TranslationsProvider from '@/src/providers/translation-provider/TranslationsProvider';
-import { checkLogin } from '@/src/services/api-services/server-operations/operations';
-import initTranslations from '@i18n';
+import SignupForm from '@/components/signup-form/SignupForm';
+import TranslationsProvider from '@/providers/translation-provider/TranslationsProvider';
+import initTranslations from '@app/i18n';
 import { Card, CardHeader } from '@nextui-org/react';
-import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
-import { HomeProps } from '../page';
+import { Props } from '../layout';
 
 const i18nNamespaces = ['signup', 'errors'];
 
-const Home: FunctionComponent<HomeProps> = async props => {
+const Home: FunctionComponent<Props> = async props => {
   const params = await props.params;
 
   const { locale } = params;
 
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
-
-  // Check if user is already logged in
-  const isLoggedIn = await checkLogin();
-  if (isLoggedIn) {
-    redirect('/chat');
-  }
 
   return (
     <TranslationsProvider resources={resources} locale={locale} namespaces={i18nNamespaces}>

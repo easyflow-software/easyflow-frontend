@@ -1,11 +1,13 @@
-'use sever';
-import { checkLogin } from '@/src/services/api-services/server-operations/operations';
+'use ';
+import { auth } from '@/src/auth';
 import { redirect } from 'next/navigation';
 import { FunctionComponent, ReactElement } from 'react';
 
 const Chat: FunctionComponent = async (): Promise<ReactElement> => {
-  const isLoggedIn = await checkLogin();
-  if (!isLoggedIn) {
+  const session = await auth();
+
+  console.log('Refresh token on page: ', session?.user.refreshToken);
+  if (!session) {
     redirect('/login');
   }
 

@@ -1,11 +1,10 @@
 'use client';
 import useSignup from '@/src/hooks/useSignup';
-import { UserContext } from '@/src/providers/user-provider/UserProvider';
 import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
 import { Copy, Download, WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useContext, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
@@ -17,7 +16,6 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
   const { initialValues, generateKeys, signup, checkIfUserExists, hashedPassword, isGeneratingKeys } = useSignup();
-  const { setUser, setProfilePicture } = useContext(UserContext);
 
   const stepperRef = useRef<StepperRef>(null);
 
@@ -28,15 +26,10 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   const validationSchema = createValidationSchema(t);
 
   useEffect(() => {
-    // set the user to undefined when the component loads so the avatar is not displayed
-    // It isn't possible anways to get on the page when you are logged in
-    setUser(undefined);
-    setProfilePicture(undefined);
-  }, [setUser, setProfilePicture]);
-
-  useEffect(() => {
     setError(undefined);
   }, [values]);
+
+  router.prefetch('/login');
 
   return (
     <div className="p-3">
@@ -103,6 +96,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('password', true)}
                   touched={touched.password}
                   error={errors.password}
+                  isRequired
                 />
                 <PasswordInput
                   label={t('signup:form.confirmPassword.label')}
@@ -112,6 +106,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   onBlur={() => setFieldTouched('confirmPassword', true)}
                   touched={touched.confirmPassword}
                   error={errors.confirmPassword}
+                  isRequired
                 />
                 <div className="mb-3">
                   <PasswordRequirement
