@@ -1,7 +1,7 @@
 import { SignupResponse, UserResponse } from '@/src/types/response.types';
 
 enum APIOperation {
-  REFRESH_TOKEN = 'post:auth/refresh',
+  REFRESH_TOKEN = 'get:auth/refresh',
   CHECK_LOGIN = 'get:auth/check',
   SIGNUP = 'post:user/signup',
   LOGIN = 'post:auth/login',

@@ -4,11 +4,11 @@ import TranslationsProvider from '@/providers/translation-provider/TranslationsP
 import initTranslations from '@app/i18n';
 import { Card, CardHeader } from '@nextui-org/react';
 import { FunctionComponent } from 'react';
-import { HomeProps } from '../page';
+import { Props } from '../layout';
 
 const i18nNamespaces = ['signup', 'errors'];
 
-const Home: FunctionComponent<HomeProps> = async props => {
+const Home: FunctionComponent<Props> = async props => {
   const params = await props.params;
 
   const { locale } = params;
