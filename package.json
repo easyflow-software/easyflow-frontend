@@ -10,7 +10,7 @@
     "lint": "eslint",
     "precommit": "bun run prettify && lint-staged --no-stash",
     "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\"",
-    "prepare": "husky"
+    "prepare": "husky prepare"
   },
   "dependencies": {
     "@nextui-org/react": "2.4.8",
