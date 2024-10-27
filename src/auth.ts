@@ -84,63 +84,32 @@ const callbacks: NextAuthConfig['callbacks'] = {
         ...token,
         user: user as UserType,
       };
-    }
-
-    // Return previous token if the access token has not expired
-    if (Date.now() < token.user.accessTokenExpires * 1000) {
+    } else if (Date.now() < token.user.accessTokenExpires * 1000) {
       return token;
-    }
-
-    // Access token has expired, try to refresh it
-    if (token.user.refreshToken) {
+    } else if (token.user.refreshToken) {
       // If a refresh is already in progress, wait for it to complete
-      const existingRefresh = currentRefreshes.get(token.user.id);
-      if (existingRefresh) {
-        try {
-          const result = await existingRefresh;
-          currentRefreshes.delete(token.user.id); // Immediate cleanup
-
-          if (result) {
-            return {
-              ...token,
-              user: {
-                ...token.user,
-                accessToken: result.accessToken,
-                accessTokenExpires: result.accessTokenExpires,
-                refreshToken: result.refreshToken,
-              },
-            };
-          }
-          return null;
-        } catch {
-          currentRefreshes.delete(token.user.id);
-          return null;
-        }
+      let existingRefresh = currentRefreshes.get(token.user.id);
+      // No refresh in progress start one
+      if (!existingRefresh) {
+        existingRefresh = refreshAccessToken(token);
+        currentRefreshes.set(token.user.id, existingRefresh);
       }
-
-      // Start new refresh
-      const refreshPromise = refreshAccessToken(token);
-      currentRefreshes.set(token.user.id, refreshPromise);
-
       try {
-        const result = await refreshPromise;
-        currentRefreshes.delete(token.user.id);
+        const result = await existingRefresh;
+        currentRefreshes.delete(token.user.id); // Immediate cleanup
 
-        if (!result) {
-          return null;
+        if (result) {
+          token.user.refreshToken = result.refreshToken;
+          token.user.accessToken = result.accessToken;
+          token.user.accessTokenExpires = result.accessTokenExpires;
+          console.log('Returning new token', token);
+          return token;
         }
 
-        // Create new token object with all updated fields
-        return {
-          ...token,
-          user: {
-            ...token.user,
-            accessToken: result.accessToken,
-            accessTokenExpires: result.accessTokenExpires,
-            refreshToken: result.refreshToken, // Ensure refresh token is updated
-          },
-        };
+        console.log('No refresh to return');
+        return null;
       } catch {
+        console.log('Failed to return refresh');
         currentRefreshes.delete(token.user.id);
         return null;
       }
@@ -150,13 +119,10 @@ const callbacks: NextAuthConfig['callbacks'] = {
   },
 
   async session({ session, token }) {
-    if (token) {
-      return {
-        ...session,
-        user: token.user,
-      };
-    }
-    return session;
+    return {
+      ...session,
+      user: token.user,
+    };
   },
 };
 
