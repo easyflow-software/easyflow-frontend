@@ -1,10 +1,11 @@
-import { object, string } from 'yup';
+import { number, object, string } from 'yup';
 
 type EnviromentConfiguration = {
   NODE_ENV: 'development' | 'test' | 'production';
   NEXT_PUBLIC_REMOTE_URL: string;
   NEXT_PUBLIC_BASE_URL: string;
   AUTH_SECRET: string;
+  ACCESS_TOKEN_BUFFER_TIME: number;
 };
 
 class AppConfiguration {
@@ -26,6 +27,7 @@ class AppConfiguration {
         NEXT_PUBLIC_REMOTE_URL: string().required(),
         NEXT_PUBLIC_BASE_URL: string().required(),
         AUTH_SECRET: string().required(),
+        ACCESS_TOKEN_BUFFER_TIME: number().default(60),
       })
       .validateSync(process.env, {
         stripUnknown: true,

@@ -1,15 +1,15 @@
 'use client';
+import { ErrorCode } from '@/enums/error-codes.enum';
 import useLogin from '@/src/hooks/useLogin';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
-import { signIn } from 'next-auth/react';
-import { ErrorCode } from '@/enums/error-codes.enum';
 
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();

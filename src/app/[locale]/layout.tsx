@@ -3,12 +3,12 @@ import { dir } from 'i18next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
-import ClientProvider from '../../providers/ClientProvider';
-import ServerProvider from '../../providers/ServerProider';
-import '../globals.css';
-import '../i18n';
 import Nav from '../../components/nav/Nav';
 import NavWrapper from '../../components/nav/NavBarWrapper';
+import ClientProvider from '../../providers/client-provider/ClientProvider';
+import ServerProvider from '../../providers/server-provider/ServerProvider';
+import '../globals.css';
+import '../i18n';
 import initTranslations from '../i18n';
 
 const inter = Inter({ subsets: ['latin'] });

@@ -58,7 +58,6 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
   const logout = async (): Promise<void> => {
     const res = await clientRequest({ op: APIOperation.LOGOUT });
     if (!res.success) {
-      console.error('Failed to logout', res.errorCode);
       return;
     }
     await signOut();

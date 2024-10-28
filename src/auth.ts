@@ -1,14 +1,14 @@
 import NextAuth, { NextAuthConfig } from 'next-auth';
+import 'next-auth/jwt';
+import { JWT } from 'next-auth/jwt';
 import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
-import { APIOperation } from './services/api-services/common';
-import { UserType } from './types/user.type';
-import 'next-auth/jwt';
 import AppConfiguration from './config/app.config';
+import { APIOperation } from './services/api-services/common';
+import serverRequest from './services/api-services/requests/server-side';
 import { req } from './services/api-services/utils';
 import { InvalidSignin } from './types/next-auth.types';
-import serverRequest from './services/api-services/requests/server-side';
-import { JWT } from 'next-auth/jwt';
+import { UserType } from './types/user.type';
 
 declare module 'next-auth' {
   interface Session {
@@ -33,7 +33,6 @@ const currentRefreshes = new Map<string, Promise<TokenPayload | null>>();
 
 // Helper function to handle token refresh
 const refreshAccessToken = async (token: JWT): Promise<TokenPayload | null> => {
-  console.log('refresh: ', token.user.refreshToken);
   try {
     const res = await req<APIOperation.REFRESH_TOKEN>(AppConfiguration.get('NEXT_PUBLIC_REMOTE_URL'), {
       op: APIOperation.REFRESH_TOKEN,
@@ -46,10 +45,13 @@ const refreshAccessToken = async (token: JWT): Promise<TokenPayload | null> => {
     return {
       ...res.data,
     };
-  } catch (error) {
-    console.error('RefreshAccessTokenError:', error);
+  } catch {
     return null;
   }
+};
+
+const hash = async (token: string): Promise<string> => {
+  return Buffer.from(await crypto.subtle.digest('SHA-1', Buffer.from(token))).toString('base64');
 };
 
 const providers: Provider[] = [
@@ -84,33 +86,30 @@ const callbacks: NextAuthConfig['callbacks'] = {
         ...token,
         user: user as UserType,
       };
-    } else if (Date.now() < token.user.accessTokenExpires * 1000) {
+    } else if (Date.now() < (token.user.accessTokenExpires - AppConfiguration.get('ACCESS_TOKEN_BUFFER_TIME')) * 1000) {
       return token;
     } else if (token.user.refreshToken) {
       // If a refresh is already in progress, wait for it to complete
-      let existingRefresh = currentRefreshes.get(token.user.id);
+      let existingRefresh = currentRefreshes.get(await hash(token.user.refreshToken));
       // No refresh in progress start one
       if (!existingRefresh) {
         existingRefresh = refreshAccessToken(token);
-        currentRefreshes.set(token.user.id, existingRefresh);
+        currentRefreshes.set(await hash(token.user.refreshToken), existingRefresh);
       }
       try {
         const result = await existingRefresh;
-        currentRefreshes.delete(token.user.id); // Immediate cleanup
+        currentRefreshes.delete(await hash(token.user.refreshToken)); // Immediate cleanup
 
         if (result) {
           token.user.refreshToken = result.refreshToken;
           token.user.accessToken = result.accessToken;
           token.user.accessTokenExpires = result.accessTokenExpires;
-          console.log('Returning new token', token);
           return token;
         }
 
-        console.log('No refresh to return');
         return null;
       } catch {
-        console.log('Failed to return refresh');
-        currentRefreshes.delete(token.user.id);
+        currentRefreshes.delete(await hash(token.user.refreshToken));
         return null;
       }
     }
