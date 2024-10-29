@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders, AxiosResponse } from 'axios';
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { APIContext, APIOperation } from './common';
-import { Session } from 'next-auth';
 
 const stringifyQueryValues = (endpoint: string, query: Record<string, string | string[]>): string => {
   const urlSearchParams = new URLSearchParams();
@@ -29,7 +29,7 @@ const replaceURLParams = (endpoint: string, params: Record<string, string | numb
 const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   endpointPrefix: string,
   options: Omit<APIContext[T], 'responseType'>,
-  session?: Session | null,
+  cookies?: RequestCookie[],
 ): Promise<AxiosResponse<R>> => {
   if (!Object.values(APIOperation).includes(options.op)) throw new Error(`Invalid operation: ${options.op}`);
 
@@ -54,8 +54,11 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
     }
   }
 
-  if (session) {
-    headers.set('Authorization', `Bearer ${session.user.accessToken}`);
+  if (cookies) {
+    let cookieString = '';
+    cookies.forEach(cookie => {
+      cookieString.concat(` ${cookie.name}=${cookie.value};`);
+    });
   }
 
   switch (httpMethod) {

@@ -1,13 +1,13 @@
 'use client';
-import { ErrorCode } from '@/enums/error-codes.enum';
 import useLogin from '@/src/hooks/useLogin';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { APIOperation } from '../../services/api-services/common';
+import { clientRequest } from '../../services/api-services/requests/client-side';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
 
@@ -23,6 +23,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
 
   useEffect(() => {
     router.prefetch('/signup');
+    router.prefetch('/chat');
   }, []);
 
   return (
@@ -31,15 +32,11 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          const res = await signIn('credentials', {
-            email: values.email,
-            password: values.password,
-            redirect: false,
-          });
-          if (res?.ok && res.url) {
-            router.push(res.url === window.location.href ? '/chat' : res.url);
+          const res = await clientRequest<APIOperation.LOGIN>({ op: APIOperation.LOGIN, payload: values });
+          if (res.success) {
+            router.push('/chat');
           } else {
-            setError(res?.code ?? ErrorCode.API_ERROR);
+            setError(res.errorCode);
           }
         }}
       >

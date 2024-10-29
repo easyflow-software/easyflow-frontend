@@ -49,6 +49,8 @@ export default [
     },
 
     rules: {
+      'no-console': 'warn',
+
       'prettier/prettier': [
         'error',
         {},
