@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - '*'
   release:
     types:
       - 'published'
@@ -82,11 +82,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          push: true
+          push: github.ref_name == 'main' || github.event_name == 'release'
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: setup railway cli
+        if: github.ref_name == 'main' || github.event_name == 'release'
         run: npm i -g @railway/cli
 
       - name: trigger redeploy on railway development
