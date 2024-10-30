@@ -1,7 +1,7 @@
 'use server';
+import initTranslations from '@/app/i18n';
 import type { Metadata } from 'next';
 
-import initTranslations from '@/app/i18n';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import { Props } from '../layout';
 
@@ -11,8 +11,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   const { locale } = await params;
   const i18n = await initTranslations(locale, i18nNamespaces);
   return {
-    title: i18n.t('metadata:profile.title'),
-    description: i18n.t('metadata:profile.description'),
+    title: i18n.t('metadata:auth.title'),
   };
 };
 

@@ -1,9 +1,9 @@
 'use server';
 import type { Metadata } from 'next';
 
+import initTranslations from '@/app/i18n';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import { Props } from '../layout';
-import initTranslations from '@/app/i18n';
 
 const i18nNamespaces = ['metadata'];
 

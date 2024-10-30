@@ -55,10 +55,7 @@ const req = async <T extends APIOperation, R = APIContext[T]['responseType']>(
   }
 
   if (cookies) {
-    let cookieString = '';
-    cookies.forEach(cookie => {
-      cookieString.concat(` ${cookie.name}=${cookie.value};`);
-    });
+    headers.set('Cookie', cookies.map(c => `${c.name}=${c.value}`).join('; '));
   }
 
   switch (httpMethod) {

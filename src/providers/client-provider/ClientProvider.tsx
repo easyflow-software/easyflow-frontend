@@ -3,6 +3,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, PropsWithChildren } from 'react';
+import { UserProvider } from '../user-provider/UserProvider';
 
 const ClientProvider: FunctionComponent<PropsWithChildren> = ({ children }) => {
   // using the useRouter hook to get the router object for next ui link to navigate with the proper router and not just anchors
@@ -12,7 +13,7 @@ const ClientProvider: FunctionComponent<PropsWithChildren> = ({ children }) => {
   return (
     <NextUIProvider navigate={router.push}>
       <ThemeProvider attribute="class" defaultTheme="dark">
-        {children}
+        <UserProvider>{children}</UserProvider>
       </ThemeProvider>
     </NextUIProvider>
   );

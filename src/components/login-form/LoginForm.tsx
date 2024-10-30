@@ -1,10 +1,11 @@
 'use client';
+import { UserContext } from '@/providers/user-provider/UserProvider';
 import useLogin from '@/src/hooks/useLogin';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
+import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { APIOperation } from '../../services/api-services/common';
 import { clientRequest } from '../../services/api-services/requests/client-side';
@@ -16,6 +17,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
   const router = useRouter();
 
   const { initialValues } = useLogin();
+  const { refetchUser } = useContext(UserContext);
 
   const [error, setError] = useState<string>();
 
@@ -34,6 +36,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         onSubmit={async values => {
           const res = await clientRequest<APIOperation.LOGIN>({ op: APIOperation.LOGIN, payload: values });
           if (res.success) {
+            await refetchUser();
             router.push('/chat');
           } else {
             setError(res.errorCode);

@@ -1,8 +1,17 @@
 'use client';
+import { UserContext } from '@/providers/user-provider/UserProvider';
 import logo from '@/public/assets/logo.svg';
+import { APIOperation } from '@/services/api-services/common';
+import { clientRequest } from '@/services/api-services/requests/client-side';
 import { ParamsType } from '@/types/params.type';
 import {
+  Avatar,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
   Link,
   Navbar,
   NavbarBrand,
@@ -12,19 +21,22 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/react';
+import { SignOut, User } from '@phosphor-icons/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
 
 const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useTranslation();
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, setUser } = useContext(UserContext);
 
   const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean; hidden: boolean }[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     setMenuItems([
@@ -45,13 +57,14 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
     ]);
   }, [pathname, t]);
 
-  // const logout = async (): Promise<void> => {
-  //   const res = await clientRequest({ op: APIOperation.LOGOUT });
-  //   if (!res.success) {
-  //     return;
-  //   }
-  //   router.push('/login');
-  // };
+  const logout = async (): Promise<void> => {
+    const res = await clientRequest({ op: APIOperation.LOGOUT });
+    if (!res.success) {
+      return;
+    }
+    setUser(undefined);
+    router.push('/login');
+  };
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} isMenuOpen={isMenuOpen} isBordered>
@@ -82,16 +95,15 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         <NavbarItem>
           <LangSwitcher params={params} />
         </NavbarItem>
-        {false ? (
+        {user ? (
           <NavbarItem>
-            {/* TODO: add new mehtod
             <Dropdown>
               <DropdownTrigger>
                 <Avatar
                   className="hover:cursor-pointer"
-                  src={session.user.profilePicture}
-                  alt={session.user.name}
-                  name={session.user.name}
+                  src={user.profilePicture}
+                  alt={user.name}
+                  name={user.name}
                   isBordered
                 />
               </DropdownTrigger>
@@ -113,7 +125,7 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
                   </DropdownItem>
                 </DropdownSection>
               </DropdownMenu>
-            </Dropdown> */}
+            </Dropdown>
           </NavbarItem>
         ) : (
           <>
