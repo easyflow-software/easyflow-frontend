@@ -1,10 +1,8 @@
 'use server';
-import { auth } from '@/auth';
-import LoginForm from '@components/login-form/LoginForm';
-import TranslationsProvider from '@providers/translation-provider/TranslationsProvider';
 import initTranslations from '@app/i18n';
+import LoginForm from '@components/login-form/LoginForm';
 import { Card, CardHeader } from '@nextui-org/react';
-import { redirect } from 'next/navigation';
+import TranslationsProvider from '@providers/translation-provider/TranslationsProvider';
 import { FunctionComponent } from 'react';
 
 interface HomeProps {
@@ -21,11 +19,6 @@ const Home: FunctionComponent<HomeProps> = async props => {
   const { locale } = params;
 
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
-
-  const session = await auth();
-  if (session) {
-    redirect('/chat');
-  }
 
   return (
     <TranslationsProvider resources={resources} locale={locale} namespaces={i18nNamespaces}>

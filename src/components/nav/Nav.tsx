@@ -1,6 +1,9 @@
 'use client';
+import { UserContext } from '@/providers/user-provider/UserProvider';
+import logo from '@/public/assets/logo.svg';
 import { APIOperation } from '@/services/api-services/common';
 import { clientRequest } from '@/services/api-services/requests/client-side';
+import { ParamsType } from '@/types/params.type';
 import {
   Avatar,
   Button,
@@ -19,24 +22,21 @@ import {
   NavbarMenuToggle,
 } from '@nextui-org/react';
 import { SignOut, User } from '@phosphor-icons/react';
-import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { FunctionComponent, ReactElement, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
-import { ParamsType } from '@/types/params.type';
-import logo from '@/public/assets/logo.svg';
 
 const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useTranslation();
   const pathname = usePathname();
-
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { user, setUser } = useContext(UserContext);
 
   const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean; hidden: boolean }[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     setMenuItems([
@@ -44,7 +44,9 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         label: t('navbar:menuLabels.chat'),
         href: '/chat',
         active: pathname.endsWith('chat'),
-        hidden: !session?.user,
+        // add some form of logged in state
+        // hidden: !session?.user,
+        hidden: false,
       },
       {
         label: t('navbar:menuLabels.about'),
@@ -53,15 +55,15 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         hidden: false,
       },
     ]);
-  }, [pathname, session?.user, t]);
+  }, [pathname, t]);
 
   const logout = async (): Promise<void> => {
     const res = await clientRequest({ op: APIOperation.LOGOUT });
     if (!res.success) {
-      console.error('Failed to logout', res.errorCode);
       return;
     }
-    await signOut();
+    setUser(undefined);
+    router.push('/login');
   };
 
   return (
@@ -93,16 +95,15 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
         <NavbarItem>
           <LangSwitcher params={params} />
         </NavbarItem>
-        {session?.user || session?.user.profilePicture ? (
+        {user ? (
           <NavbarItem>
-            {/* TODO: add s3 integration for profilepictures in backend and past url */}
             <Dropdown>
               <DropdownTrigger>
                 <Avatar
                   className="hover:cursor-pointer"
-                  src={session.user.profilePicture}
-                  alt={session.user.name}
-                  name={session.user.name}
+                  src={user.profilePicture}
+                  alt={user.name}
+                  name={user.name}
                   isBordered
                 />
               </DropdownTrigger>

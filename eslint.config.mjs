@@ -1,66 +1,43 @@
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
+import next from '@next/eslint-plugin-next';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import jsxA11Y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-plugin-prettier';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
 
 export default [
   {
-    ignores: ['node_modules/*', '.next/*', '.out/*', '!**/.prettierrc'],
+    ignores: ['node_modules/*', '.next/*', '.out/*', '!**/.prettierrc', '.lintstagedrc.cjs'],
   },
-  ...compat.extends('eslint:recommended'),
   {
     plugins: {
       prettier,
+      '@typescript-eslint': typescriptEslint,
+      react,
+      'react-hooks': reactHooks,
+      'jsx-a11y': jsxA11Y,
+      '@next/next': next,
     },
 
     languageOptions: {
       globals: {
         ...globals.node,
+        ...globals.browser,
       },
 
+      parser: tsParser,
       ecmaVersion: 14,
       sourceType: 'module',
 
       parserOptions: {
         project: ['./tsconfig.json'],
-      },
-    },
-  },
-  ...compat
-    .extends(
-      'eslint:recommended',
-      'plugin:@next/next/recommended',
-      'plugin:@typescript-eslint/recommended',
-      'plugin:react/recommended',
-      'plugin:jsx-a11y/recommended',
-      'plugin:prettier/recommended',
-      'plugin:@typescript-eslint/recommended',
-    )
-    .map(config => ({
-      ...config,
-      files: ['**/*.ts', '**/*.tsx'],
-    })),
-  {
-    files: ['**/*.ts', '**/*.tsx'],
 
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
-
-      parser: tsParser,
     },
 
     settings: {
@@ -72,6 +49,8 @@ export default [
     },
 
     rules: {
+      'no-console': 'warn',
+
       'prettier/prettier': [
         'error',
         {},
@@ -99,8 +78,8 @@ export default [
         },
       ],
 
-      '@typescript-eslint/no-explicit-any': ['error'],
-      '@typescript-eslint/no-floating-promises': ['error'],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
       '@next/next/no-duplicate-head': 'off',
       'jsx-a11y/anchor-is-valid': 'off',
       'jsx-a11y/no-static-element-interactions': 'off',
@@ -108,6 +87,18 @@ export default [
       'jsx-a11y/no-noninteractive-element-interactions': 'off',
       'jsx-a11y/click-events-have-key-events': 'off',
       'jsx-a11y/mouse-events-have-key-events': 'off',
+    },
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+
+      parser: tsParser,
     },
   },
 ];

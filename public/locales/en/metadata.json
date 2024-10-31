@@ -3,6 +3,9 @@
     "title": "EasyFlow – About us",
     "description": "Everything you need to know about EasyFlow"
   },
+  "auth": {
+    "title": "EasyFlow – Auth"
+  },
   "chat": {
     "title": "EasyFlow – Chat",
     "description": "Chat privatly with friends and family."

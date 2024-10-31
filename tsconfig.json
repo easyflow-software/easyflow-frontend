@@ -31,13 +31,5 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "i18n.config.ts",
-    "next.config.mjs",
-    "postcss.config.mjs"
-  ]
+  "include": ["**/*.cjs", "**/*.mjs", "**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"]
 }
