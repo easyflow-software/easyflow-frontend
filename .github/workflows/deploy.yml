@@ -45,7 +45,7 @@ jobs:
       - name: build project
         env:
           NEXT_PUBLIC_BASE_URL: ${{ github.event_name == 'release' && 'https://easyflow.chat' || 'https://dev.easyflow.chat'}}
-          NEXT_PUBLIC_REMOTE_URL: ${{ github.event_name == 'release' && 'https://backend.easyflow.chat' || 'https://dev-backend.easyflow.chat'}}
+          NEXT_PUBLIC_REMOTE_URL: ${{ github.event_name == 'release' && 'https://backend.easyflow.chat/' || 'https://dev-backend.easyflow.chat/'}}
           NEXT_PUBLIC_STAGE: ${{ github.event_name == 'release' && 'production' || 'test'}}
         run: bun --bun run build
 
