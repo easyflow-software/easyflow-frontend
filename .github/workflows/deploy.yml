@@ -82,7 +82,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          push: github.ref_name == 'main' || github.event_name == 'release'
+          push: ${{ github.ref_name == 'main' || github.event_name == 'release' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
