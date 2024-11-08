@@ -70,9 +70,10 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: ${{ github.workspace }}/.next/
+          path: ${{ github.workspace }}/.next
           name: easyflow-frontend-${{ github.sha }}
           if-no-files-found: error
+          include-hidden-files: true
 
   docker:
     needs: [build, lint, format]
