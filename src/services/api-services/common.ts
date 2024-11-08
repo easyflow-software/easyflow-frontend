@@ -7,7 +7,7 @@ enum APIOperation {
   LOGIN = 'post:auth/login',
   LOGOUT = 'get:auth/logout',
   CHECK_IF_USER_EXISTS = 'get:user/exists/{email}',
-  GET_USER = 'get:user',
+  GET_USER = 'get:user/',
   GET_PROFILE_PICTURE = 'get:user/profile-picture',
 }
 
