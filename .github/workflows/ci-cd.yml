@@ -93,6 +93,7 @@ jobs:
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
+          path: ${{ github.workspace }}/.next
           name: easyflow-frontend-${{ github.sha }}
 
       - name: remove cache
