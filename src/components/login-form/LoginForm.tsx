@@ -26,7 +26,6 @@ const LoginForm: FunctionComponent = (): ReactElement => {
 
   useEffect(() => {
     router.prefetch('/signup');
-    router.prefetch('/chat');
   }, []);
 
   return (
