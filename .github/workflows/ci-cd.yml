@@ -52,16 +52,25 @@ jobs:
       - name: install packages
         run: bun install
 
+      - name: build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/bun.lockb') }}-
+
       - name: build
         run: bun run build
         env:
-          NEXT_PUBLIC_REMOTE_URL: ${{ github.event_name == 'release' && 'https://backend.easyflow.chat/' || 'https://dev-backend.easyflow.chat/'}} 
+          NEXT_PUBLIC_REMOTE_URL: ${{ github.event_name == 'release' && 'https://backend.easyflow.chat/' || 'https://dev-backend.easyflow.chat/'}}
           NEXT_PUBLIC_BASE_URL: ${{ github.event_name == 'release' && 'https://easyflow.chat' || 'https://dev.easyflow.chat'}}
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
-          path: ./.next/
+          path: ${{ github.workspace }}/.next/
           name: easyflow-frontend-${{ github.sha }}
           if-no-files-found: error
 
@@ -84,6 +93,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: easyflow-frontend-${{ github.sha }}
+
+      - name: remove cache
+        run: rm -rf .next/cache
 
       - name: login to docker
         uses: docker/login-action@v3
