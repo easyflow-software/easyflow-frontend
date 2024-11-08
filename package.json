@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "precommit": "bun run prettify && lint-staged --no-stash",
-    "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
+    "prettify": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss}\"",
+    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "dependencies": {
     "@nextui-org/react": "2.4.8",
