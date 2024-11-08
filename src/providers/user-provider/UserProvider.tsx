@@ -43,9 +43,9 @@ const UserProvider: FunctionComponent<PropsWithChildren> = ({ children }): React
   // automatic refreshes on the client side before the token expires
   useEffect(() => {
     const refreshToken = async (): Promise<void> => {
-      await clientRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
+      const res = await clientRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
 
-      timer.current = setTimeout(refreshToken, 1000 * 60);
+      timer.current = setTimeout(refreshToken, res.success ? (res.data.accessTokenExpiresIn - 60) * 1000 : 60 * 1000);
     };
 
     void refreshToken();

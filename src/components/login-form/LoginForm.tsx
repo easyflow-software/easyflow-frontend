@@ -4,7 +4,7 @@ import useLogin from '@/src/hooks/useLogin';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
 import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { APIOperation } from '../../services/api-services/common';
@@ -15,6 +15,7 @@ import createValidationSchema from './validation-schema';
 const LoginForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { initialValues } = useLogin();
   const { refetchUser } = useContext(UserContext);
@@ -37,7 +38,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
           const res = await clientRequest<APIOperation.LOGIN>({ op: APIOperation.LOGIN, payload: values });
           if (res.success) {
             await refetchUser();
-            router.push('/chat');
+            router.push(searchParams.get('callback') ?? '/chat');
           } else {
             setError(res.errorCode);
           }
