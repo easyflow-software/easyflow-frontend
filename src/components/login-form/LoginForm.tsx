@@ -26,6 +26,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
 
   useEffect(() => {
     router.prefetch('/signup');
+    router.prefetch('/chat');
   }, []);
 
   return (
@@ -37,7 +38,8 @@ const LoginForm: FunctionComponent = (): ReactElement => {
           const res = await clientRequest<APIOperation.LOGIN>({ op: APIOperation.LOGIN, payload: values });
           if (res.success) {
             await refetchUser();
-            router.push(searchParams.get('callback') ?? '/chat');
+            router.replace(searchParams.get('callback') ?? '/chat');
+            router.refresh();
           } else {
             setError(res.errorCode);
           }

@@ -12,7 +12,8 @@ const Auth = (): void => {
     const refreshToken = async (): Promise<void> => {
       const res = await clientRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
       if (!res.success) {
-        router.push(`/login?callback=${params.get('callback') || '/chat'}`);
+        router.replace(`/login?callback=${params.get('callback') || '/chat'}`);
+        router.refresh();
       } else {
         router.push(params.get('callback') || '/chat');
       }
