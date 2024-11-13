@@ -1,9 +1,5 @@
 'use client';
-import { UserContext } from '@/providers/user-provider/UserProvider';
 import logo from '@/public/assets/logo.svg';
-import { APIOperation } from '@/services/api-services/common';
-import { clientRequest } from '@/services/api-services/requests/client-side';
-import { ParamsType } from '@/types/params.type';
 import {
   Avatar,
   Button,
@@ -22,6 +18,10 @@ import {
   NavbarMenuToggle,
 } from '@nextui-org/react';
 import { SignOut, User } from '@phosphor-icons/react';
+import { UserContext } from '@src/providers/user-provider/UserProvider';
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
+import { ParamsType } from '@src/types/params.type';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';

@@ -1,7 +1,7 @@
 'use client';
-import { APIOperation } from '@/services/api-services/common';
-import { clientRequest } from '@/services/api-services/requests/client-side';
-import { UserType } from '@/types/user.type';
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
+import { UserType } from '@src/types/user.type';
 import {
   createContext,
   Dispatch,

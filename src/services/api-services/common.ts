@@ -1,4 +1,4 @@
-import { SignupResponse, UserResponse } from '@/src/types/response.types';
+import { SignupResponse, UserResponse } from '@src/types/response.types';
 
 enum APIOperation {
   REFRESH_TOKEN = 'get:auth/refresh',

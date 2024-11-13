@@ -1,14 +1,14 @@
 'use client';
-import { UserContext } from '@/providers/user-provider/UserProvider';
-import useLogin from '@/src/hooks/useLogin';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
 import { WarningCircle } from '@phosphor-icons/react';
+import useLogin from '@src/hooks/useLogin';
+import { UserContext } from '@src/providers/user-provider/UserProvider';
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { Form, Formik } from 'formik';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { APIOperation } from '../../services/api-services/common';
-import { clientRequest } from '../../services/api-services/requests/client-side';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
 

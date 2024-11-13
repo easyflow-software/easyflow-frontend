@@ -1,4 +1,4 @@
-import { ErrorCode } from '../enums/error-codes.enum';
+import { ErrorCode } from '@src/enums/error-codes.enum';
 
 export type RequestResponse<T> =
   | {

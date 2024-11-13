@@ -1,5 +1,5 @@
 'use server';
-import TranslationsProvider from '@/providers/translation-provider/TranslationsProvider';
+import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
 import { FunctionComponent } from 'react';
 import initTranslations from '../i18n';
 import { Props } from './layout';

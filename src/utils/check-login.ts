@@ -1,5 +1,5 @@
-import { APIOperation } from '@/services/api-services/common';
-import serverRequest from '@/services/api-services/requests/server-side';
+import { APIOperation } from '@src/services/api-services/common';
+import serverRequest from '@src/services/api-services/requests/server-side';
 import { redirect } from 'next/navigation';
 
 export const checkLogin = async (callback: string): Promise<void> => {

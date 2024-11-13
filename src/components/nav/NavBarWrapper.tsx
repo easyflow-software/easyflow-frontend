@@ -1,7 +1,7 @@
 'use server';
-import initTranslations from '@/src/app/i18n';
+import initTranslations from '@src/app/i18n';
+import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
 import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
-import TranslationsProvider from '../../providers/translation-provider/TranslationsProvider';
 
 interface NavWrapperProps {
   params: {

@@ -1,7 +1,7 @@
 'use client';
-import useSignup from '@/src/hooks/useSignup';
 import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
 import { Copy, Download, WarningCircle } from '@phosphor-icons/react';
+import useSignup from '@src/hooks/useSignup';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
