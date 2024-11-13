@@ -1,6 +1,6 @@
 'use client';
-import { ErrorCode } from '@/enums/error-codes.enum';
-import { RequestResponse } from '@/types/request-response.type';
+import { ErrorCode } from '@src/enums/error-codes.enum';
+import { RequestResponse } from '@src/types/request-response.type';
 import { AxiosError } from 'axios';
 import { APIContext, APIOperation } from '../common';
 import { req } from '../utils';

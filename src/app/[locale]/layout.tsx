@@ -1,11 +1,11 @@
+import Nav from '@src/components/nav/Nav';
+import NavWrapper from '@src/components/nav/NavBarWrapper';
+import ClientProvider from '@src/providers/client-provider/ClientProvider';
 import cx from 'classnames';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
-import Nav from '../../components/nav/Nav';
-import NavWrapper from '../../components/nav/NavBarWrapper';
-import ClientProvider from '../../providers/client-provider/ClientProvider';
 import '../globals.css';
 import '../i18n';
 import initTranslations from '../i18n';

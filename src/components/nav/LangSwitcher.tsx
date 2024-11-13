@@ -1,8 +1,8 @@
 'use client';
 import i18nConfig from '@/i18n.config';
-import { ParamsType } from '@/src/types/params.type';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react';
 import { CaretDown } from '@phosphor-icons/react';
+import { ParamsType } from '@src/types/params.type';
 import { usePathname, useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';

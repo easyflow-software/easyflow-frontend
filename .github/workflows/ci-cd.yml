@@ -3,13 +3,13 @@ name: CI/CD
 on:
   push:
     branches:
-      - '*'
+      - '**'
   release:
     types:
       - 'published'
   pull_request:
     branches:
-      - '*'
+      - '**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

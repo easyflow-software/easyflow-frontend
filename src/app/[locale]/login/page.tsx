@@ -1,10 +1,10 @@
 'use server';
-import initTranslations from '@app/i18n';
-import LoginForm from '@components/login-form/LoginForm';
 import { Card, CardHeader } from '@nextui-org/react';
-import TranslationsProvider from '@providers/translation-provider/TranslationsProvider';
-import { APIOperation } from '@services/api-services/common';
-import serverRequest from '@services/api-services/requests/server-side';
+import initTranslations from '@src/app/i18n';
+import LoginForm from '@src/components/login-form/LoginForm';
+import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
+import { APIOperation } from '@src/services/api-services/common';
+import serverRequest from '@src/services/api-services/requests/server-side';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 

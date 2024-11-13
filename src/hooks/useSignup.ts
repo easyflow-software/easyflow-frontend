@@ -1,10 +1,10 @@
 'use client';
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
+import { RequestResponse } from '@src/types/request-response.type';
+import { SignupResponse } from '@src/types/response.types';
+import { SignupType } from '@src/types/signup.type';
 import { useState } from 'react';
-import { APIOperation } from '../services/api-services/common';
-import { clientRequest } from '../services/api-services/requests/client-side';
-import { RequestResponse } from '../types/request-response.type';
-import { SignupResponse } from '../types/response.types';
-import { SignupType } from '../types/signup.type';
 
 const useSignup = (): {
   initialValues: SignupType;

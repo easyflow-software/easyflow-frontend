@@ -1,6 +1,6 @@
 'use client';
-import { APIOperation } from '@/services/api-services/common';
-import { clientRequest } from '@/services/api-services/requests/client-side';
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 

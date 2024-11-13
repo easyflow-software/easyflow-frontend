@@ -1,7 +1,7 @@
 'use server';
-import initTranslations from '@/app/i18n';
 import type { Metadata } from 'next';
 
+import initTranslations from '@src/app/i18n';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import { Props } from '../layout';
 

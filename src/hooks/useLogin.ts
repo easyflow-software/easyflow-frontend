@@ -1,10 +1,11 @@
 'use client';
-import { APIOperation } from '../services/api-services/common';
-import { clientRequest } from '../services/api-services/requests/client-side';
-import { LoginType } from '../types/login.type';
-import { RequestResponse } from '../types/request-response.type';
-import { UserResponse } from '../types/response.types';
-import { UserType } from '../types/user.type';
+
+import { APIOperation } from '@src/services/api-services/common';
+import { clientRequest } from '@src/services/api-services/requests/client-side';
+import { LoginType } from '@src/types/login.type';
+import { RequestResponse } from '@src/types/request-response.type';
+import { UserResponse } from '@src/types/response.types';
+import { UserType } from '@src/types/user.type';
 
 const useLogin = (): {
   initialValues: LoginType;

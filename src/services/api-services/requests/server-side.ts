@@ -1,6 +1,6 @@
-import AppConfiguration from '@/config/app.config';
-import { ErrorCode } from '@/enums/error-codes.enum';
-import { RequestResponse } from '@/types/request-response.type';
+import AppConfiguration from '@src/config/app.config';
+import { ErrorCode } from '@src/enums/error-codes.enum';
+import { RequestResponse } from '@src/types/request-response.type';
 import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 import { APIContext, APIOperation } from '../common';
