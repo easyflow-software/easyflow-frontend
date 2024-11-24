@@ -1,7 +1,7 @@
 'use client';
 
 import { Input, InputProps } from '@nextui-org/react';
-import { Eye, EyeSlash } from '@phosphor-icons/react';
+import { Eye, EyeSlash } from '@phosphor-icons/react/dist/ssr';
 import { FunctionComponent, ReactElement, useState } from 'react';
 
 interface PasswordInputProps

@@ -1,6 +1,6 @@
 'use client';
 import { Button, CircularProgress, Divider, Input, Link } from '@nextui-org/react';
-import { Copy, Download, WarningCircle } from '@phosphor-icons/react';
+import { Copy, Download, WarningCircle } from '@phosphor-icons/react/dist/ssr';
 import useSignup from '@src/hooks/useSignup';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -66,7 +66,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.email.label')}
                   placeholder={t('signup:form.email.placeholder')}
                   value={values.email}
-                  onChange={e => setFieldValue('email', e.target.value)}
+                  onChange={e => setFieldValue('email', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('email', true)}
                   isInvalid={touched.email && !!errors.email}
                   errorMessage={errors.email ? errors.email : undefined}
@@ -80,7 +80,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.name.label')}
                   placeholder={t('signup:form.name.placeholder')}
                   value={values.name}
-                  onChange={e => setFieldValue('name', e.target.value)}
+                  onChange={e => setFieldValue('name', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('name', true)}
                   isInvalid={touched.name && !!errors.name}
                   errorMessage={errors.name ? errors.name : undefined}
@@ -92,7 +92,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.password.label')}
                   value={values.password}
                   placeholder={t('signup:form.password.placeholder')}
-                  onChange={e => setFieldValue('password', e.target.value)}
+                  onChange={e => setFieldValue('password', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('password', true)}
                   touched={touched.password}
                   error={errors.password}
@@ -102,7 +102,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.confirmPassword.label')}
                   value={values.confirmPassword}
                   placeholder={t('signup:form.confirmPassword.placeholder')}
-                  onChange={e => setFieldValue('confirmPassword', e.target.value)}
+                  onChange={e => setFieldValue('confirmPassword', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('confirmPassword', true)}
                   touched={touched.confirmPassword}
                   error={errors.confirmPassword}
@@ -234,8 +234,8 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                         void router.push('/login');
                       } else {
                         setError(t(`errors:${res.errorCode}`));
+                        setIsLoading(false);
                       }
-                      setIsLoading(false);
                     }}
                   >
                     {t('signup:title')}

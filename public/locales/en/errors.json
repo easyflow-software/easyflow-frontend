@@ -1,6 +1,7 @@
 {
   "ALREADY_EXISTS": "A user with this email address already exists.",
   "API_ERROR": "Something went wrong. Please try again later.",
+  "LOCAL_FAILURE": "Something went wrong. Please try again later. (Local)",
   "NOT_ALLOWED": "This operation is not allowed.",
   "NOT_FOUND": "The requested resource was not found.",
   "WRONG_CREDENTIALS": "Email or password is incorrect."

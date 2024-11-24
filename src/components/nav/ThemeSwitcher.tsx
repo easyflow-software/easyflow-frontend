@@ -1,5 +1,5 @@
 'use client';
-import { Moon, Sun } from '@phosphor-icons/react';
+import { Moon, Sun } from '@phosphor-icons/react/dist/ssr';
 import { useTheme } from 'next-themes';
 import { FunctionComponent, ReactElement } from 'react';
 

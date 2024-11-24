@@ -17,7 +17,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from '@nextui-org/react';
-import { SignOut, User } from '@phosphor-icons/react';
+import { SignOut, User } from '@phosphor-icons/react/dist/ssr';
 import { UserContext } from '@src/providers/user-provider/UserProvider';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';

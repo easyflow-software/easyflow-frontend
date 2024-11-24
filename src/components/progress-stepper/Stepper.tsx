@@ -1,5 +1,5 @@
 'use client';
-import { Check } from '@phosphor-icons/react';
+import { Check } from '@phosphor-icons/react/dist/ssr';
 import cx from 'classnames';
 import {
   Children,

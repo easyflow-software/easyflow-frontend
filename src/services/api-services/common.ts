@@ -1,3 +1,4 @@
+import { LoginType } from '@src/types/login.type';
 import { SignupResponse, UserResponse } from '@src/types/response.types';
 
 enum APIOperation {
@@ -17,15 +18,15 @@ type APIContext = {
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,
     SignupResponse,
-    { email: string; name: string; password: string; publicKey?: string; privateKey?: string; iv?: string }
+    { email?: string; name?: string; password?: string; publicKey?: string; privateKey?: string; iv?: string }
   >;
-  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, { email: string; password: string }>;
+  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, LoginType>;
   [APIOperation.LOGOUT]: RequestContext<APIOperation.LOGOUT>;
   [APIOperation.CHECK_IF_USER_EXISTS]: RequestContext<
     APIOperation.CHECK_IF_USER_EXISTS,
     boolean,
     void,
-    { email: string }
+    { email?: string }
   >;
   [APIOperation.GET_USER]: RequestContext<APIOperation.GET_USER, UserResponse>;
   [APIOperation.GET_PROFILE_PICTURE]: RequestContext<APIOperation.GET_PROFILE_PICTURE, string>;

@@ -1,10 +1,8 @@
 'use client';
 import { Button, Divider, Input, Link } from '@nextui-org/react';
-import { WarningCircle } from '@phosphor-icons/react';
+import { WarningCircle } from '@phosphor-icons/react/dist/ssr';
 import useLogin from '@src/hooks/useLogin';
 import { UserContext } from '@src/providers/user-provider/UserProvider';
-import { APIOperation } from '@src/services/api-services/common';
-import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { Form, Formik } from 'formik';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
@@ -17,10 +15,11 @@ const LoginForm: FunctionComponent = (): ReactElement => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { initialValues } = useLogin();
+  const { initialValues, login } = useLogin();
   const { refetchUser } = useContext(UserContext);
 
   const [error, setError] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = createValidationSchema(t);
 
@@ -35,17 +34,19 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={async values => {
-          const res = await clientRequest<APIOperation.LOGIN>({ op: APIOperation.LOGIN, payload: values });
+          setIsLoading(true);
+          const res = await login(values.email, values.password);
           if (res.success) {
-            await refetchUser();
+            void refetchUser();
             router.replace(searchParams.get('callback') ?? '/chat');
             router.refresh();
           } else {
             setError(res.errorCode);
+            setIsLoading(false);
           }
         }}
       >
-        {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
+        {({ setFieldTouched, setFieldValue, values, errors, touched, submitCount, isValid }) => (
           <Form>
             <Input
               classNames={{ base: 'mb-0.5', description: 'select-none' }}
@@ -54,7 +55,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               placeholder={t('login:form.email.placeholder')}
               value={values.email}
               onChange={e => {
-                void setFieldValue('email', e.target.value);
+                void setFieldValue('email', e.currentTarget.value);
               }}
               onInput={() => setError(undefined)}
               onBlur={() => setFieldTouched('email', true)}
@@ -69,7 +70,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               value={values.password}
               placeholder={t('login:form.password.placeholder')}
               onChange={e => {
-                void setFieldValue('password', e.target.value);
+                void setFieldValue('password', e.currentTarget.value);
                 setError(undefined);
               }}
               onInput={() => setError(undefined)}
@@ -81,7 +82,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
             <Button
               color="primary"
               type="submit"
-              isLoading={isSubmitting}
+              isLoading={isLoading}
               isDisabled={submitCount > 0 && !isValid}
               fullWidth
             >

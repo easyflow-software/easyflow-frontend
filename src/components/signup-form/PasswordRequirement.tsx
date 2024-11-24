@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, XCircle } from '@phosphor-icons/react';
+import { CheckCircle, XCircle } from '@phosphor-icons/react/dist/ssr';
 import { FunctionComponent, ReactElement } from 'react';
 
 interface PasswordRequirementProps {

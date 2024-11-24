@@ -2,6 +2,8 @@
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { UserType } from '@src/types/user.type';
+import { base64ToArrayBuffer, base64ToUint8, generateWrappingKey, hash } from '@src/utils/encryption-utils';
+import { useRouter } from 'next/navigation';
 import {
   createContext,
   Dispatch,
@@ -15,9 +17,15 @@ import {
 } from 'react';
 import { emitUnboundError } from '../provider-utils';
 
+// @ts-expect-error This is needed and reduces hastle
+interface UserWithKeys extends UserType {
+  privateKey: CryptoKey;
+  publicKey: CryptoKey;
+}
+
 interface UserContextProps {
-  user?: UserType;
-  setUser: Dispatch<SetStateAction<UserType | undefined>>;
+  user?: UserWithKeys;
+  setUser: Dispatch<SetStateAction<UserWithKeys | undefined>>;
   refetchUser: () => Promise<void>;
 }
 
@@ -30,13 +38,64 @@ const data: UserContextProps = {
 const UserContext = createContext<UserContextProps>(data);
 
 const UserProvider: FunctionComponent<PropsWithChildren> = ({ children }): ReactElement => {
-  const [user, setUser] = useState<UserType | undefined>();
+  const [user, setUser] = useState<UserWithKeys | undefined>();
   const timer = useRef<Timer>();
+  const router = useRouter();
 
   const refetchUser = async (): Promise<void> => {
     const res = await clientRequest<APIOperation.GET_USER>({ op: APIOperation.GET_USER });
     if (res.success) {
-      setUser(res.data);
+      const ivBuffer = base64ToUint8(res.data.iv);
+      const keyString = window.localStorage.getItem('wrapping_key');
+
+      if (keyString) {
+        try {
+          const randomHash = await hash(res.data.wrappingKeyRandom, ivBuffer);
+
+          const unwrappingKey = await generateWrappingKey(randomHash);
+
+          const key = await window.crypto.subtle.unwrapKey(
+            'raw',
+            base64ToArrayBuffer(keyString),
+            unwrappingKey,
+            { name: 'AES-GCM', iv: ivBuffer },
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['wrapKey', 'unwrapKey'],
+          );
+
+          const privateKey = await window.crypto.subtle.unwrapKey(
+            'pkcs8',
+            base64ToArrayBuffer(res.data.privateKey),
+            key,
+            { name: 'AES-GCM', iv: ivBuffer },
+            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            false,
+            ['decrypt'],
+          );
+
+          const publicKey = await window.crypto.subtle.importKey(
+            'spki',
+            base64ToArrayBuffer(res.data.publicKey),
+            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            false,
+            ['encrypt'],
+          );
+
+          const user: UserWithKeys = {
+            ...res.data,
+            privateKey,
+            publicKey,
+          };
+
+          setUser(user);
+        } catch {
+          router.push('/login');
+        }
+      } else {
+        await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
+        router.push('/login');
+      }
     }
   };
 
