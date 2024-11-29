@@ -13,6 +13,7 @@
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "dependencies": {
+    "@neshca/cache-handler": "^1.9.0",
     "@nextui-org/react": "2.4.8",
     "@phosphor-icons/react": "2.1.7",
     "axios": "1.7.7",
@@ -27,6 +28,7 @@
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-i18next": "15.1.1",
+    "redis": "^4.7.0",
     "yup": "1.4.0"
   },
   "devDependencies": {

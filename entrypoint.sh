@@ -10,7 +10,7 @@ echo "$CLOUDFLARE_ORIGIN_CA_KEY" > /etc/ssl/easyflow.key
 echo $NODE_ENV
 
 # Start application
-npx next start &
+node /app/.next/standalone/server.js &
 
 # Start nginx in the forground
 nginx -g 'daemon off;'
