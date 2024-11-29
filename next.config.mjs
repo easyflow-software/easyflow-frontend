@@ -66,6 +66,12 @@ const nextConfig = {
       },
     ];
   },
+  generateBuildId: async () => {
+    return process.env.GIT_HASH;
+  },
+  output: 'standalone',
+  cacheMaxMemorySize: 0,
+  cacheHandler: import.meta.resolve('./cache-handler.mjs'),
   experimental: {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_BASE_URL],

@@ -11,13 +11,13 @@ RUN npm uninstall -g yarn
 WORKDIR /app
 
 # Copy needed files (not needed files in .dockerignore)
-COPY --chown=appuser:appgroup ./.next /app/.next
-COPY --chown=appuser:appgroup ./node_modules /app/node_modules
-COPY --chown=appuser:appgroup ./public /app/public
+COPY --chown=appuser:appgroup ./.next/standalone/ /app/.next/standalone
+COPY --chown=appuser:appgroup ./.next/static/ /app/.next/standalone/static
+COPY --chown=appuser:appgroup ./.next/cache/fetch-cache/ /app/.next/standalone/.next/cache/fetch-chache
+COPY --chown=appuser:appgroup ./public /app/.next/standalone/public
 COPY --chown=appuser:appgroup ./entrypoint.sh /app/entrypoint.sh
 COPY --chown=appuser:appgroup ./next.config.mjs /app/next.config.mjs
 COPY --chown=appuser:appgroup ./nginx.conf /app/nginx.conf
-COPY --chown=appuser:appgroup ./package.json /app/package.json
 
 # add nginx
 RUN apk add nginx

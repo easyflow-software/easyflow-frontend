@@ -6,6 +6,7 @@ type EnviromentConfiguration = {
   NEXT_PUBLIC_BASE_URL: string;
   NEXT_PUBLIC_WEBSOCKET_URL: string;
   ACCESS_TOKEN_BUFFER_TIME: number;
+  REDIS_URL: string;
 };
 
 class AppConfiguration {
@@ -28,6 +29,7 @@ class AppConfiguration {
         NEXT_PUBLIC_BASE_URL: string().required(),
         NEXT_PUBLIC_WEBSOCKET_URL: string().required(),
         ACCESS_TOKEN_BUFFER_TIME: number().default(60),
+        REDIS_URL: string().required(),
       })
       .validateSync(process.env, {
         stripUnknown: true,

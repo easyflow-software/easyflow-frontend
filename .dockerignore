@@ -15,6 +15,7 @@ Dockerfile
 eslint.config.js
 example.env
 i18n.config.ts
+package.json
 postcss.config.js
 README.md
 tailwind.config.ts
