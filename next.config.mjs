@@ -1,5 +1,12 @@
 /** @type {import(import("next").NextConfig)}*/
 
+// next.config.mjs
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com;
@@ -67,11 +74,9 @@ const nextConfig = {
     ];
   },
   generateBuildId: async () => {
-    return process.env.GIT_HASH;
+    return process.env.GIT_HASH ?? 'development';
   },
   output: 'standalone',
-  cacheMaxMemorySize: 0,
-  cacheHandler: import.meta.resolve('./cache-handler.mjs'),
   experimental: {
     serverActions: {
       allowedOrigins: [process.env.NEXT_PUBLIC_BASE_URL],

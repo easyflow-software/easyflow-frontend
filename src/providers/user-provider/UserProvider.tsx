@@ -29,75 +29,100 @@ interface UserContextProps {
   refetchUser: () => Promise<void>;
 }
 
+interface UserProviderProps {
+  initialUser?: UserType;
+}
+
 const data: UserContextProps = {
   user: undefined,
   setUser: emitUnboundError,
   refetchUser: emitUnboundError,
 };
 
+async function getUserWithKeys(user: UserType): Promise<UserWithKeys | undefined> {
+  const ivBuffer = base64ToUint8(user.iv);
+  const keyString = window.localStorage.getItem('wrapping_key');
+
+  if (keyString) {
+    try {
+      const randomHash = await hash(user.wrappingKeyRandom, ivBuffer);
+
+      const unwrappingKey = await generateWrappingKey(randomHash);
+
+      const key = await window.crypto.subtle.unwrapKey(
+        'raw',
+        base64ToArrayBuffer(keyString),
+        unwrappingKey,
+        { name: 'AES-GCM', iv: ivBuffer },
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['wrapKey', 'unwrapKey'],
+      );
+
+      const privateKey = await window.crypto.subtle.unwrapKey(
+        'pkcs8',
+        base64ToArrayBuffer(user.privateKey),
+        key,
+        { name: 'AES-GCM', iv: ivBuffer },
+        { name: 'RSA-OAEP', hash: 'SHA-256' },
+        false,
+        ['decrypt'],
+      );
+
+      const publicKey = await window.crypto.subtle.importKey(
+        'spki',
+        base64ToArrayBuffer(user.publicKey),
+        { name: 'RSA-OAEP', hash: 'SHA-256' },
+        false,
+        ['encrypt'],
+      );
+
+      const userWithKeys: UserWithKeys = {
+        ...user,
+        privateKey,
+        publicKey,
+      };
+
+      return userWithKeys;
+    } catch {
+      return undefined;
+    }
+  } else {
+    return undefined;
+  }
+}
+
 const UserContext = createContext<UserContextProps>(data);
 
-const UserProvider: FunctionComponent<PropsWithChildren> = ({ children }): ReactElement => {
+const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
+  children,
+  initialUser,
+}): ReactElement => {
   const [user, setUser] = useState<UserWithKeys | undefined>();
   const timer = useRef<Timer>();
   const router = useRouter();
 
-  const refetchUser = async (): Promise<void> => {
+  async function setUserWithKeys(user: UserType): Promise<void> {
+    const userWithKeys = await getUserWithKeys(user);
+    if (!user) {
+      router.push('/login');
+    } else {
+      setUser(userWithKeys);
+    }
+  }
+
+  async function refetchUser(): Promise<void> {
     const res = await clientRequest<APIOperation.GET_USER>({ op: APIOperation.GET_USER });
     if (res.success) {
-      const ivBuffer = base64ToUint8(res.data.iv);
-      const keyString = window.localStorage.getItem('wrapping_key');
-
-      if (keyString) {
-        try {
-          const randomHash = await hash(res.data.wrappingKeyRandom, ivBuffer);
-
-          const unwrappingKey = await generateWrappingKey(randomHash);
-
-          const key = await window.crypto.subtle.unwrapKey(
-            'raw',
-            base64ToArrayBuffer(keyString),
-            unwrappingKey,
-            { name: 'AES-GCM', iv: ivBuffer },
-            { name: 'AES-GCM', length: 256 },
-            false,
-            ['wrapKey', 'unwrapKey'],
-          );
-
-          const privateKey = await window.crypto.subtle.unwrapKey(
-            'pkcs8',
-            base64ToArrayBuffer(res.data.privateKey),
-            key,
-            { name: 'AES-GCM', iv: ivBuffer },
-            { name: 'RSA-OAEP', hash: 'SHA-256' },
-            false,
-            ['decrypt'],
-          );
-
-          const publicKey = await window.crypto.subtle.importKey(
-            'spki',
-            base64ToArrayBuffer(res.data.publicKey),
-            { name: 'RSA-OAEP', hash: 'SHA-256' },
-            false,
-            ['encrypt'],
-          );
-
-          const user: UserWithKeys = {
-            ...res.data,
-            privateKey,
-            publicKey,
-          };
-
-          setUser(user);
-        } catch {
-          router.push('/login');
-        }
-      } else {
-        await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
-        router.push('/login');
-      }
+      await setUserWithKeys(res.data);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (initialUser) {
+      void setUserWithKeys(initialUser);
+    }
+  }, [initialUser]);
 
   // automatic refreshes on the client side before the token expires
   useEffect(() => {

@@ -1,9 +1,9 @@
 'use server';
-import type { Metadata } from 'next';
-
+import { Props } from '@/src/app/[locale]/layout';
 import initTranslations from '@src/app/i18n';
+import NavBar from '@src/components/nav/NavBar';
+import type { Metadata } from 'next';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
-import { Props } from '../layout';
 
 const i18nNamespaces = ['metadata'];
 
@@ -16,8 +16,15 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   };
 };
 
-const RootLayout: FunctionComponent<PropsWithChildren> = async ({ children }): Promise<ReactElement> => {
-  return <main className="flex min-h-[calc(100vh-65px)] w-screen items-center justify-center">{children}</main>;
+const RootLayout: FunctionComponent<PropsWithChildren<Props>> = async ({ params, children }): Promise<ReactElement> => {
+  const { locale } = await params;
+
+  return (
+    <>
+      <NavBar params={{ locale }} />
+      <main className="flex min-h-[calc(100vh-65px)] w-screen items-center justify-center">{children}</main>
+    </>
+  );
 };
 
 export default RootLayout;

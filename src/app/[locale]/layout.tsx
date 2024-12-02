@@ -1,14 +1,16 @@
-import Nav from '@src/components/nav/Nav';
-import NavWrapper from '@src/components/nav/NavBarWrapper';
+'use server';
+import initTranslations from '@src/app/i18n';
 import ClientProvider from '@src/providers/client-provider/ClientProvider';
+import { APIOperation } from '@src/services/api-services/common';
+import serverRequest from '@src/services/api-services/requests/server-side';
+import { UserType } from '@src/types/user.type';
 import cx from 'classnames';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
+import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 import '../globals.css';
 import '../i18n';
-import initTranslations from '../i18n';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,19 +31,20 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   };
 };
 
-const RootLayout: FunctionComponent<PropsWithChildren<Props>> = async (props): Promise<ReactElement> => {
-  const { locale } = await props.params;
+const RootLayout: FunctionComponent<PropsWithChildren<Props>> = async ({ params, children }): Promise<ReactElement> => {
+  const { locale } = await params;
 
-  const { children } = props;
+  let initialUser: UserType | undefined;
+  const res = await serverRequest<APIOperation.GET_USER>({ op: APIOperation.GET_USER });
+  if (res.success) {
+    initialUser = res.data;
+  }
 
   return (
     <html lang={locale} dir={dir(locale)} className="h-full w-full">
       <body className={cx('h-full w-full bg-background', inter.className)}>
-        <ClientProvider>
-          <NavWrapper params={{ locale }}>
-            <Nav params={{ locale }} />
-          </NavWrapper>
-          <div className="h-full overflow-y-auto">{children}</div>
+        <ClientProvider initialUser={initialUser}>
+          <main className="min-h-[calc(100vh-65px)] w-screen">{children}</main>
         </ClientProvider>
       </body>
     </html>

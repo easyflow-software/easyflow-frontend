@@ -1,5 +1,6 @@
 'use server';
 import { Card, CardHeader } from '@nextui-org/react';
+import { Props } from '@src/app/[locale]/layout';
 import initTranslations from '@src/app/i18n';
 import SignupForm from '@src/components/signup-form/SignupForm';
 import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
@@ -7,7 +8,6 @@ import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 import { APIOperation } from '../../../services/api-services/common';
 import serverRequest from '../../../services/api-services/requests/server-side';
-import { Props } from '../layout';
 
 const i18nNamespaces = ['signup', 'errors'];
 

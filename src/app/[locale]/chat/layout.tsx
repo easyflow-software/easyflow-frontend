@@ -1,9 +1,8 @@
 'use server';
-import type { Metadata } from 'next';
-
+import { Props } from '@/src/app/[locale]/layout';
 import initTranslations from '@src/app/i18n';
+import type { Metadata } from 'next';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
-import { Props } from '../layout';
 
 const i18nNamespaces = ['metadata'];
 
@@ -17,7 +16,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 };
 
 const RootLayout: FunctionComponent<PropsWithChildren> = async ({ children }): Promise<ReactElement> => {
-  return <main className="h-full w-screen">{children}</main>;
+  return <main className="min-h-[calc(100vh-65px)] w-screen">{children}</main>;
 };
 
 export default RootLayout;

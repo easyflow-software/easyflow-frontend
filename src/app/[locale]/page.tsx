@@ -1,20 +1,15 @@
 'use server';
-import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
+import NavBar from '@src/components/nav/NavBar';
 import { FunctionComponent } from 'react';
-import initTranslations from '../i18n';
 import { Props } from './layout';
 
-const i18nNamespaces = ['home'];
-
-const Home: FunctionComponent<Props> = async props => {
-  const { locale } = await props.params;
-
-  const { resources } = await initTranslations(locale, i18nNamespaces);
-
+const Home: FunctionComponent<Props> = async ({ params }) => {
+  const { locale } = await params;
   return (
-    <TranslationsProvider resources={resources} namespaces={i18nNamespaces} locale={locale}>
+    <>
+      <NavBar params={{ locale }} />
       <div>Home</div>
-    </TranslationsProvider>
+    </>
   );
 };
 

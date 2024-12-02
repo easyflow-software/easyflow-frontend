@@ -9,7 +9,7 @@ const clientRequest = async <T extends APIOperation>(
   options: Omit<APIContext[T], 'responseType'> & { op: T },
 ): Promise<RequestResponse<APIContext[T]['responseType']>> => {
   try {
-    const response = await req<T>(process.env.NEXT_PUBLIC_REMOTE_URL ?? 'http://localhost:4000/', options);
+    const response = await req<T>(process.env.NEXT_PUBLIC_REMOTE_URL ?? '', options);
 
     return { success: true, data: response.data };
   } catch (err) {
