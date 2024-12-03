@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 export const checkLogin = async (callback: string): Promise<void> => {
   const res = await serverRequest<APIOperation.CHECK_LOGIN>({ op: APIOperation.CHECK_LOGIN });
 
-  if (!res.success || !res.data) {
+  if (!res.success) {
     redirect(`/auth?callback=${callback}`);
   }
 };
