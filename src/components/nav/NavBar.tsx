@@ -8,10 +8,11 @@ import Nav from './Nav';
 const namspaces = ['navbar'];
 
 const NavBar: FunctionComponent<ParamsType> = async ({ params }): Promise<ReactElement> => {
-  const { resources } = await initTranslations(params.locale, namspaces);
+  const { locale } = await params;
+  const { resources } = await initTranslations(locale, namspaces);
   return (
-    <TranslationsProvider resources={resources} locale={params.locale} namespaces={namspaces}>
-      <Nav params={params} />
+    <TranslationsProvider resources={resources} locale={locale} namespaces={namspaces}>
+      <Nav locale={locale} />
     </TranslationsProvider>
   );
 };

@@ -7,6 +7,7 @@ import { Form, Formik } from 'formik';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import CloudflareTurnstile from '../cloudflare-turnstile/CloudflareTurnstile';
 import PasswordInput from '../password-input/PasswordInput';
 import createValidationSchema from './validation-schema';
 
@@ -35,7 +36,7 @@ const LoginForm: FunctionComponent = (): ReactElement => {
         validationSchema={validationSchema}
         onSubmit={async values => {
           setIsLoading(true);
-          const res = await login(values.email, values.password);
+          const res = await login(values);
           if (res.success) {
             void refetchUser();
             router.replace(searchParams.get('callback') ?? '/chat');
@@ -78,6 +79,15 @@ const LoginForm: FunctionComponent = (): ReactElement => {
               touched={!!touched.password}
               error={errors.password ? errors.password : undefined}
               isRequired
+            />
+            <CloudflareTurnstile
+              setError={setError}
+              setFieldValue={(value: string) => void setFieldValue('turnstileToken', value)}
+              setFieldTouched={() => setFieldTouched('turnstileToken', true)}
+              value={values.turnstileToken}
+              invalid={touched.turnstileToken && !!errors.turnstileToken}
+              error={errors.turnstileToken ? errors.turnstileToken : undefined}
+              action="login"
             />
             <Button
               color="primary"

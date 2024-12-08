@@ -6,6 +6,7 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import CloudflareTurnstile from '../cloudflare-turnstile/CloudflareTurnstile';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
 import Stepper, { StepperRef } from '../progress-stepper/Stepper';
@@ -22,6 +23,9 @@ const SignupForm: FunctionComponent = (): ReactElement => {
   const [values, setValues] = useState(initialValues);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
+
+  const [turnstileToken, setTurnstileToken] = useState<string>();
+  const [turnstileTouched, setTurnstileTouched] = useState<boolean>(false);
 
   const validationSchema = createValidationSchema(t);
 
@@ -183,6 +187,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
               <>
                 <h3>{t('signup:recoveryCode.title')}</h3>
                 <Trans
+                  className="mb-4"
                   components={{
                     strong: <strong />,
                     CopyLink: (
@@ -212,7 +217,17 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                 >
                   <p>{t('signup:recoveryCode.information')}</p>
                 </Trans>
-                <div className="mt-4 flex">
+                <div className="mb-4" />
+                <CloudflareTurnstile
+                  setError={setError}
+                  setFieldValue={setTurnstileToken}
+                  setFieldTouched={() => setTurnstileTouched(true)}
+                  value={turnstileToken}
+                  invalid={turnstileTouched && !turnstileToken}
+                  error={!turnstileToken ? t('errors:INVALID_TURNSTILE') : undefined}
+                  action="signup"
+                />
+                <div className="mt-2 flex">
                   <Button
                     className="mr-2 w-full"
                     variant="bordered"
@@ -229,7 +244,12 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                     isLoading={isLoading}
                     onClick={async () => {
                       setIsLoading(true);
-                      const res = await signup(values.email, values.name, values.password);
+                      if (!turnstileToken) {
+                        setTurnstileTouched(true);
+                        setIsLoading(false);
+                        return;
+                      }
+                      const res = await signup(turnstileToken, values.email, values.name, values.password);
                       if (res.success) {
                         void router.push('/login');
                       } else {

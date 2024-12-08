@@ -1,16 +1,16 @@
 'use server';
-import { Props } from '@/src/app/[locale]/layout';
 import initTranslations from '@src/app/i18n';
+import { ParamsType } from '@src/types/params.type';
 import type { Metadata } from 'next';
 import type { FunctionComponent, PropsWithChildren, ReactElement } from 'react';
 
 const i18nNamespaces = ['metadata'];
 
-export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+export const generateMetadata = async ({ params }: ParamsType): Promise<Metadata> => {
   const { locale } = await params;
   const i18n = await initTranslations(locale, i18nNamespaces);
   return {
-    title: i18n.t('metadata:signup.title'),
+    title: i18n.t('metadata:auth.title'),
   };
 };
 

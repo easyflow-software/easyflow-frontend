@@ -6,6 +6,7 @@ const createValidationSchema = (t: TFunction) => {
   return object().shape({
     email: string().required(t('validation.email.required')).email(t('validation.email.invalid')),
     password: string().required(t('validation.password.required')),
+    turnstileToken: string().required(t('validation.turnstileToken.required')),
   });
 };
 

@@ -12,6 +12,9 @@
     },
     "password": {
       "required": "Password is required"
+    },
+    "turnstileToken": {
+      "required": "Turnstile check is required"
     }
   }
 }

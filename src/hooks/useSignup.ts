@@ -16,7 +16,12 @@ import { useState } from 'react';
 const useSignup = (): {
   initialValues: SignupType;
   generateKeys: (password?: string) => Promise<void>;
-  signup: (email?: string, name?: string, password?: string) => Promise<RequestResponse<SignupResponse>>;
+  signup: (
+    turnstileToken: string,
+    email?: string,
+    name?: string,
+    password?: string,
+  ) => Promise<RequestResponse<SignupResponse>>;
   checkIfUserExists: (email?: string) => Promise<RequestResponse<boolean>>;
   privateKey?: string;
   publicKey?: string;
@@ -36,6 +41,7 @@ const useSignup = (): {
     name: undefined,
     password: undefined,
     confirmPassword: undefined,
+    turnstileToken: undefined,
   };
 
   const generateKeys = async (password?: string): Promise<void> => {
@@ -79,10 +85,15 @@ const useSignup = (): {
     setIsGeneratingKeys(false);
   };
 
-  const signup = async (email?: string, name?: string, password?: string): Promise<RequestResponse<SignupResponse>> => {
+  const signup = async (
+    turnstileToken: string,
+    email?: string,
+    name?: string,
+    password?: string,
+  ): Promise<RequestResponse<SignupResponse>> => {
     const res = await clientRequest<APIOperation.SIGNUP>({
       op: APIOperation.SIGNUP,
-      payload: { email, password, name, privateKey, publicKey, iv },
+      payload: { email, password, name, privateKey, publicKey, iv, turnstileToken },
     });
     return res;
   };

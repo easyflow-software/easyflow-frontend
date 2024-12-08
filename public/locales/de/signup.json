@@ -41,6 +41,9 @@
     "confirmPassword": {
       "required": "Passwort bestätigen ist erforderlich",
       "match": "Passwörter stimmen nicht überein"
+    },
+    "turnstileToken": {
+      "required": "Turnstile-Check ist erforderlich"
     }
   }
 }

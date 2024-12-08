@@ -1,6 +1,8 @@
 {
   "ALREADY_EXISTS": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.",
   "API_ERROR": "Etwas ist schief gelaufen. Bitte versuche es später erneut.",
+  "BROWSER_NOT_SUPPORTED": "Dein Browser wird nicht unterstützt. Bitte aktualisiere deinen Browser.",
+  "INVALID_TURNSTILE": "Der Turnstile-Check ist ungültig.",
   "LOCAL_FAILURE": "Etwas ist schief gelaufen. Bitte versuche es später erneut. (Lokal)",
   "NOT_ALLOWED": "Diese Operation ist nicht erlaubt.",
   "NOT_FOUND": "Die angeforderte Ressource wurde nicht gefunden.",

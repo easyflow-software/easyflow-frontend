@@ -1,13 +1,12 @@
 'use server';
 import NavBar from '@src/components/nav/NavBar';
+import { ParamsType } from '@src/types/params.type';
 import { FunctionComponent } from 'react';
-import { Props } from './layout';
 
-const Home: FunctionComponent<Props> = async ({ params }) => {
-  const { locale } = await params;
+const Home: FunctionComponent<ParamsType> = async ({ params }) => {
   return (
     <>
-      <NavBar params={{ locale }} />
+      <NavBar params={params} />
       <div>Home</div>
     </>
   );

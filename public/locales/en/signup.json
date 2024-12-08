@@ -41,6 +41,9 @@
     "confirmPassword": {
       "required": "Confirming password is required",
       "match": "Passwords do not match"
+    },
+    "turnstileToken": {
+      "required": "Confirming password is required"
     }
   }
 }

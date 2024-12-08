@@ -5,25 +5,19 @@ import LoginForm from '@src/components/login-form/LoginForm';
 import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
 import { APIOperation } from '@src/services/api-services/common';
 import serverRequest from '@src/services/api-services/requests/server-side';
+import { ParamsType } from '@src/types/params.type';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 
-interface HomeProps {
-  params: Promise<{
-    locale: string;
-  }>;
-}
-
 const i18nNamespaces = ['login', 'errors'];
 
-const Home: FunctionComponent<HomeProps> = async props => {
+const Home: FunctionComponent<ParamsType> = async ({ params }) => {
   const res = await serverRequest<APIOperation.CHECK_LOGIN>({ op: APIOperation.CHECK_LOGIN });
   if (res.success) {
     redirect('/chat');
   }
-  const params = await props.params;
 
-  const { locale } = params;
+  const { locale } = await params;
 
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 

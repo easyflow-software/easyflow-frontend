@@ -26,6 +26,7 @@ interface UserWithKeys extends UserType {
 interface UserContextProps {
   user?: UserWithKeys;
   setUser: Dispatch<SetStateAction<UserWithKeys | undefined>>;
+  isLoading: boolean;
   refetchUser: () => Promise<void>;
 }
 
@@ -36,6 +37,7 @@ interface UserProviderProps {
 const data: UserContextProps = {
   user: undefined,
   setUser: emitUnboundError,
+  isLoading: true,
   refetchUser: emitUnboundError,
 };
 
@@ -99,7 +101,8 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
   initialUser,
 }): ReactElement => {
   const [user, setUser] = useState<UserWithKeys | undefined>();
-  const timer = useRef<Timer>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const timer = useRef<Timer>(undefined);
   const router = useRouter();
 
   async function setUserWithKeys(user: UserType): Promise<void> {
@@ -121,8 +124,17 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
   useEffect(() => {
     if (initialUser) {
       void setUserWithKeys(initialUser);
+    } else {
+      setIsLoading(false);
     }
   }, [initialUser]);
+
+  // This is needed to prevent flashing of the login and signup buttons when the user reloads the page and is already logged in
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   // automatic refreshes on the client side before the token expires
   useEffect(() => {
@@ -133,12 +145,7 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
     };
 
     void refreshToken();
-
     return () => clearTimeout(timer.current);
-  }, []);
-
-  useEffect(() => {
-    void refetchUser();
   }, []);
 
   return (
@@ -146,6 +153,7 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
       value={{
         user,
         setUser,
+        isLoading,
         refetchUser,
       }}
     >

@@ -11,22 +11,23 @@ import { arrayBufferToBase64, base64ToUint8, generateWrappingKey, hash } from '@
 
 const useLogin = (): {
   initialValues: LoginType;
-  login: (email?: string, password?: string) => Promise<RequestResponse<UserResponse>>;
+  login: (values: LoginType) => Promise<RequestResponse<UserResponse>>;
 } => {
   const initialValues: LoginType = {
     email: undefined,
     password: undefined,
+    turnstileToken: undefined,
   };
 
-  const login = async (email?: string, password?: string): Promise<RequestResponse<UserType>> => {
+  const login = async (values: LoginType): Promise<RequestResponse<UserType>> => {
     const res = await clientRequest<APIOperation.LOGIN>({
       op: APIOperation.LOGIN,
-      payload: { email, password },
+      payload: values,
     });
-    if (res.success && password) {
+    if (res.success && values.password) {
       try {
         const ivBuffer = base64ToUint8(res.data.iv);
-        const hashedPassword = await hash(password, ivBuffer);
+        const hashedPassword = await hash(values.password, ivBuffer);
 
         const key = await generateWrappingKey(hashedPassword);
 

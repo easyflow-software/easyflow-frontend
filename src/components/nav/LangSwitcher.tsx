@@ -2,12 +2,15 @@
 import i18nConfig from '@/i18n.config';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react';
 import { CaretDown } from '@phosphor-icons/react/dist/ssr';
-import { ParamsType } from '@src/types/params.type';
 import { usePathname, useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const LangSwitcher: FunctionComponent<ParamsType> = ({ params: { locale } }): ReactElement => {
+interface LangSwitcherProps {
+  locale: string;
+}
+
+const LangSwitcher: FunctionComponent<LangSwitcherProps> = ({ locale }): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();

@@ -21,7 +21,6 @@ import { SignOut, User } from '@phosphor-icons/react/dist/ssr';
 import { UserContext } from '@src/providers/user-provider/UserProvider';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
-import { ParamsType } from '@src/types/params.type';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { FunctionComponent, ReactElement, useContext, useEffect, useState } from 'react';
@@ -29,11 +28,15 @@ import { useTranslation } from 'react-i18next';
 import LangSwitcher from './LangSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
 
-const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
+interface NavProps {
+  locale: string;
+}
+
+const Nav: FunctionComponent<NavProps> = ({ locale }): ReactElement => {
   const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, isLoading } = useContext(UserContext);
 
   const [menuItems, setMenuItems] = useState<{ label: string; href: string; active: boolean; hidden: boolean }[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -93,19 +96,13 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
           <ThemeSwitcher />
         </NavbarItem>
         <NavbarItem>
-          <LangSwitcher params={params} />
+          <LangSwitcher locale={locale} />
         </NavbarItem>
-        {user ? (
+        {isLoading ? (
           <NavbarItem>
             <Dropdown>
               <DropdownTrigger>
-                <Avatar
-                  className="hover:cursor-pointer"
-                  src={user.profilePicture}
-                  alt={user.name}
-                  name={user.name}
-                  isBordered
-                />
+                <Avatar className="hover:cursor-pointer" isBordered />
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownSection showDivider>
@@ -129,16 +126,52 @@ const Nav: FunctionComponent<ParamsType> = ({ params }): ReactElement => {
           </NavbarItem>
         ) : (
           <>
-            <NavbarItem className="max-sm:hidden">
-              <Button as={Link} href="/login" color="secondary" variant="flat">
-                {t('navbar:menuLabels.login')}
-              </Button>
-            </NavbarItem>
-            <NavbarItem className="max-sm:hidden">
-              <Button as={Link} color="primary" href="/signup">
-                {t('navbar:menuLabels.signup')}
-              </Button>
-            </NavbarItem>
+            {user ? (
+              <NavbarItem>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Avatar
+                      className="hover:cursor-pointer"
+                      src={user.profilePicture}
+                      alt={user.name}
+                      name={user.name}
+                      isBordered
+                    />
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    <DropdownSection showDivider>
+                      <DropdownItem key={'profile'} startContent={<User />} href="/profile">
+                        {t('navbar:userMenuLabels.profile')}
+                      </DropdownItem>
+                    </DropdownSection>
+                    <DropdownSection title={t('navbar:userMenuLabels.dangerZone')}>
+                      <DropdownItem
+                        key={'logout'}
+                        className="text-danger"
+                        color="danger"
+                        startContent={<SignOut />}
+                        onClick={() => logout()}
+                      >
+                        {t('navbar:userMenuLabels.logout')}
+                      </DropdownItem>
+                    </DropdownSection>
+                  </DropdownMenu>
+                </Dropdown>
+              </NavbarItem>
+            ) : (
+              <>
+                <NavbarItem className="max-sm:hidden">
+                  <Button as={Link} href="/login" color="secondary" variant="flat">
+                    {t('navbar:menuLabels.login')}
+                  </Button>
+                </NavbarItem>
+                <NavbarItem className="max-sm:hidden">
+                  <Button as={Link} color="primary" href="/signup">
+                    {t('navbar:menuLabels.signup')}
+                  </Button>
+                </NavbarItem>
+              </>
+            )}
           </>
         )}
       </NavbarContent>

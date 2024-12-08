@@ -18,7 +18,15 @@ type APIContext = {
   [APIOperation.SIGNUP]: RequestContext<
     APIOperation.SIGNUP,
     SignupResponse,
-    { email?: string; name?: string; password?: string; publicKey?: string; privateKey?: string; iv?: string }
+    {
+      email?: string;
+      name?: string;
+      password?: string;
+      publicKey?: string;
+      privateKey?: string;
+      iv?: string;
+      turnstileToken: string;
+    }
   >;
   [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, LoginType>;
   [APIOperation.LOGOUT]: RequestContext<APIOperation.LOGOUT>;

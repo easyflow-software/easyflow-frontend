@@ -1,9 +1,9 @@
 'use server';
 import { Card, CardHeader } from '@nextui-org/react';
-import { Props } from '@src/app/[locale]/layout';
 import initTranslations from '@src/app/i18n';
 import SignupForm from '@src/components/signup-form/SignupForm';
 import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
+import { ParamsType } from '@src/types/params.type';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 import { APIOperation } from '../../../services/api-services/common';
@@ -11,14 +11,13 @@ import serverRequest from '../../../services/api-services/requests/server-side';
 
 const i18nNamespaces = ['signup', 'errors'];
 
-const Home: FunctionComponent<Props> = async props => {
+const Home: FunctionComponent<ParamsType> = async ({ params }) => {
   const res = await serverRequest<APIOperation.CHECK_LOGIN>({ op: APIOperation.CHECK_LOGIN });
   if (res.success) {
     redirect('/chat');
   }
-  const params = await props.params;
 
-  const { locale } = params;
+  const { locale } = await params;
 
   const { t, resources } = await initTranslations(locale, i18nNamespaces);
 
