@@ -1,6 +1,7 @@
 [install]
 # set default registry as a string
-registry = "https://registry.npmjs.org"
+registry = "https://registry.npmjs.org/"
+exact = true
 auto = "auto"
 
 [run]

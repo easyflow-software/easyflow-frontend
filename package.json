@@ -27,7 +27,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "15.1.3",
-    "react-turnstile": "^1.1.4",
+    "react-turnstile": "1.1.4",
     "yup": "1.5.0"
   },
   "devDependencies": {
