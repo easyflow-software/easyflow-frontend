@@ -4,7 +4,7 @@ import { ErrorCode } from '@src/enums/error-codes.enum';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { Login } from '@src/types/login.type';
-import { arrayBufferToBase64, base64ToUint8, generateWrappingKey, hash } from '@src/utils/encryption-utils';
+import { arrayBufferToBase64, base64ToUint8, generateWrapingKey, hash } from '@src/utils/encryption-utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { UserContext } from '../providers/user-provider/UserProvider';
@@ -41,18 +41,18 @@ const useLogin = (): {
         const ivBuffer = base64ToUint8(res.data.iv);
         const hashedPassword = await hash(values.password, ivBuffer);
 
-        const key = await generateWrappingKey(hashedPassword);
+        const key = await generateWrapingKey(hashedPassword);
 
-        const randomHash = await hash(res.data.wrappingKeyRandom, ivBuffer);
+        const randomHash = await hash(res.data.wrapingKeyRandom, ivBuffer);
 
-        const wrappingKey = await generateWrappingKey(randomHash);
+        const wrapingKey = await generateWrapingKey(randomHash);
 
-        const encryptedWrappingKey = await window.crypto.subtle.wrapKey('raw', key, wrappingKey, {
+        const encryptedWrapingKey = await window.crypto.subtle.wrapKey('raw', key, wrapingKey, {
           name: 'AES-GCM',
           iv: ivBuffer,
         });
 
-        window.localStorage.setItem('wrapping_key', arrayBufferToBase64(encryptedWrappingKey));
+        window.localStorage.setItem('wraping_key', arrayBufferToBase64(encryptedWrapingKey));
       } catch {
         const res = await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
         if (!res.success) {

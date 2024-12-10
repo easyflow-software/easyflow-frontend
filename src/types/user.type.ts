@@ -7,7 +7,7 @@ export type User = {
   publicKey: string;
   privateKey: string;
   iv: string;
-  wrappingKeyRandom: string;
+  wrapingKeyRandom: string;
   accessToken: string;
   refreshToken: string;
   accessTokenExpires: number;

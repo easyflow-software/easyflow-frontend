@@ -11,7 +11,8 @@ enum APIOperation {
   CHECK_IF_USER_EXISTS = 'get:user/exists/{email}',
   GET_USER = 'get:user/',
   GET_PROFILE_PICTURE = 'get:user/profile-picture',
-  GET_CHATS = 'get:chat/',
+  GET_CHAT_PREVIEWS = 'get:chat/preview',
+  CREATE_CHAT = 'post:chat/',
 }
 
 type APIContext = {
@@ -40,7 +41,16 @@ type APIContext = {
   >;
   [APIOperation.GET_USER]: RequestContext<APIOperation.GET_USER, UserResponse>;
   [APIOperation.GET_PROFILE_PICTURE]: RequestContext<APIOperation.GET_PROFILE_PICTURE, string>;
-  [APIOperation.GET_CHATS]: RequestContext<APIOperation.GET_CHATS, Chat[]>;
+  [APIOperation.GET_CHAT_PREVIEWS]: RequestContext<APIOperation.GET_CHAT_PREVIEWS, Chat[]>;
+  [APIOperation.CREATE_CHAT]: RequestContext<
+    APIOperation.CREATE_CHAT,
+    Chat,
+    {
+      name?: string;
+      description?: string;
+      userKeys: { userId: string; key: string }[];
+    }
+  >;
 };
 
 type WithPayload<TBase, TPayload> = TPayload extends void

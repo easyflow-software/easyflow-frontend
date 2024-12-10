@@ -2,7 +2,14 @@
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { User } from '@src/types/user.type';
-import { base64ToArrayBuffer, base64ToUint8, generateWrappingKey, hash } from '@src/utils/encryption-utils';
+import {
+  base64ToUint8,
+  generateWrapingKey,
+  hash,
+  retrivePrivateKey,
+  retrivePublicKey,
+  retriveWrapingKey,
+} from '@src/utils/encryption-utils';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -48,41 +55,19 @@ const data: UserContextProps = {
 
 async function getUserWithKeys(user: User): Promise<UserWithKeys | undefined> {
   const ivBuffer = base64ToUint8(user.iv);
-  const keyString = window.localStorage.getItem('wrapping_key');
+  const keyString = window.localStorage.getItem('wraping_key');
 
   if (keyString) {
     try {
-      const randomHash = await hash(user.wrappingKeyRandom, ivBuffer);
+      const randomHash = await hash(user.wrapingKeyRandom, ivBuffer);
 
-      const unwrappingKey = await generateWrappingKey(randomHash);
+      const unwrapingKey = await generateWrapingKey(randomHash);
 
-      const key = await window.crypto.subtle.unwrapKey(
-        'raw',
-        base64ToArrayBuffer(keyString),
-        unwrappingKey,
-        { name: 'AES-GCM', iv: ivBuffer },
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['wrapKey', 'unwrapKey'],
-      );
+      const key = await retriveWrapingKey(keyString, unwrapingKey, ivBuffer);
 
-      const privateKey = await window.crypto.subtle.unwrapKey(
-        'pkcs8',
-        base64ToArrayBuffer(user.privateKey),
-        key,
-        { name: 'AES-GCM', iv: ivBuffer },
-        { name: 'RSA-OAEP', hash: 'SHA-256' },
-        false,
-        ['decrypt'],
-      );
+      const privateKey = await retrivePrivateKey(user.privateKey, key, ivBuffer);
 
-      const publicKey = await window.crypto.subtle.importKey(
-        'spki',
-        base64ToArrayBuffer(user.publicKey),
-        { name: 'RSA-OAEP', hash: 'SHA-256' },
-        false,
-        ['encrypt'],
-      );
+      const publicKey = await retrivePublicKey(user.publicKey);
 
       const userWithKeys: UserWithKeys = {
         ...user,
@@ -169,6 +154,18 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
   //     }
   //   }
   // }, [user]);
+
+  // conect to the websocket when user is set
+  useEffect(() => {
+    if (user) {
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? '');
+      ws.addEventListener('open', () => console.log('Websocket connection established'));
+      ws.onmessage = (event: MessageEvent) => {
+        console.log(event.data);
+      };
+      return () => ws.close();
+    }
+  }, [user]);
 
   return (
     <UserContext.Provider

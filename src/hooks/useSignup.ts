@@ -4,10 +4,13 @@ import { clientRequest } from '@src/services/api-services/requests/client-side';
 import { Signup } from '@src/types/signup.type';
 import {
   arrayBufferToBase64,
-  generateWrappingKey,
+  generateAsymetricKeys,
+  generateWrapingKey,
+  getRandomValues,
   hash,
   stringifyKey,
   uint8ToBase64,
+  wrapKey,
 } from '@src/utils/encryption-utils';
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -59,34 +62,22 @@ const useSignup = (): {
   const generateKeys = async (): Promise<void> => {
     if (!values.password) return;
     setIsGeneratingKeys(true);
-    const { publicKey, privateKey } = await crypto.subtle.generateKey(
-      {
-        name: 'RSA-OAEP',
-        modulusLength: 4096,
-        publicExponent: new Uint8Array([1, 0, 1]),
-        hash: 'SHA-256',
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
+    const { publicKey, privateKey } = await generateAsymetricKeys();
 
     // Iv for encryption of the private key
-    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(12));
+    const ivBuffer = getRandomValues();
 
     // Hash Password
     const hashedPassword = await hash(values.password, ivBuffer);
 
-    const wrappingKey = await generateWrappingKey(hashedPassword);
+    const wrapingKey = await generateWrapingKey(hashedPassword);
 
     // Encrypt the private key for storage in the database
-    const encryptedPrivateKey = await window.crypto.subtle.wrapKey('pkcs8', privateKey, wrappingKey, {
-      name: 'AES-GCM',
-      iv: ivBuffer,
-    });
+    const wrapedPrivateKey = await wrapKey(privateKey, wrapingKey, ivBuffer);
 
     // Stringify the keys and iv so they can be send via JSON
     const publicKeyString = await stringifyKey('spki', publicKey);
-    const privateKeyString = arrayBufferToBase64(encryptedPrivateKey);
+    const privateKeyString = arrayBufferToBase64(wrapedPrivateKey);
     const ivString = uint8ToBase64(ivBuffer);
     const hashedPasswordString = arrayBufferToBase64(hashedPassword);
 
