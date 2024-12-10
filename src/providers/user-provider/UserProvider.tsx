@@ -1,7 +1,7 @@
 'use client';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
-import { UserType } from '@src/types/user.type';
+import { User } from '@src/types/user.type';
 import { base64ToArrayBuffer, base64ToUint8, generateWrappingKey, hash } from '@src/utils/encryption-utils';
 import { useRouter } from 'next/navigation';
 import {
@@ -15,13 +15,18 @@ import {
   useRef,
   useState,
 } from 'react';
+// import { Chat } from '../../types/chat.type';
 import { emitUnboundError } from '../provider-utils';
 
 // @ts-expect-error This is needed and reduces hastle
-interface UserWithKeys extends UserType {
+interface UserWithKeys extends User {
   privateKey: CryptoKey;
   publicKey: CryptoKey;
 }
+
+// interface ChatWithKey extends Chat {
+//   key: CryptoKey;
+// }
 
 interface UserContextProps {
   user?: UserWithKeys;
@@ -31,7 +36,7 @@ interface UserContextProps {
 }
 
 interface UserProviderProps {
-  initialUser?: UserType;
+  initialUser?: User;
 }
 
 const data: UserContextProps = {
@@ -41,7 +46,7 @@ const data: UserContextProps = {
   refetchUser: emitUnboundError,
 };
 
-async function getUserWithKeys(user: UserType): Promise<UserWithKeys | undefined> {
+async function getUserWithKeys(user: User): Promise<UserWithKeys | undefined> {
   const ivBuffer = base64ToUint8(user.iv);
   const keyString = window.localStorage.getItem('wrapping_key');
 
@@ -94,6 +99,10 @@ async function getUserWithKeys(user: UserType): Promise<UserWithKeys | undefined
   }
 }
 
+// async function getChatWithKey(chat: Chat): Promise<ChatWithKey> {
+
+// }
+
 const UserContext = createContext<UserContextProps>(data);
 
 const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
@@ -101,11 +110,12 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
   initialUser,
 }): ReactElement => {
   const [user, setUser] = useState<UserWithKeys | undefined>();
+  // const [chats, setChats] = useState<ChatWithKey[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const timer = useRef<Timer>(undefined);
   const router = useRouter();
 
-  async function setUserWithKeys(user: UserType): Promise<void> {
+  async function setUserWithKeys(user: User): Promise<void> {
     const userWithKeys = await getUserWithKeys(user);
     if (!user) {
       router.push('/login');
@@ -138,15 +148,27 @@ const UserProvider: FunctionComponent<PropsWithChildren<UserProviderProps>> = ({
 
   // automatic refreshes on the client side before the token expires
   useEffect(() => {
-    const refreshToken = async (): Promise<void> => {
+    async function refreshToken(): Promise<void> {
       const res = await clientRequest<APIOperation.REFRESH_TOKEN>({ op: APIOperation.REFRESH_TOKEN });
 
       timer.current = setTimeout(refreshToken, res.success ? (res.data.accessTokenExpiresIn - 60) * 1000 : 60 * 1000);
-    };
+    }
 
     void refreshToken();
     return () => clearTimeout(timer.current);
   }, []);
+
+  // load the users chats when he is logged in
+  // useEffect(async () => {
+  //   if (user) {
+  //     async function getChats() {
+  //       const res = await clientRequest<APIOperation.GET_CHATS>({ op: APIOperation.GET_CHATS });
+  //       if (res.success) res.data.forEach((chat: Chat) => {
+
+  //       });
+  //     }
+  //   }
+  // }, [user]);
 
   return (
     <UserContext.Provider

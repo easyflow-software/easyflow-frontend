@@ -1,13 +1,13 @@
 'use client';
 import { NextUIProvider } from '@nextui-org/react';
-import { UserType } from '@src/types/user.type';
+import { User } from '@src/types/user.type';
 import { ThemeProvider } from 'next-themes';
 import { useRouter } from 'next/navigation';
 import { FunctionComponent, PropsWithChildren } from 'react';
 import { UserProvider } from '../user-provider/UserProvider';
 
 interface ClientProviderProps {
-  initialUser?: UserType;
+  initialUser?: User;
 }
 
 const ClientProvider: FunctionComponent<PropsWithChildren<ClientProviderProps>> = ({ children, initialUser }) => {

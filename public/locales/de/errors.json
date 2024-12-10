@@ -2,6 +2,7 @@
   "ALREADY_EXISTS": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.",
   "API_ERROR": "Etwas ist schief gelaufen. Bitte versuche es später erneut.",
   "BROWSER_NOT_SUPPORTED": "Dein Browser wird nicht unterstützt. Bitte aktualisiere deinen Browser.",
+  "FAILED_TO_RECOVER": "Es ist ein fataler Fehler aufgetreten bitte löschen sie ihre Cookies.",
   "INVALID_TURNSTILE": "Der Turnstile-Check ist ungültig.",
   "LOCAL_FAILURE": "Etwas ist schief gelaufen. Bitte versuche es später erneut. (Lokal)",
   "NOT_ALLOWED": "Diese Operation ist nicht erlaubt.",

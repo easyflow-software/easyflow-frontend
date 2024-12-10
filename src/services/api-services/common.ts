@@ -1,5 +1,6 @@
-import { LoginType } from '@src/types/login.type';
+import { Login } from '@src/types/login.type';
 import { SignupResponse, UserResponse } from '@src/types/response.types';
+import { Chat } from '../../types/chat.type';
 
 enum APIOperation {
   REFRESH_TOKEN = 'get:auth/refresh',
@@ -10,6 +11,7 @@ enum APIOperation {
   CHECK_IF_USER_EXISTS = 'get:user/exists/{email}',
   GET_USER = 'get:user/',
   GET_PROFILE_PICTURE = 'get:user/profile-picture',
+  GET_CHATS = 'get:chat/',
 }
 
 type APIContext = {
@@ -28,7 +30,7 @@ type APIContext = {
       turnstileToken: string;
     }
   >;
-  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, LoginType>;
+  [APIOperation.LOGIN]: RequestContext<APIOperation.LOGIN, UserResponse, Login>;
   [APIOperation.LOGOUT]: RequestContext<APIOperation.LOGOUT>;
   [APIOperation.CHECK_IF_USER_EXISTS]: RequestContext<
     APIOperation.CHECK_IF_USER_EXISTS,
@@ -38,6 +40,7 @@ type APIContext = {
   >;
   [APIOperation.GET_USER]: RequestContext<APIOperation.GET_USER, UserResponse>;
   [APIOperation.GET_PROFILE_PICTURE]: RequestContext<APIOperation.GET_PROFILE_PICTURE, string>;
+  [APIOperation.GET_CHATS]: RequestContext<APIOperation.GET_CHATS, Chat[]>;
 };
 
 type WithPayload<TBase, TPayload> = TPayload extends void

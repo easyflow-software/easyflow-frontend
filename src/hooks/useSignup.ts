@@ -1,9 +1,7 @@
 'use client';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
-import { RequestResponse } from '@src/types/request-response.type';
-import { SignupResponse } from '@src/types/response.types';
-import { SignupType } from '@src/types/signup.type';
+import { Signup } from '@src/types/signup.type';
 import {
   arrayBufferToBase64,
   generateWrappingKey,
@@ -11,32 +9,44 @@ import {
   stringifyKey,
   uint8ToBase64,
 } from '@src/utils/encryption-utils';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { ErrorCode } from '../enums/error-codes.enum';
 
 const useSignup = (): {
-  initialValues: SignupType;
-  generateKeys: (password?: string) => Promise<void>;
-  signup: (
-    turnstileToken: string,
-    email?: string,
-    name?: string,
-    password?: string,
-  ) => Promise<RequestResponse<SignupResponse>>;
-  checkIfUserExists: (email?: string) => Promise<RequestResponse<boolean>>;
+  initialValues: Signup;
   privateKey?: string;
   publicKey?: string;
   iv?: string;
   hashedPassword?: string;
   isGeneratingKeys: boolean;
+  error?: ErrorCode;
+  isLoading: boolean;
+  turnstileTouched: boolean;
+  turnstileToken?: string;
+  setError: Dispatch<SetStateAction<ErrorCode | undefined>>;
+  setTurnstileToken: Dispatch<SetStateAction<string | undefined>>;
+  setTurnstileTouched: Dispatch<SetStateAction<boolean>>;
+  generateKeys: (password?: string) => Promise<void>;
+  signup: (email?: string, name?: string, password?: string) => Promise<void>;
+  checkIfUserExists: (email?: string) => Promise<void>;
+  downloadRecoveryCode: () => void;
 } => {
+  const router = useRouter();
+
   const [privateKey, setPrivateKey] = useState<string>();
   const [publicKey, setPublicKey] = useState<string>();
   const [iv, setIv] = useState<string>();
   const [hashedPassword, setHashedPassword] = useState<string>();
 
   const [isGeneratingKeys, setIsGeneratingKeys] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<ErrorCode>();
 
-  const initialValues: SignupType = {
+  const [turnstileToken, setTurnstileToken] = useState<string>();
+  const [turnstileTouched, setTurnstileTouched] = useState<boolean>(false);
+
+  const initialValues: Signup = {
     email: undefined,
     name: undefined,
     password: undefined,
@@ -44,8 +54,10 @@ const useSignup = (): {
     turnstileToken: undefined,
   };
 
-  const generateKeys = async (password?: string): Promise<void> => {
-    if (!password) return;
+  const [values, setValues] = useState(initialValues);
+
+  const generateKeys = async (): Promise<void> => {
+    if (!values.password) return;
     setIsGeneratingKeys(true);
     const { publicKey, privateKey } = await crypto.subtle.generateKey(
       {
@@ -62,7 +74,7 @@ const useSignup = (): {
     const ivBuffer = window.crypto.getRandomValues(new Uint8Array(12));
 
     // Hash Password
-    const hashedPassword = await hash(password, ivBuffer);
+    const hashedPassword = await hash(values.password, ivBuffer);
 
     const wrappingKey = await generateWrappingKey(hashedPassword);
 
@@ -85,28 +97,73 @@ const useSignup = (): {
     setIsGeneratingKeys(false);
   };
 
-  const signup = async (
-    turnstileToken: string,
-    email?: string,
-    name?: string,
-    password?: string,
-  ): Promise<RequestResponse<SignupResponse>> => {
+  const signup = async (): Promise<void> => {
+    setIsLoading(true);
+    if (!turnstileToken) {
+      setTurnstileTouched(true);
+      setIsLoading(false);
+      return;
+    }
     const res = await clientRequest<APIOperation.SIGNUP>({
       op: APIOperation.SIGNUP,
-      payload: { email, password, name, privateKey, publicKey, iv, turnstileToken },
+      payload: {
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        privateKey,
+        publicKey,
+        iv,
+        turnstileToken,
+      },
     });
-    return res;
+    if (res.success) {
+      void router.push('/login');
+    } else {
+      setError(res.errorCode);
+      setIsLoading(false);
+    }
   };
 
-  const checkIfUserExists = async (email?: string): Promise<RequestResponse<boolean>> => {
+  const checkIfUserExists = async (email?: string): Promise<void> => {
     const res = await clientRequest<APIOperation.CHECK_IF_USER_EXISTS>({
       op: APIOperation.CHECK_IF_USER_EXISTS,
       params: { email },
     });
-    return res;
+    if (!res.success) {
+      setError(res.errorCode);
+      return;
+    } else if (res.data === true) {
+      setError(ErrorCode.ALREADY_EXISTS);
+      return;
+    }
+    setValues(values);
   };
 
-  return { initialValues, generateKeys, signup, checkIfUserExists, isGeneratingKeys, hashedPassword };
+  const downloadRecoveryCode = (): void => {
+    const element = document.createElement('a');
+    const file = new Blob([hashedPassword ?? ''], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'easyflow-recovery-code.txt';
+    document.body.appendChild(element); // Required for this to work in Firefox
+    element.click();
+  };
+
+  return {
+    initialValues,
+    isGeneratingKeys,
+    hashedPassword,
+    error,
+    isLoading,
+    turnstileTouched,
+    turnstileToken,
+    setError,
+    setTurnstileToken,
+    setTurnstileTouched,
+    generateKeys,
+    signup,
+    checkIfUserExists,
+    downloadRecoveryCode,
+  };
 };
 
 export default useSignup;

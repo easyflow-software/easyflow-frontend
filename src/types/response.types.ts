@@ -1,6 +1,6 @@
-import { UserType } from './user.type';
+import { User } from './user.type';
 
-export type UserResponse = UserType;
+export type UserResponse = User;
 
 export type SignupResponse = {
   id: string;

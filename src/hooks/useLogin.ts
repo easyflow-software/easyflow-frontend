@@ -3,23 +3,35 @@
 import { ErrorCode } from '@src/enums/error-codes.enum';
 import { APIOperation } from '@src/services/api-services/common';
 import { clientRequest } from '@src/services/api-services/requests/client-side';
-import { LoginType } from '@src/types/login.type';
-import { RequestResponse } from '@src/types/request-response.type';
-import { UserResponse } from '@src/types/response.types';
-import { UserType } from '@src/types/user.type';
+import { Login } from '@src/types/login.type';
 import { arrayBufferToBase64, base64ToUint8, generateWrappingKey, hash } from '@src/utils/encryption-utils';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { UserContext } from '../providers/user-provider/UserProvider';
 
 const useLogin = (): {
-  initialValues: LoginType;
-  login: (values: LoginType) => Promise<RequestResponse<UserResponse>>;
+  initialValues: Login;
+  error?: ErrorCode;
+  isLoading: boolean;
+  setError: Dispatch<SetStateAction<ErrorCode | undefined>>;
+  login: (values: Login) => Promise<void>;
 } => {
-  const initialValues: LoginType = {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { refetchUser } = useContext(UserContext);
+
+  const [error, setError] = useState<ErrorCode>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const initialValues: Login = {
     email: undefined,
     password: undefined,
     turnstileToken: undefined,
   };
 
-  const login = async (values: LoginType): Promise<RequestResponse<UserType>> => {
+  const login = async (values: Login): Promise<void> => {
+    setIsLoading(true);
     const res = await clientRequest<APIOperation.LOGIN>({
       op: APIOperation.LOGIN,
       payload: values,
@@ -42,14 +54,27 @@ const useLogin = (): {
 
         window.localStorage.setItem('wrapping_key', arrayBufferToBase64(encryptedWrappingKey));
       } catch {
-        await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
-        return { success: false, errorCode: ErrorCode.LOCAL_FAILURE };
+        const res = await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
+        if (!res.success) {
+          setError(ErrorCode.FAILED_TO_RECOVER);
+          return;
+        }
       }
     }
-    return res;
+
+    if (res.success) {
+      void refetchUser();
+      router.replace(searchParams.get('callback') ?? '/chat');
+      router.refresh();
+      return;
+    } else {
+      setError(res.errorCode);
+      setIsLoading(false);
+      return;
+    }
   };
 
-  return { initialValues, login };
+  return { initialValues, error, isLoading, setError, login };
 };
 
 export default useLogin;

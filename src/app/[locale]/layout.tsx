@@ -3,8 +3,8 @@ import initTranslations from '@src/app/i18n';
 import ClientProvider from '@src/providers/client-provider/ClientProvider';
 import { APIOperation } from '@src/services/api-services/common';
 import serverRequest from '@src/services/api-services/requests/server-side';
-import { ParamsType } from '@src/types/params.type';
-import { UserType } from '@src/types/user.type';
+import { Params } from '@src/types/params.type';
+import { User } from '@src/types/user.type';
 import cx from 'classnames';
 import { dir } from 'i18next';
 import type { Metadata } from 'next';
@@ -23,7 +23,7 @@ export interface Props {
   }>;
 }
 
-export const generateMetadata = async ({ params }: ParamsType): Promise<Metadata> => {
+export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
   const { locale } = await params;
   const i18n = await initTranslations(locale, i18nNamespaces);
   return {
@@ -32,13 +32,13 @@ export const generateMetadata = async ({ params }: ParamsType): Promise<Metadata
   };
 };
 
-const RootLayout: FunctionComponent<PropsWithChildren<ParamsType>> = async ({
+const RootLayout: FunctionComponent<PropsWithChildren<Params>> = async ({
   params,
   children,
 }): Promise<ReactElement> => {
   const { locale } = await params;
 
-  let initialUser: UserType | undefined;
+  let initialUser: User | undefined;
   const res = await serverRequest<APIOperation.GET_USER>({ op: APIOperation.GET_USER });
   if (res.success) {
     initialUser = res.data;

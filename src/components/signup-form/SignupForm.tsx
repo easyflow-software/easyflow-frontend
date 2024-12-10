@@ -4,8 +4,9 @@ import { Copy, Download, WarningCircle } from '@phosphor-icons/react/dist/ssr';
 import useSignup from '@src/hooks/useSignup';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, ReactElement, useEffect, useRef, useState } from 'react';
+import { FunctionComponent, ReactElement, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { ErrorCode } from '../../enums/error-codes.enum';
 import CloudflareTurnstile from '../cloudflare-turnstile/CloudflareTurnstile';
 import PasswordInput from '../password-input/PasswordInput';
 import Step from '../progress-stepper/Step';
@@ -16,22 +17,26 @@ import createValidationSchema from './validation-schema';
 const SignupForm: FunctionComponent = (): ReactElement => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { initialValues, generateKeys, signup, checkIfUserExists, hashedPassword, isGeneratingKeys } = useSignup();
+  const {
+    initialValues,
+    hashedPassword,
+    isGeneratingKeys,
+    error,
+    isLoading,
+    turnstileTouched,
+    turnstileToken,
+    setTurnstileTouched,
+    setTurnstileToken,
+    setError,
+    generateKeys,
+    signup,
+    checkIfUserExists,
+    downloadRecoveryCode,
+  } = useSignup();
 
   const stepperRef = useRef<StepperRef>(null);
 
-  const [values, setValues] = useState(initialValues);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>();
-
-  const [turnstileToken, setTurnstileToken] = useState<string>();
-  const [turnstileTouched, setTurnstileTouched] = useState<boolean>(false);
-
   const validationSchema = createValidationSchema(t);
-
-  useEffect(() => {
-    setError(undefined);
-  }, [values]);
 
   router.prefetch('/login');
 
@@ -50,16 +55,10 @@ const SignupForm: FunctionComponent = (): ReactElement => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={async values => {
-              const res = await checkIfUserExists(values.email);
-              if (!res.success) {
-                setError(t(`errors:${res.errorCode}`));
-                return;
-              } else if (res.data === true) {
-                setError(t('errors:ALREADY_EXISTS'));
-                return;
+              void checkIfUserExists(values.email);
+              if (!error) {
+                stepperRef.current?.nextStep();
               }
-              setValues(values);
-              stepperRef.current?.nextStep();
             }}
           >
             {({ setFieldTouched, setFieldValue, values, errors, touched, isSubmitting, submitCount, isValid }) => (
@@ -70,6 +69,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.email.label')}
                   placeholder={t('signup:form.email.placeholder')}
                   value={values.email}
+                  onInput={() => setError(undefined)}
                   onChange={e => setFieldValue('email', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('email', true)}
                   isInvalid={touched.email && !!errors.email}
@@ -84,6 +84,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.name.label')}
                   placeholder={t('signup:form.name.placeholder')}
                   value={values.name}
+                  onInput={() => setError(undefined)}
                   onChange={e => setFieldValue('name', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('name', true)}
                   isInvalid={touched.name && !!errors.name}
@@ -96,6 +97,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.password.label')}
                   value={values.password}
                   placeholder={t('signup:form.password.placeholder')}
+                  onInput={() => setError(undefined)}
                   onChange={e => setFieldValue('password', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('password', true)}
                   touched={touched.password}
@@ -106,6 +108,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   label={t('signup:form.confirmPassword.label')}
                   value={values.confirmPassword}
                   placeholder={t('signup:form.confirmPassword.placeholder')}
+                  onInput={() => setError(undefined)}
                   onChange={e => setFieldValue('confirmPassword', e.currentTarget.value)}
                   onBlur={() => setFieldTouched('confirmPassword', true)}
                   touched={touched.confirmPassword}
@@ -168,7 +171,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
               color="primary"
               onClick={async () => {
                 stepperRef.current?.nextStep();
-                await generateKeys(values.password);
+                await generateKeys();
               }}
             >
               {t('signup:next')}
@@ -203,14 +206,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                         className="hover:cursor-pointer"
                         showAnchorIcon
                         anchorIcon={<Download weight="bold" className="ml-1" />}
-                        onClick={() => {
-                          const element = document.createElement('a');
-                          const file = new Blob([hashedPassword], { type: 'text/plain' });
-                          element.href = URL.createObjectURL(file);
-                          element.download = 'easyflow-recovery-code.txt';
-                          document.body.appendChild(element); // Required for this to work in Firefox
-                          element.click();
-                        }}
+                        onClick={downloadRecoveryCode}
                       />
                     ),
                   }}
@@ -224,7 +220,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                   setFieldTouched={() => setTurnstileTouched(true)}
                   value={turnstileToken}
                   invalid={turnstileTouched && !turnstileToken}
-                  error={!turnstileToken ? t('errors:INVALID_TURNSTILE') : undefined}
+                  error={!turnstileToken ? t(`errors:${ErrorCode.INVALID_TURNSTILE}`) : undefined}
                   action="signup"
                 />
                 <div className="mt-2 flex">
@@ -242,20 +238,8 @@ const SignupForm: FunctionComponent = (): ReactElement => {
                     color="primary"
                     isDisabled={isGeneratingKeys}
                     isLoading={isLoading}
-                    onClick={async () => {
-                      setIsLoading(true);
-                      if (!turnstileToken) {
-                        setTurnstileTouched(true);
-                        setIsLoading(false);
-                        return;
-                      }
-                      const res = await signup(turnstileToken, values.email, values.name, values.password);
-                      if (res.success) {
-                        void router.push('/login');
-                      } else {
-                        setError(t(`errors:${res.errorCode}`));
-                        setIsLoading(false);
-                      }
+                    onClick={() => {
+                      void signup();
                     }}
                   >
                     {t('signup:title')}
@@ -269,7 +253,7 @@ const SignupForm: FunctionComponent = (): ReactElement => {
       {error ? (
         <div className="mt-2 flex items-center text-danger">
           <WarningCircle size={20} className="mr-1" />
-          <p>{error}</p>
+          <p>{t(`errors:${error}`)}</p>
         </div>
       ) : (
         <p className="mt-3"> </p>

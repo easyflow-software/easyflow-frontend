@@ -5,13 +5,13 @@ import LoginForm from '@src/components/login-form/LoginForm';
 import TranslationsProvider from '@src/providers/translation-provider/TranslationsProvider';
 import { APIOperation } from '@src/services/api-services/common';
 import serverRequest from '@src/services/api-services/requests/server-side';
-import { ParamsType } from '@src/types/params.type';
+import { Params } from '@src/types/params.type';
 import { redirect } from 'next/navigation';
 import { FunctionComponent } from 'react';
 
 const i18nNamespaces = ['login', 'errors'];
 
-const Home: FunctionComponent<ParamsType> = async ({ params }) => {
+const Home: FunctionComponent<Params> = async ({ params }) => {
   const res = await serverRequest<APIOperation.CHECK_LOGIN>({ op: APIOperation.CHECK_LOGIN });
   if (res.success) {
     redirect('/chat');

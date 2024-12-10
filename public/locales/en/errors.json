@@ -2,6 +2,7 @@
   "ALREADY_EXISTS": "A user with this email address already exists.",
   "API_ERROR": "Something went wrong. Please try again later.",
   "BROWSER_NOT_SUPPORTED": "Your browser is not supported. Please update your browser.",
+  "FAILED_TO_RECOVER": "A fatal error occoured please delete your cookies to recover",
   "INVALID_TURNSTILE": "The turnstile check is invalid.",
   "LOCAL_FAILURE": "Something went wrong. Please try again later. (Local)",
   "NOT_ALLOWED": "This operation is not allowed.",

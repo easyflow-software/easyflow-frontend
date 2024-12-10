@@ -5,7 +5,7 @@ import { Dispatch, FunctionComponent, ReactElement, SetStateAction } from 'react
 import Turnstile from 'react-turnstile';
 
 interface CloudflareTurnstileProps {
-  setError: Dispatch<SetStateAction<string | undefined>>;
+  setError: Dispatch<SetStateAction<ErrorCode | undefined>>;
   setFieldValue: Dispatch<string>;
   setFieldTouched: () => void;
   value?: string;

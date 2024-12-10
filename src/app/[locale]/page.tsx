@@ -1,9 +1,9 @@
 'use server';
 import NavBar from '@src/components/nav/NavBar';
-import { ParamsType } from '@src/types/params.type';
+import { Params } from '@src/types/params.type';
 import { FunctionComponent } from 'react';
 
-const Home: FunctionComponent<ParamsType> = async ({ params }) => {
+const Home: FunctionComponent<Params> = async ({ params }) => {
   return (
     <>
       <NavBar params={params} />
