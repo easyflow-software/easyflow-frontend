@@ -47,12 +47,12 @@ const useLogin = (): {
 
         const wrapingKey = await generateWrapingKey(randomHash);
 
-        const encryptedWrapingKey = await window.crypto.subtle.wrapKey('raw', key, wrapingKey, {
+        const encryptedWrapingKey = await crypto.subtle.wrapKey('raw', key, wrapingKey, {
           name: 'AES-GCM',
           iv: ivBuffer,
         });
 
-        window.localStorage.setItem('wraping_key', arrayBufferToBase64(encryptedWrapingKey));
+        localStorage.setItem('wraping_key', arrayBufferToBase64(encryptedWrapingKey));
       } catch {
         const res = await clientRequest<APIOperation.LOGOUT>({ op: APIOperation.LOGOUT });
         if (!res.success) {

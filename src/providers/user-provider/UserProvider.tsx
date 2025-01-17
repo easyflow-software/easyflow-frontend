@@ -55,7 +55,7 @@ const data: UserContextProps = {
 
 async function getUserWithKeys(user: User): Promise<UserWithKeys | undefined> {
   const ivBuffer = base64ToUint8(user.iv);
-  const keyString = window.localStorage.getItem('wraping_key');
+  const keyString = localStorage.getItem('wraping_key');
 
   if (keyString) {
     try {

@@ -1,6 +1,6 @@
 'use client';
 async function generateAsymetricKeys(): Promise<CryptoKeyPair> {
-  return window.crypto.subtle.generateKey(
+  return crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
       modulusLength: 4096,
@@ -13,11 +13,11 @@ async function generateAsymetricKeys(): Promise<CryptoKeyPair> {
 }
 
 async function generateSymetricKey(): Promise<CryptoKey> {
-  return window.crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+  return crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
 }
 
 function getRandomValues(): Uint8Array {
-  return window.crypto.getRandomValues(new Uint8Array(12));
+  return crypto.getRandomValues(new Uint8Array(12));
 }
 
 async function wrapKey(
@@ -25,7 +25,7 @@ async function wrapKey(
   wrapingKey: CryptoKey,
   ivBuffer: Uint8Array<ArrayBufferLike>,
 ): Promise<ArrayBuffer> {
-  return window.crypto.subtle.wrapKey('pkcs8', key, wrapingKey, {
+  return crypto.subtle.wrapKey('pkcs8', key, wrapingKey, {
     name: 'AES-GCM',
     iv: ivBuffer,
   });
@@ -80,22 +80,18 @@ async function hash(password: string, salt: Uint8Array): Promise<ArrayBuffer> {
 
 async function generateWrapingKey(hashedPassword: ArrayBuffer): Promise<CryptoKey> {
   // Generate a wraping key out of the hashed password for encrypting the private key
-  return window.crypto.subtle.importKey('raw', hashedPassword, { name: 'AES-GCM' }, true, ['wrapKey', 'unwrapKey']);
+  return crypto.subtle.importKey('raw', hashedPassword, { name: 'AES-GCM' }, true, ['wrapKey', 'unwrapKey']);
 }
 
 async function stringifyKey(format: 'raw' | 'pkcs8' | 'spki', key: CryptoKey): Promise<string> {
-  const keyBuffer = await window.crypto.subtle.exportKey(format, key);
+  const keyBuffer = await crypto.subtle.exportKey(format, key);
   return arrayBufferToBase64(keyBuffer);
 }
 
 async function retrivePublicKey(publicKey: string): Promise<CryptoKey> {
-  return window.crypto.subtle.importKey(
-    'spki',
-    base64ToArrayBuffer(publicKey),
-    { name: 'RSA-OAEP', hash: 'SHA-256' },
-    false,
-    ['encrypt'],
-  );
+  return crypto.subtle.importKey('spki', base64ToArrayBuffer(publicKey), { name: 'RSA-OAEP', hash: 'SHA-256' }, false, [
+    'encrypt',
+  ]);
 }
 
 async function retrivePrivateKey(
@@ -103,7 +99,7 @@ async function retrivePrivateKey(
   key: CryptoKey,
   ivBuffer: Uint8Array<ArrayBufferLike>,
 ): Promise<CryptoKey> {
-  return window.crypto.subtle.unwrapKey(
+  return crypto.subtle.unwrapKey(
     'pkcs8',
     base64ToArrayBuffer(privateKey),
     key,
@@ -119,7 +115,7 @@ async function retriveWrapingKey(
   key: CryptoKey,
   ivBuffer: Uint8Array<ArrayBufferLike>,
 ): Promise<CryptoKey> {
-  return window.crypto.subtle.unwrapKey(
+  return crypto.subtle.unwrapKey(
     'raw',
     base64ToArrayBuffer(wrapingKey),
     key,
